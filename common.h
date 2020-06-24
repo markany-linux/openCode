@@ -2,6 +2,7 @@
  * \file    common.h
  * 
  * \brief   Define user/kernel common definitions and communication info.
+ * 			"mild_" prefix means "Markany Interface for Linux Drm"
  * 
  * \date    2020.05.20.
  * 
@@ -11,10 +12,8 @@
 #define __COMMON_H__
 
 
-//////////////////////////////// Data type definitions
-
-/// null
-#define mild_null                               (0)
+/// defin nULL type
+#define mild_null					(0)
 
 /// define default numeric data types
 typedef	char                        mild_i8;
@@ -36,7 +35,9 @@ typedef double                      mild_double;
 typedef enum mild_bool
 {
 	mild_false	= 0,
+
 	mild_true	= 1
+
 } mild_bool;
 
 /// string type
@@ -55,7 +56,9 @@ typedef void*                       mild_ptr;
 typedef const void*                 mild_cptr;
 
 
-//////////////////////////////// Const Variable Length Define
+/**
+ * @brief	Const Variable Length Define
+ */
 #define STRLEN_4                    4
 #define STRLEN_8                    8
 #define STRLEN_16                   16
@@ -71,13 +74,16 @@ typedef const void*                 mild_cptr;
 #define PAGESIZE                    4096
 #define TWOPAGE                     8192
 
-/////////////////////////////// SYSFS definitions
+/**
+ * @brief	SYSFS definitions
+ */
 #define SYSFS_HOME                  "/sys/kernel"
 #define SYSFS_EXPORT_DIR            "openCode"
 #define SYSFS_TARGET_FILE           SYSFS_HOME "/" SYSFS_EXPORT_DIR
 
-
-/////////////////////////////// Netlink port number
+/**
+ * @brief	Netlink port number
+ */
 #define NETLINK_PORT_NUMBER         21
 
 
