@@ -57,7 +57,8 @@ mild_bool check_access_read(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_access( pathname__, R_OK );
 }
@@ -74,7 +75,8 @@ mild_bool check_access_write(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_access( pathname__, W_OK );
 }
@@ -91,7 +93,8 @@ mild_bool check_access_rdwr(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_access( pathname__, R_OK | W_OK );
 }
@@ -108,7 +111,8 @@ mild_bool check_access_executable(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_access( pathname__, X_OK );
 }
@@ -125,7 +129,8 @@ mild_bool check_can_file_read(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_file_access( pathname__, R_OK );
 }
@@ -142,7 +147,8 @@ mild_bool check_can_file_write(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_file_access( pathname__, W_OK );
 }
@@ -159,7 +165,8 @@ mild_bool check_can_file_rdwr(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_file_access( pathname__, R_OK | W_OK );
 }
@@ -176,7 +183,8 @@ mild_bool check_can_file_executable(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_file_access( pathname__, X_OK );
 }
@@ -193,7 +201,8 @@ mild_bool check_file_exist(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_file_access( pathname__, F_OK );
 }
@@ -210,7 +219,8 @@ mild_bool check_file_status(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	/// 1. check if target file exist
 	if( mild_false == check_file_exist( pathname__ ) )
@@ -268,7 +278,8 @@ mild_bool check_regular_filetype(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_file_type( pathname__, S_IFREG );
 }
@@ -285,7 +296,8 @@ mild_bool check_socket_filetype(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_file_type( pathname__, S_IFSOCK );
 }
@@ -302,7 +314,8 @@ mild_bool check_symlink_filetype(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_file_type( pathname__, S_IFLNK );
 }
@@ -319,7 +332,8 @@ mild_bool check_block_device_filetype(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_file_type( pathname__, S_IFBLK );
 }
@@ -336,7 +350,8 @@ mild_bool check_directory_filetype(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_file_type( pathname__, S_IFDIR );
 }
@@ -353,7 +368,8 @@ mild_bool check_character_device_filetype(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_file_type( pathname__, S_IFCHR );
 }
@@ -370,7 +386,8 @@ mild_bool check_fifo_filetype(
 	mild_cstr					pathname__
 	)
 {
-	NULL_PTR_RETURN( pathname__ );
+	if( mild_null == pathname__ )
+		return mild_false;
 
 	return check_file_type( pathname__, S_IFIFO );
 }
