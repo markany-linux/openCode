@@ -47,7 +47,7 @@ extern mild_bool check_access_write(
  * 
  * @return	대상이 존재하고, 권한이 존재하면 true, 아니면 false
  **/
-extern mild_bool check_access_rdwr(
+extern mild_bool check_access_read_write(
 	mild_cstr					pathname__
 	);
 
@@ -60,6 +60,18 @@ extern mild_bool check_access_rdwr(
  * @return	대상이 존재하고, 권한이 존재하면 true, 아니면 false
  **/
 extern mild_bool check_access_executable(
+	mild_cstr					pathname__
+	);
+
+
+/**
+ * @brief	대상의 읽기/쓰기/실행 권한을 확인
+ * 
+ * @param	pathname__	확인할 대상 경로명
+ * 
+ * @return	대상이 존재하고, 권한이 존재하면 true, 아니면 false
+ */
+extern mild_bool check_access_rwx(
 	mild_cstr					pathname__
 	);
 
@@ -95,7 +107,7 @@ extern mild_bool check_can_file_write(
  * 
  * @return	대상 파일이 존재하고, 권한이 존재하면 true, 아니면 false
  **/
-extern mild_bool check_can_file_rdwr(
+extern mild_bool check_can_file_readwrite(
 	mild_cstr					pathname__
 	);
 
@@ -108,6 +120,18 @@ extern mild_bool check_can_file_rdwr(
  * @return	대상 파일이 존재하고, 권한이 존재하면 true, 아니면 false
  **/
 extern mild_bool check_can_file_executable(
+	mild_cstr					pathname__
+	);
+
+
+/**
+ * @brief	대상 파일의 읽기/쓰기/실행 권한을 확인
+ * 
+ * @param	pathname__	확인할 대상 파일 경로명
+ * 
+ * @return	대상 파일이 존재하고, 권한이 존재하면 true, 아니면 false
+ */
+extern mild_bool check_can_file_rwx(
 	mild_cstr					pathname__
 	);
 
@@ -219,6 +243,18 @@ extern mild_bool check_charater_device_filetype(
  * @return	대상이 존재하고, FIFO 라면 true, 아니면 false
  */
 extern mild_bool check_fifo_filetype(
+	mild_cstr					pathname__
+	);
+
+
+/**
+ * @brief	디렉터리 존재 여부를 확인하고 반환
+ * 
+ * @param	pathname__	확인할 경로
+ * 
+ * @return	디렉터리 존재 시 true, 부재 시 false
+ */
+extern mild_bool check_directory_exist(
 	mild_cstr					pathname__
 	);
 

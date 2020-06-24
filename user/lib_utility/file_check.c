@@ -21,11 +21,11 @@ static mild_bool check_access(
 	mild_i32					flags__
 	)
 {
-	/// check file exist first
+	/// 대상 존재 여부 확인
 	if( 0 != access( pathname__, F_OK ) )
 		return mild_false;
 
-	/// check request flags
+	/// 확인을 요청한 권한 존재 여부 확인
 	if( 0 != access( pathname__, flags__ ) )
 		return mild_false;
 
@@ -46,9 +46,10 @@ static mild_bool check_file_access(
 	mild_i32					flags__
 	)
 {
+	/// 대상이 파일인지 여부 확인
 	if( mild_false == check_regular_filetype( pathname__ ) )
 		return mild_false;
-	
+
 	return check_access( pathname__, flags__ );
 }
 
@@ -89,7 +90,7 @@ mild_bool checkAccessWrite(
 }
 
 
-mild_bool check_access_rdwr(
+mild_bool check_access_read_write(
 	mild_cstr					pathname__
 	)
 {
@@ -99,11 +100,11 @@ mild_bool check_access_rdwr(
 	return check_access( pathname__, R_OK | W_OK );
 }
 
-mild_bool checkAccessRdwr(
+mild_bool checkAccessReadWrite(
 	mild_cstr					pathname__
 	)
 {
-	return check_access_rdwr( pathname__ );
+	return check_access_read_write( pathname__ );
 }
 
 
@@ -122,6 +123,24 @@ mild_bool checkAccessExecutable(
 	)
 {
 	return check_access_executable( pathname__ );
+}
+
+
+mild_bool check_access_rwx(
+	mild_cstr					pathname__
+	)
+{
+	if( mild_null == pathname__ )
+		return mild_false;
+
+	return check_access( pathname__, R_OK | W_OK | X_OK );
+}
+
+mild_bool checkAccessRWX(
+	mild_cstr					pathname__
+	)
+{
+	return check_access_rwx( pathname__ );
 }
 
 
@@ -161,7 +180,7 @@ mild_bool checkCanFileWrite(
 }
 
 
-mild_bool check_can_file_rdwr(
+mild_bool check_can_file_readwrite(
 	mild_cstr					pathname__
 	)
 {
@@ -171,11 +190,11 @@ mild_bool check_can_file_rdwr(
 	return check_file_access( pathname__, R_OK | W_OK );
 }
 
-mild_bool checkCanFileRdwr(
+mild_bool checkCanFileReadWrite(
 	mild_cstr					pathname__
 	)
 {
-	return check_can_file_rdwr( pathname__ );
+	return check_can_file_readwrite( pathname__ );
 }
 
 
@@ -194,6 +213,24 @@ mild_bool checkCanFileExecutable(
 	)
 {
 	return check_can_file_executable( pathname__ );
+}
+
+
+mild_bool check_can_file_rwx(
+	mild_cstr					pathname__
+	)
+{
+	if( mild_null == pathname__ )
+		return mild_false;
+
+	return check_file_access( pathname__, R_OK | W_OK | X_OK );
+}
+
+mild_bool checkCanFileRWX(
+	mild_cstr					pathname__
+	)
+{
+	return check_can_file_rwx( pathname__ );
 }
 
 
@@ -222,19 +259,12 @@ mild_bool check_file_status(
 	if( mild_null == pathname__ )
 		return mild_false;
 
-	/// 1. check if target file exist
+	/// 대상 파일 존재 여부 확인
 	if( mild_false == check_file_exist( pathname__ ) )
 		return mild_false;
 
-	/// 2. check target file is regular file
-	if( mild_false == check_regular_filetype( pathname__ ))
-		return mild_false;
-
-	/// 3. check if can read and write target file
-	if( mild_false == check_file_access( pathname__, R_OK | W_OK ) )
-		return mild_false;
-
-	return mild_true;
+	/// 대상 파일 권한 확인
+	return check_file_access( pathname__, R_OK | W_OK );
 }
 
 mild_bool checkFileStatus(
@@ -261,12 +291,15 @@ static mild_bool check_file_type(
 {
 	struct stat st;
 
+	/// 대상 존재 여부 확인
 	if( mild_false == check_access( pathname__, F_OK ) )
 		return mild_false;
 
+	/// 파일 정보 획득
 	if( 0 != stat( pathname__, &st ) )
 		return mild_false;
-	
+
+	/// 파일 타입이 확인요청 타입과 동일한지 여부 확인
 	if( type__ != ( st.st_mode & S_IFMT ) )
 		return mild_false;
 
@@ -404,7 +437,7 @@ mild_bool check_directory_exist(
 	mild_cstr					pathname__
 	)
 {
-	return check_access( pathname__, F_OK );
+	return check_directory_filetype( pathname__ );
 }
 
 mild_bool checkDirectoryExist(
@@ -424,12 +457,15 @@ mild_bool check_directory_permissions(
 {
 	mild_i32 flags = 0;
 
+	/// 플래그에 읽기 추가
 	if( mild_false != read_check__ )
 		flags |= R_OK;
 
+	/// 플래그에 기록 추가
 	if( mild_false != write_check__ )
 		flags |= W_OK;
 
+	/// 플래그에 실행 추가
 	if( mild_false != exec_check__ )
 		flags |= X_OK;
 
