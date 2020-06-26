@@ -11,7 +11,8 @@ INCLUDES	=	$(INCS:%=-I%)
 CFLAGS		=	-Wall $(INCLUDES) -ldl -fPIC
 LIBFLAGS	=	-shared
 
-SRCS		=	file_check.c
+SRCS		=	file_check.c		\
+			utility_init.c
 
 OBJS	= $(SRCS:%.c=%.o)
 TARGET	= libmautil.so
