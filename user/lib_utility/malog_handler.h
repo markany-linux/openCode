@@ -6,29 +6,17 @@
  *          dprint( )이외의 로그 기록 인터페이스는 존재하지 않음
  * 
  * \date    2019.01.24.
+ *          2020.07.09. modified by wikim.
  * 
  * \author  wikim (wikim@markany.com)
  * 
- * \copyright MarkAny Inc. 2019.
+ * \copyright MarkAny Inc. 2020.
  */
 #ifndef __LIB_UTILITY__MALOG_HANDLER_H__
 #define __LIB_UTILITY__MALOG_HANDLER_H__
 
 
-#include "utility_common.h"
-
-
-extern mild_bool init_malog(
-    mild_cstr                   path__
-    );
-
-
-extern mild_bool malog_dprint_write(
-    mild_cstr                   msg__
-    );
-
-
-extern void cleanup_malog( void );
+#include "common.h"
 
 
 #endif // #ifndef __LIB_UTILITY__MALOG_HANDLER_H__

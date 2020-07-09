@@ -9,10 +9,10 @@
 
 #include "file_check.h"
 #include "time_handler.h"
-#include "dprint.h"
-#include "event_messages.h"
 #include "utility_interface.h"
 
+/// 파일 디스크립터 시작 번호
+#define FD_START            3
 
 /// 로그 파일 디스크립터
 mild_i32 g_malog_fd;
@@ -20,51 +20,60 @@ mild_i32 g_malog_fd;
 
 /**
  * @brief   로그 기록 디렉터리 관련 처리를 수행
- *          * 디렉터리 기본 위치: 에이전트 실행 위치 하위의 "logs" 디렉터리
+ *          * 디렉터리 기본 위치: 전달 경로 하위의 "logs" 디렉터리
  * 
- * @param   path__  에이전트 설치 경로
+ * @param   path__  로그 파일 기록 위치
  * 
- * @return  디렉터리 접근에 문제 없음 true, 문제 있음 false
+ * @return  디렉터리 접근에 문제 없음 true, 권한 부재/생성 실패 등 false
  */
 static mild_bool setup_malog_dir(
-    mild_cstr                   path__
+    mild_cstr                   pathname__,
+    mild_cstr                   dir_name__
     )
 {
     mild_i32 mode = S_IRUSR | S_IWUSR | S_IRGRP;
-    mild_i8 buf[ STRLEN_128 ] = { 0, };
+    mild_str dir_name = mild_null;
 
-    /// 1. 에이전트 설치 경로 존재 여부 확인
-    if( mild_null == path__ )
+    /// 1. 전달 경로에 대한 권한 존재 여부 확인
+    if( mild_false == check_access_read_write( pathname__ ) )
     {
-        //dprint_error( INIT_SET_AGENT_PATH_FAIL );
+        printf( "%s directory access permission not exist\n" );
         return mild_false;
     }
 
-    /// 2. 에이전트 설치 경로에 대한 권한 존재 여부 확인
-    if( mild_false == check_access_rdwr( path__ ) )
+    /// 2. 생성할 디렉터리 경로 메모리 할당 및 확인
+    dir_name = ( mild_str )malloc( strlen( pathname__ ) + STRLEN_8 );
+    if( mild_null == dir_name )
     {
-        dprint_error( DRM_ERROR_LOG_DIRECTORY_ACCESS );
+        printf( "Memory allocation fail for directory name\n" );
         return mild_false;
     }
 
     /// 3. 로그 디렉터리 문자열 생성
-    sprintf( buf, "%s/logs", path__ );
+    if( mild_null == dir_name__ )
+    {
+        snprintf( dir_name, strlen( pathname__ ) + STRLEN_8, "%s/logs", pathname__ );
+    }
+    else
+    {
+        snprintf( dir_name, strlen( pathname__ ) + STRLEN_8, "%s/%s", pathname__, dir_name__ );
+    }
 
     /// 4. 대상 디렉터리가 존재하는지 여부 확인
-    if( mild_false == check_directory_filetype( buf ) )
+    if( mild_false == check_directory_filetype( dir_name ) )
     {
-        /// 4-1F. 로그 기록 디렉터리 생성. 실패 시 반환
-        if( -1 == mkdir( buf, mode ) )
+        /// 1F. 존재하지 않을 경우 로그 기록 디렉터리 생성
+        if( -1 == mkdir( dir_name, mode ) )
         {
-            dprint_error( DRM_ERROR_LOG_DIRECTORY_CREATE );
+            printf( "Fail to create log directory\n" );
             return mild_false;
         }
     }
 
-    /// 2. 읽기 쓰기 권한이 존재하는지 여부 확인. 권한이 없으면 반환
-    if( mild_false == check_access_rdwr( buf ) )
+    /// 5. 읽기 쓰기 권한이 존재하는지 여부 확인. 권한이 없으면 반환
+    if( mild_false == check_access_read_write( dir_name ) )
     {
-        dprint_error( DRM_ERROR_LOG_DIRECTORY_ACCESS );
+        printf( "Directory access permission not exist\n" );
         return mild_false;
     }
 
@@ -73,106 +82,182 @@ static mild_bool setup_malog_dir(
 
 
 mild_bool init_malog(
-    mild_cstr                   path__
+    mild_i32                    *fd__,
+    mild_cstr                   pathname__,
+    mild_cstr                   dir_name__
     )
 {
+    mild_i32 len = 0;
 	mild_i32 mode = S_IRUSR | S_IWUSR | S_IRGRP;
-	mild_i8 cur_date[ STRLEN_24 ] = { 0, };
-	mild_i8 log_name[ STRLEN_256 ] = { 0, };
+	mild_i8 today[ STRLEN_24 ] = { 0, };
+    mild_str log_name = mild_null;
 
-    NULL_PTR_RETURN( path__ );
-
-    /// 1. 로그 파일이 개방 상태인지 확인
-    if( FD_START <= g_malog_fd )
+    /// 로그 파일이 개방 상태인지 확인
+    if( FD_START <= *fd__ )
         return mild_true;
 
-    /// 2. 오늘 날짜 획득
-	if( mild_false == get_current_date_readable( cur_date ) )
+    /// 오늘 날짜 획득
+	if( mild_false == get_current_date_readable( today ) )
         return mild_false;
 
-    /// 3. 로그 디렉터리 확인
-    setup_malog_dir( path__ );
+    /// 로그 디렉터리 확인
+    setup_malog_dir( pathname__, dir_name__ );
 
-    /// 4. 로그 파일 이름 생성
-    sprintf( log_name, "%s/logs/malog_%s.log", path__, cur_date );
+    /// 로그 파일 이름 버퍼 생성
+    if( mild_null == dir_name__ )
+    {
+        /// 여유 있게 버퍼 길이 설정
+        len = strlen( pathname__ ) + STRLEN_128;
+        /// 디렉터리 명을 지정하지 않은 경우
+        log_name = ( mild_str )malloc( len );
+    }
+    else
+    {
+        /// 버퍼 길이 설정
+        len = strlen( pathname__ ) + strlen(dir_name__ ) + STRLEN_64;
+        /// 디렉터리 명을 지정한 경우
+        log_name = ( mild_str )malloc( len );
+    }
 
-    /// 5. 대상 파일 존재 여부 확인
+    /// 버퍼 생성 확인
+    if( mild_null == log_name )
+    {
+        printf( "Memory allocation fail to create log file name buffer\n" );
+        return mild_false;
+    }
+
+    /// 로그 파일 이름 생성
+    if( mild_null == dir_name__ )
+    {
+        snprintf( log_name, len, "%s/logs/malog_%s.log", pathname__, today );
+    }
+    else
+    {
+        snprintf( log_name, len, "%s/%s/malog_%s.log", pathname__, dir_name__, today );
+    }
+
+    /// 생성된 로그 파일 존재 여부 확인
     if( mild_false == check_file_exist( log_name ) )
     {
-        /// 5-1F. 로그 파일 생성
-        g_malog_fd = open( log_name, O_CREAT | O_RDWR | O_TRUNC, mode );
-        if( FD_START > g_malog_fd )
+        /// 로그 파일 생성 및 확인
+        *fd__ = open( log_name, O_CREAT | O_RDWR | O_TRUNC, mode );
+        if( FD_START > *fd__ )
         {
-            dprint_error( DRM_ERROR_LOG_FILE_CREATE );
+            printf( "Fail to create log file: %s\n", log_name );
             return mild_false;
         }
     }
     else
     {
-        /// 5-2T. 로그 파일 개방
-        g_malog_fd = open( log_name, O_RDWR, mode );
-        if( FD_START > g_malog_fd )
+        /// 로그 파일 개방 및 확인
+        *fd__ = open( log_name, O_RDWR, mode );
+        if( FD_START > *fd__ )
         {
-            dprint_error( DRM_ERROR_LOG_FILE_OPEN );
+            printf( "Fail to open log file: %s\n", log_name );
             return mild_false;
         }
     }
 
-    /// 6. 로그 파일의 마지막 위치로 파일 포인터 이동
-	if( -1 == lseek( g_malog_fd, 0, SEEK_END ) )
+    /// 로그 파일의 마지막 위치로 파일 포인터 이동
+	if( -1 == lseek( *fd__, 0, SEEK_END ) )
 	{
-		dprint( _CM_, "Log file[ %s ] lseek fail", log_name );
-		cleanup_malog( );
+		cleanup_malog( fd__ );
 		return mild_false;
 	}
 
 	return mild_true;
 }
 
-mild_bool initMalogFile(
+mild_bool initLogFile(
+    mild_i32                    *fd__,
+    mild_cstr                   pathname__,
+    mild_cstr                   dir_name__
+    )
+{
+    if( ( mild_null == pathname__ ) | ( mild_null == fd__ ) )
+    {
+        printf( "NULL pointer received\n" );
+        return mild_false;
+    }
+
+    return init_malog( fd__, pathname__, dir_name__ );
+}
+
+mild_bool initDefaultLogFile(
     mild_cstr                   pathname__
     )
 {
-    return init_malog( pathname__ );
+    if( mild_null == pathname__ )
+    {
+        printf( "NULL pointer received\n" );
+        return mild_false;
+    }
+
+    return init_malog( &g_malog_fd, pathname__, mild_null );
 }
 
 
-mild_bool malog_dprint_write(
-    mild_cstr                   msg__
+static mild_bool malog_write(
+    mild_i32                    fd__,
+    mild_cstr                   log__
     )
 {
-    INVALID_FD_RETURN( g_malog_fd );
-
-    if( 0 > write( g_malog_fd, msg__, strlen( msg__ ) ) )
+    if( FD_START > fd__ )
     {
-        dprint_error( DRM_ERROR_LOG_FILE_WRITE );
+        printf( "Invalid file descriptor recevied\n" );
+        return mild_false;
+    }
+
+    if( mild_null == log__ )
+    {
+        printf( "NULL log recevied\n" );
+        return mild_false;
+    }
+
+    if( 0 > write( fd__, log__, strlen( log__ ) ) )
+    {
+        printf( "Fail to write log\n" );
         return mild_false;
     }
 
     return mild_true;
 }
 
-mild_bool malogDprintWrite(
-    mild_cstr                   msg__
+mild_bool writeLogFile(
+    mild_i32                    fd__,
+    mild_cstr                   log__
     )
 {
-    return malog_dprint_write( msg__ );
+    return malog_write( fd__, log__ );
+}
+
+mild_bool writeDefaultLogFile(
+    mild_cstr                   log__
+    )
+{
+    return malog_write( g_malog_fd, log__ );
 }
 
 
-void cleanup_malog( void )
+void cleanup_malog(
+    mild_i32                    *fd__
+    )
 {
-    INVALID_FD_VOID( g_malog_fd );
+    if( FD_START > *fd__ )
+        return;
 
-    dprint( _IM_, "Log file descriptor cleanup" );
-    dprintMessages( mild_true, "///// Agent cleanup sequence finish /////" );
-
-    close( g_malog_fd );
-    g_malog_fd = 0;
+    close( *fd__ );
+    *fd__ = 0;
 }
 
-
-void cleanupMalogFile( void )
+void closeLogFile(
+    mild_i32                    *fd__
+    )
 {
-    return cleanup_malog( );
+    return cleanup_malog( fd__ );
+}
+
+void closeDefaultLogFile( void )
+{
+    return cleanup_malog( &g_malog_fd );
 }
