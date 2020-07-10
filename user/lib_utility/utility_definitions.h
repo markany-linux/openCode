@@ -22,4 +22,10 @@
 /// 기본 로그 디렉터리 이름
 #define DEFAULT_LOG_DIR_NAME            "logs"
 
+/// "/proc" file system access define
+#define PROC_READ_LEN			PAGESIZE
+#define PROC_MODULE_FILE		"/proc/modules"
+#define PROC_SYSCALL_FILE		"/proc/kallsyms"
+
+
 #endif  // #ifndef __LIB_UTILITY__UTILITY_DEFINITIONS_H__
