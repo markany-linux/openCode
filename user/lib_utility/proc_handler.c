@@ -10,12 +10,6 @@
 #include "string_parser.h"
 
 
-/// "/proc" file system access define
-#define PROC_READ_LEN			PAGESIZE
-#define PROC_MODULE_FILE		"/proc/modules"
-#define PROC_SYSCALL_FILE		"/proc/kallsyms"
-
-
 /**
  * @brief	전달된 버퍼에 전달된 문자열이 존재하는지 여부 확인
  * 			버퍼에서 특정 문자열의 존재 여부를 확인

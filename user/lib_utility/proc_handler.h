@@ -16,6 +16,7 @@
 
 
 #include "common.h"
+#include "utility_definitions.h"
 
 
 /**
