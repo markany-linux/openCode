@@ -5,9 +5,6 @@
 #include <string.h>
 #include <sys/time.h>
 
-#include "dprint.h"
-#include "event_messages.h"
-
 
 /**
  * @brief   반환 버퍼에 msec, usec 값을 붙이는 함수

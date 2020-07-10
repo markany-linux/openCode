@@ -4,10 +4,11 @@
  * \brief	get time or date info. with number or string interface
  *
  * \date	2017.6.30.
+ * 			2020.07.09. modified by wikim.
  * 
  * \author	wikim (wikim@markany.com)
  *
- * \copyright 2017 MarkAny Inc.
+ * \copyright MarkAny Inc. 2020.
 */
 #ifndef __LIB_UTILITY__TIME_HANDLER_H__
 #define __LIB_UTILITY__TIME_HANDLER_H__
@@ -15,7 +16,7 @@
 
 #include <time.h>
 
-#include "utility_common.h"
+#include "common.h"
 
 
 /**
