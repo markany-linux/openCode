@@ -11,8 +11,6 @@
 #include "time_handler.h"
 #include "utility_interface.h"
 
-/// 파일 디스크립터 시작 번호
-#define FD_START            3
 
 /// 로그 파일 디스크립터
 mild_i32 g_malog_fd;
@@ -52,7 +50,7 @@ static mild_bool setup_malog_dir(
     /// 3. 로그 디렉터리 문자열 생성
     if( mild_null == dir_name__ )
     {
-        snprintf( dir_name, strlen( pathname__ ) + STRLEN_8, "%s/logs", pathname__ );
+        snprintf( dir_name, strlen( pathname__ ) + STRLEN_8, "%s/%s", pathname__, DEFAULT_LOG_DIR_NAME );
     }
     else
     {
@@ -129,7 +127,7 @@ mild_bool init_malog(
     /// 로그 파일 이름 생성
     if( mild_null == dir_name__ )
     {
-        snprintf( log_name, len, "%s/logs/malog_%s.log", pathname__, today );
+        snprintf( log_name, len, "%s/%s/malog_%s.log", pathname__, DEFAULT_LOG_DIR_NAME, today );
     }
     else
     {

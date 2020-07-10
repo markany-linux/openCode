@@ -17,6 +17,7 @@
 
 
 #include "common.h"
+#include "utility_definitions.h"
 
 
 #endif // #ifndef __LIB_UTILITY__MALOG_HANDLER_H__

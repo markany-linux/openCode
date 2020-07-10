@@ -16,8 +16,10 @@
 #include "common.h"
 
 
-#define FD_START                3
+/// 유효 파일 디스크립터 시작 번호
+#define FD_START                        3
 
-
+/// 기본 로그 디렉터리 이름
+#define DEFAULT_LOG_DIR_NAME            "logs"
 
 #endif  // #ifndef __LIB_UTILITY__UTILITY_DEFINITIONS_H__
