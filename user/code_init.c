@@ -1,10 +1,34 @@
 #include "code_init.h"
 
+#include <string.h>
 #include <unistd.h>
 
+#include "code_definitions.h"
 #include "code_helper.h"
+#include "code_version.h"
 #include "utility_interface.h"
 
+
+/**
+ * @brief   대부분 실패하지 않는 기본 정보 획득 및 설정
+ * 
+ * @param   agent__ 정보 구조체
+ */
+static void set_opencode_default_values(
+    POPENCODE_AGENT             agent__
+    )
+{
+    /// Process ID
+    agent->agent_pid = getpid( );
+
+    /// openCode agent version
+    agent->agent_version = OPENCODE_VERSION;
+
+    /// get current working directory. 실패 시 임시 디렉터리로 설정
+    if( mild_null == getcwd( agent->agent_path, STRLEN_128 ) )
+        memcpy( agent->agent_path, OPENCODE_TMP_DIR, strlen( OPENCODE_TMP_DIR ) );
+
+}
 
 
 mild_bool init_opencode_agent(
@@ -19,8 +43,7 @@ mild_bool init_opencode_agent(
 
     agent = *agent__;
 
-    /// 에이전트 PID
-    agent->agent_pid = getpid( );
+    set_opencode_default_values( agent );
 
     /// 사용자 정보 설정
     if( mild_false == set_user_info( agent->agnet_pid, &( agent->user ) ) )
