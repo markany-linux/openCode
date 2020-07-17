@@ -19,14 +19,17 @@ static void set_opencode_default_values(
     )
 {
     /// Process ID
-    agent->agent_pid = getpid( );
+    agent__->agent_pid = getpid( );
+
+    /// User ID
+    agent__->agent_uid = getuid( );
 
     /// openCode agent version
-    agent->agent_version = OPENCODE_VERSION;
+    agent__->agent_version = OPENCODE_VERSION;
 
     /// get current working directory. 실패 시 임시 디렉터리로 설정
-    if( mild_null == getcwd( agent->agent_path, STRLEN_128 ) )
-        memcpy( agent->agent_path, OPENCODE_TMP_DIR, strlen( OPENCODE_TMP_DIR ) );
+    if( mild_null == getcwd( agent__->agent_path, STRLEN_128 ) )
+        memcpy( agent__->agent_path, OPENCODE_TMP_DIR, strlen( OPENCODE_TMP_DIR ) );
 
 }
 
@@ -46,7 +49,7 @@ mild_bool init_opencode_agent(
     set_opencode_default_values( agent );
 
     /// 사용자 정보 설정
-    if( mild_false == set_user_info( agent->agnet_pid, &( agent->user ) ) )
+    if( mild_false == set_user_info( agent->agent_uid, &( agent->user ) ) )
         return mild_false;
 
     /// FIXME: merge 후, 추가 초기화 수행
@@ -61,5 +64,5 @@ void cleanup_opencode_agent(
 {
 
     /// 가장 마지막에 에이전트 메모리 해제
-    free_opencode_agent( agent__ );
+    free_code_agent( agent__ );
 }

@@ -1,5 +1,7 @@
 #include "code_helper.h"
 
+#include <sys/types.h>
+#include <pwd.h>
 
 
 mild_bool malloc_code_agent(
@@ -40,7 +42,7 @@ void free_code_agent(
 
 
 mild_bool set_user_info(
-    mild_i32                    pid__,
+    mild_i32                    uid__,
     POPENCODE_USER              user__
     )
 {
@@ -53,7 +55,7 @@ mild_bool set_user_info(
     }
 
     /// 사용자의 정보 획득
-    pwd = getpwuid( pid__ );
+    pwd = getpwuid( uid__ );
 
     /// 사용자 아이디, 이름, 홈 디렉터리를 데이터에 기록
     user__->user_id = pwd->pw_uid;

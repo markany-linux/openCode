@@ -3,15 +3,19 @@ CC	= gcc
 INSTALL_DIR	=	$(shell pwd)/bin
 
 COMMON_HOME	=	$(shell pwd)/..
+HEADER_HOME =	$(shell pwd)/headers
+UTIL_HOME	=	$(shell pwd)/lib_utility
 
-INCS		=	$(COMMON_HOME)
+INCS		=	$(COMMON_HOME) $(HEADER_HOME) $(UTIL_HOME)
 
 INCLUDES	=	$(INCS:%=-I%)
 
 GTK_FKLAGS	=	$(shell pkg-config --cflags --libs gtk+-3.0)
 CFLAGS		=	-Wall $(INCLUDES) $(GTK_FKLAGS)
 
-SRCS		=	code_main.c
+SRCS		=	code_main.c					\
+				code_init.c					\
+				code_helper.c
 
 OBJS	= $(SRCS:%.c=%.o)
 TARGET	= maOpen
