@@ -1,7 +1,10 @@
 /**
  * \file    opencode_system.h
  * 
- * \brief   
+ * \brief   시스템 동작 환경 기본 정보
+ *          * /etc/os-release 파일 정보 획득
+ *          * 네트워크 기본 정보: IP, hostname, NIC
+ *          * 커널 버전
  * 
  * \date    2020.07.17.
  * 

@@ -1,7 +1,7 @@
 /**
  * \file    opencode_control.h
  * 
- * \brief   
+ * \brief   에이전트가 실행하는 스레드 핸들과 상태 정보
  * 
  * \date    2020.07.17.
  * 

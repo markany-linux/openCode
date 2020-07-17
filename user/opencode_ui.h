@@ -1,7 +1,7 @@
 /**
  * \file    opencode_ui.h
  * 
- * \brief   
+ * \brief   UI를 위한 위젯 관리 정보
  * 
  * \date    2020.07.17.
  * 
