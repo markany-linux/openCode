@@ -20,17 +20,17 @@ static void attach_mm_nn(
 	mild_i64 msec = 0;
     mild_i8 buf[ STRLEN_16 ] = { 0, };
 
-    /// 1. 시간 정보 획득
+    /// 시간 정보 획득
 	gettimeofday( &tv, NULL );
 
-    /// 2. msec 계산
+    /// msec 계산
 	msec = ( tv.tv_sec * 1000LL ) + ( tv.tv_usec / 1000 );
 
-    /// 3. msec 정보를 버퍼에 2자리 추가 후, 스템프에 추가
+    /// msec 정보를 버퍼에 2자리 추가 후, 스템프에 추가
     sprintf( buf, "%lld", msec );
     memcpy( stamp__, buf + ( strlen( buf ) - 2 ), 2 );
 
-    /// 4. usec 정보를 버퍼에 2자리 추가 후, 스템프에 붙임
+    /// usec 정보를 버퍼에 2자리 추가 후, 스템프에 붙임
     sprintf( buf, "%ld", tv.tv_usec );
     memcpy( stamp__ + strlen( stamp__ ), buf, 2 );
 }
@@ -45,14 +45,14 @@ mild_bool get_current_timestamp(
 
     NULL_PTR_RETURN( stamp__ );
 
-    /// 1. 현재 시간 획득
+    /// 현재 시간 획득
     if( -1 == time( &tmp ) )
         return mild_false;
 
-    /// 2. 시간 변환
+    /// 시간 변환
     tinfo = localtime( &tmp );
 
-    /// 3. 년월일시분초 시간 정보 생성 후 버퍼에 기록
+    /// 년월일시분초 시간 정보 생성 후 버퍼에 기록
     sprintf( stamp__, "%d%02d%02d%02d%02d%02d",
 			tinfo->tm_year + 1900, tinfo->tm_mon + 1, tinfo->tm_mday,
 			tinfo->tm_hour, tinfo->tm_min, tinfo->tm_sec );
@@ -74,11 +74,11 @@ mild_bool get_current_timestamp_mn(
 {
     NULL_PTR_RETURN( stamp__ );
 
-    /// 1. 년월일시분초 형태의 타임 스템프 획득
+    /// 년월일시분초 형태의 타임 스템프 획득
     if( mild_false == get_current_timestamp( stamp__ ) )
         return mild_false;
 
-    /// 2. 타임 스템프에 msec, usec 추가
+    /// 타임 스템프에 msec, usec 추가
     attach_mm_nn( stamp__ + strlen( stamp__ ) );
 
     return mild_true;
@@ -100,11 +100,11 @@ mild_bool get_current_time(
 
 	NULL_PTR_RETURN( time__ );
 
-	/// 1. 현재 시간 획득
+	/// 현재 시간 획득
 	if( -1 == time( &tmp ) )
 		return mild_false;
 
-	/// 2. 획득 시간을 반환
+	/// 획득 시간을 반환
 	*time__ = tmp;
 
 	return mild_true;
@@ -128,15 +128,15 @@ void get_time_readable(
 
 	NULL_PTR_VOID( buf__ );
 
-	/// 1. 전달 시간이 0인지 확인
+	/// 전달 시간이 0인지 확인
 	if( 0 == time__ )
 	{
-		/// 1-1. 0인 경우, 0으로 시간을 설정하고 반환
+		/// 0인 경우, 0으로 시간을 설정하고 반환
 		sprintf( buf__, "00.00.00" );
 		return;
 	}
 
-	/// 2. 시간을 읽을 수 있도록 변환하여 반환
+	/// 시간을 읽을 수 있도록 변환하여 반환
 	info = localtime( &time );
 	sprintf( buf__, "%02d.%02d.%02d",
 		info->tm_hour, info->tm_min, info->tm_sec );
@@ -161,15 +161,15 @@ void get_date_readable(
 
 	NULL_PTR_VOID( buf__ );
 
-	/// 1. 전달 시간이 0인지 확인	
+	/// 전달 시간이 0인지 확인	
 	if( 0 == time__ )
 	{
-		/// 1-1. 0인 경우, 0으로 날짜를 설정하고 반환
+		/// 0인 경우, 0으로 날짜를 설정하고 반환
 		sprintf( buf__, "0000.00.00" );
 		return;
 	}
 
-	/// 2. 날짜를 읽을 수 있도록 변환하여 반환
+	/// 날짜를 읽을 수 있도록 변환하여 반환
 	info = localtime( &time );
 	sprintf( buf__, "%d.%02d.%02d",
 		info->tm_year + 1900, info->tm_mon + 1, info->tm_mday );
@@ -223,14 +223,14 @@ void get_date_time_readable(
 
 	NULL_PTR_VOID( buf__ );
 
-	/// 1. 시간 정보가 없다면 0으로 초기화하여 반환
+	/// 시간 정보가 없다면 0으로 초기화하여 반환
 	if( 0 == current__ )
 		return set_time_zero( buf__, date__, time__ );
 
-	/// 2. 현재 시간 정보를 획득
+	/// 현재 시간 정보를 획득
 	info = localtime( &time );
 
-	/// 3. 인수에 따라 날짜/시간 정보를 입력하여 반환
+	/// 인수에 따라 날짜/시간 정보를 입력하여 반환
 	if( date__ & time__ )
 	{
 		sprintf( buf__, "%d.%02d.%02d-%02d.%02d.%02d",
@@ -286,7 +286,7 @@ static mild_bool common_time_handler(
 	/// 1. 현재 시간 획득	
 	if( mild_false == get_current_time( &ctime ) )
 	{
-		dprint_warning( DRM_WARNING_GET_CURRENT_TIME );
+		printf( "Fail to get current time\n" );
 		return mild_false;
 	}
 
@@ -387,13 +387,13 @@ void dispDateTimeReadable(
  */
 typedef struct app_execution_time_check_info
 {
-	/// * 코드 동작 시간 측정을 위한 시작 시간
+	/// 코드 동작 시간 측정을 위한 시작 시간
 	clock_t						app_start;
 
-	/// * 코드 동작 시간 측정을 위한 종료 시간
+	/// 코드 동작 시간 측정을 위한 종료 시간
 	clock_t						app_end;
 
-	/// * 시작 시간 설정 여부
+	/// 시작 시간 설정 여부
 	mild_bool					set_app;
 
 } APP_TIME, *PAPP_TIME;
@@ -405,12 +405,11 @@ static APP_TIME g_app_time;
 
 void set_app_start_time( void )
 {
-	/// * 시간 측정 시작 시간 설정 정보
+	/// 시간 측정 시작 시간 설정 정보
 	g_app_time.set_app = mild_true;
 
-	/// * 현재 시간을 획득
+	/// 현재 시간을 획득
 	g_app_time.app_start = clock( );
-	
 }
 
 void setAppStartTime( void )
@@ -423,20 +422,20 @@ mild_float set_app_end_time( void )
 {
 	mild_float result = 0;
 
-	/// * 시작 시간이 설정되어 있는지 여부 확인
+	/// 시작 시간이 설정되어 있는지 여부 확인
 	if( mild_false == g_app_time.set_app )
 	{
-		dprint( _WM_, "Application start time is not setup yet\n" );
+		printf( "Application start time is not setup yet\n" );
 		return ( mild_float )0;
 	}
 
-	/// * 종료 시간 획득
+	/// 종료 시간 획득
 	g_app_time.app_end = clock( );
 
-	/// * 시작, 종료 시간을 이용하여 동작 시간 획득
+	/// 시작, 종료 시간을 이용하여 동작 시간 획득
 	result = ( mild_float )( g_app_time.app_end - g_app_time.app_start )/CLOCKS_PER_SEC;
 
-	/// * 종료 시간 획득으로 초기화를 설정
+	/// 종료 시간 획득으로 초기화를 설정
 	g_app_time.set_app = mild_false;
 
 	return result;
