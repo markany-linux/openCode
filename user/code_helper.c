@@ -1,5 +1,7 @@
 #include "code_helper.h"
 
+#include <sys/types.h>
+#include <pwd.h>
 
 
 mild_bool malloc_code_agent(
