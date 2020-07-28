@@ -3,8 +3,9 @@ CC	= gcc
 INSTALL_DIR	=	$(shell pwd)/bin
 
 COMMON_HOME	=	$(shell pwd)/..
+UTIL_HOME	=	$(shell pwd)/lib_utility
 
-INCS		=	$(COMMON_HOME)
+INCS		=	$(COMMON_HOME) $(UTIL_HOME)
 
 INCLUDES	=	$(INCS:%=-I%)
 
