@@ -11,7 +11,9 @@ INCLUDES	=	$(INCS:%=-I%)
 GTK_FKLAGS	=	$(shell pkg-config --cflags --libs gtk+-3.0)
 CFLAGS		=	-Wall $(INCLUDES) $(GTK_FKLAGS)
 
-SRCS		=	code_main.c
+SRCS		=	code_main.c				\
+				code_helper.c			\
+				code_init.c
 
 OBJS	= $(SRCS:%.c=%.o)
 TARGET	= maOpen
