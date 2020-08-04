@@ -5,6 +5,8 @@
 #include <string.h>
 #include <sys/time.h>
 
+#include "utility_interface.h"
+
 
 /**
  * @brief   반환 버퍼에 msec, usec 값을 붙이는 함수
@@ -444,4 +446,58 @@ mild_float set_app_end_time( void )
 mild_float setAppEndTime( void )
 {
 	return set_app_end_time( );
+}
+
+
+/**
+ * @brief	시간 차이 출력 함수
+ * 
+ * @param	label__	출력할 라벨. NULL 허용
+ * @param	ti__	시간 정보 구조체
+ */
+static void dprint_time_interval(
+	mild_cstr					label__,
+	PTIME_INTERVAL				ti__
+	)
+{
+	mild_float result = 0.0;
+
+	/// 시작, 종료 시간을 이용하여 동작 시간 획득
+	result = ( mild_float )( g_app_time.app_end - g_app_time.app_start )/CLOCKS_PER_SEC;
+
+	/// 라벨 존재 시, 출력
+	if( mild_null != label__ )
+		printf( "%s ", label__ );
+
+	printf( "time interval: %f\n", result );
+}
+
+
+void setTimeInterval(
+	mild_cstr					label__,
+	PTIME_INTERVAL				ti__,
+	mild_bool					start__
+	)
+{
+	mild_long time = 0;
+
+	/// 시간 값을 먼저 획득
+	time = clock( );
+
+	if( mild_null == ti__ )
+		return;
+
+	/// 측정 시작 여부 확인
+	if( mild_false != start__ )
+	{
+		/// 시작이면 획득 시간을 설정하고 반환
+		ti__->start = time;
+		return;
+	}
+
+	/// 종료 시간 설정
+	ti__->end = time;
+
+	/// 시간 차이 출력 함수 호출
+	return dprint_time_interval( label__, ti__ );
 }

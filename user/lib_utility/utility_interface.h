@@ -309,6 +309,43 @@ extern mild_bool checkDirectoryPermissions(
 	);
 
 
+///////////////////////////////////////////////////////////////////////////////
+//
+// time_handler.c 인터페이스 정의
+//  * 시간 정보 획득을 위한 인터페이스
+//  * 문자열 변환 및 성능 측정을 위한 인터페이스
+//
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * @brief   시간 측정을 위한 구조체
+ */
+typedef struct time_interval_info_for_check_performace
+{
+    /// 측정 시작 시간
+    mild_long                   start;
+
+    /// 측정 종료 시간
+    mild_long                   end;
+
+} TIME_INTERVAL, *PTIME_INTERVAL;
+
+
+/**
+ * @brief	시간 차이 측정 시작, 종료 시에 호출하는 함수
+ * 			* 종료 시에는 획득된 정보를 기반으로 차이 값을 표준 출력
+ * 
+ * @param	label__	시간 측정 종료 시에 출력할 문자열. NULL 허용
+ * @param	ti__	시간 구조체
+ * @param	start__	측정 시작 여부
+ */
+extern void setTimeInterval(
+	mild_cstr					label__,
+	PTIME_INTERVAL				ti__,
+	mild_bool					start__
+	);
+
+
 #ifdef __cplusplus
 }
 #endif
