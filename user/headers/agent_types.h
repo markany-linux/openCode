@@ -32,6 +32,9 @@ typedef struct openCode_agent_management_information
     /// 에이전트 실행 PID
     mild_i32                    agent_pid;
 
+    /// 에이전트 실행 사용자 ID
+    mild_i32                    agent_uid;
+
     /// 에이전트 실행 경로
     mild_i8                     agent_path[ STRLEN_128 ];
 

@@ -41,13 +41,13 @@ extern void free_code_agent(
 /**
  * @brief   사용자 정보 획득 및 반환
  * 
- * @param   pid__   프로세스 아이디
+ * @param   uid__   사용자 아이디
  * @param   user__  반환 구조체
  * 
  * @return  획득 및 반환 성공 true, 실패 false
  */
 extern mild_bool set_user_info(
-    mild_i32                    pid__,
+    mild_i32                    uid__,
     POPENCODE_USER              user__
     );
 

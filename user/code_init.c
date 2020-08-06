@@ -21,6 +21,9 @@ static void set_opencode_default_values(
     /// Process ID
     agent__->agent_pid = getpid( );
 
+    /// User ID
+    agent__->agent_uid = getuid( );
+
     /// openCode agent version
     agent__->agent_version = OPENCODE_VERSION;
 
@@ -46,7 +49,7 @@ mild_bool init_opencode_agent(
     set_opencode_default_values( agent );
 
     /// 사용자 정보 설정
-    if( mild_false == set_user_info( agent->agent_pid, &( agent->user ) ) )
+    if( mild_false == set_user_info( agent->agent_uid, &( agent->user ) ) )
         return mild_false;
 
     /// FIXME: merge 후, 추가 초기화 수행
