@@ -42,7 +42,7 @@ typedef struct agent_configuration_info
 /**
  * @brief   파일을 읽어 획득된 모든 설정 정보의 출력
  */
-extern void disp_config_list( void );
+void disp_config_list( void );
 
 
 /**
@@ -52,7 +52,7 @@ extern void disp_config_list( void );
  * 
  * @return  파일 존재/읽어서 파싱이 모두 성공 true, 실패 false
  */
-extern mild_bool init_config_list(
+mild_bool init_config_list(
     mild_cstr                   pathname__
     );
 
@@ -66,7 +66,7 @@ extern mild_bool init_config_list(
  * 
  * @return  설정 존재 및 반환 성공 true, 존재하지 않음 false
  */
-extern mild_bool get_config_list_value(
+mild_bool get_config_list_value(
     mild_cstr                   label__,
     mild_str                    value__,
     mild_u32                    len__
@@ -76,7 +76,7 @@ extern mild_bool get_config_list_value(
 /**
  * @brief   리스트의 모든 노드와 리스트 제거
  */
-extern void cleanup_config_list( void );
+void cleanup_config_list( void );
 
 
 #endif // #ifndef __LIB_UTILITY__CONFIG_HANDLER_H__

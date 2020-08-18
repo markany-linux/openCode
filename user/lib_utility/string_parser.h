@@ -29,7 +29,7 @@
  * 
  * @return  현재 위치에서 이동해야 할 변위. 없는 경우 -1
  */
-extern mild_i32 get_target_string_offset(
+mild_i32 get_target_string_offset(
     mild_cstr                   target__,
     mild_cstr                   buf__,
     mild_i32                    len__
@@ -45,7 +45,7 @@ extern mild_i32 get_target_string_offset(
  * 
  * @return  시작 위치 포인터, 찾지 못한 경우 NULL
  */
-extern mild_str get_target_string_ptr(
+mild_str get_target_string_ptr(
     mild_cstr                   target__,
     mild_cstr                   buf__,
     mild_i32                    len__
@@ -61,7 +61,7 @@ extern mild_str get_target_string_ptr(
  * 
  * @return  문자열이 존재하면 true, 존재하지 않으면 false
  */
-extern mild_bool check_target_string_exist(
+mild_bool check_target_string_exist(
     mild_cstr                   target__,
     mild_cstr                   buf__,
     mild_i32                    len__
@@ -77,7 +77,7 @@ extern mild_bool check_target_string_exist(
  * 
  * @return  이동해야 할 변위. 없는 경우 -1
  */
-extern mild_i32 get_target_char_offset(
+mild_i32 get_target_char_offset(
     mild_i8                     char__,
     mild_cstr                   buf__,
     mild_i32                    len__
@@ -93,7 +93,7 @@ extern mild_i32 get_target_char_offset(
  * 
  * @return  문자 위치 포인터, 존재하지 않으면 NULL
  */
-extern mild_str get_target_char_ptr(
+mild_str get_target_char_ptr(
     mild_i8                     char__,
     mild_cstr                   buf__,
     mild_i32                    len__
@@ -109,7 +109,7 @@ extern mild_str get_target_char_ptr(
  * 
  * @return  문자가 존재하면 true, 존재하지 않으면 false
  */
-extern mild_bool check_target_char_exist(
+mild_bool check_target_char_exist(
     mild_i8                     char__,
     mild_cstr                   buf__,
     mild_i32                    len__
@@ -125,7 +125,7 @@ extern mild_bool check_target_char_exist(
  * 
  * @return  이동해야 할 변위. 없는 경우 -1
  */
-extern mild_i32 get_next_line_offset(
+mild_i32 get_next_line_offset(
     mild_cstr                   buf__,
     mild_i32                    len__
     );
@@ -140,7 +140,7 @@ extern mild_i32 get_next_line_offset(
  * 
  * @return  다음 라인 위치 포인터. 없는 경우 NULL
  */
-extern mild_str get_next_line_ptr(
+mild_str get_next_line_ptr(
     mild_cstr                   buf__,
     mild_i32                    len__
     );
@@ -155,7 +155,7 @@ extern mild_str get_next_line_ptr(
  * 
  * @return  바로 이전 '\n' 까지 변위 값
  */
-extern mild_i32 get_current_line_start_offset(
+mild_i32 get_current_line_start_offset(
     mild_cstr                   buf__
     );
 
@@ -167,7 +167,7 @@ extern mild_i32 get_current_line_start_offset(
  * 
  * @return  바로 이전 '\n' 위치 포인터
  */
-extern mild_str get_current_line_start_ptr(
+mild_str get_current_line_start_ptr(
     mild_cstr                   buf__
     );
 
@@ -180,7 +180,7 @@ extern mild_str get_current_line_start_ptr(
  * 
  * @return  다음 공백까지 변위. 존재하지 않으면 -1
  */
-extern mild_i32 get_next_space_offset(
+mild_i32 get_next_space_offset(
     mild_cstr                   buf__,
     mild_i32                    len__
     );
@@ -194,7 +194,7 @@ extern mild_i32 get_next_space_offset(
  * 
  * @return  다음 공백의 시작 위치 포인터. 존재하지 않으면 NULL
  */
-extern mild_str get_next_space_ptr(
+mild_str get_next_space_ptr(
     mild_cstr                   buf__,
     mild_i32                    len__
     );
@@ -207,7 +207,7 @@ extern mild_str get_next_space_ptr(
  * 
  * @return  이전 공백까지의 변위
  */
-extern mild_i32 get_previous_space_offset(
+mild_i32 get_previous_space_offset(
     mild_cstr                   buf__
     );
 
@@ -219,7 +219,7 @@ extern mild_i32 get_previous_space_offset(
  * 
  * @return  이전 공백 위치 포인터
  */
-extern mild_str get_previous_space_ptr(
+mild_str get_previous_space_ptr(
     mild_cstr                   buf__
     );
 
@@ -233,7 +233,7 @@ extern mild_str get_previous_space_ptr(
  * 
  * @return	문자의 개수
  */
-extern mild_u32 get_space_pos(
+mild_u32 get_space_pos(
 	mild_str					str__
 	);
 
@@ -245,7 +245,7 @@ extern mild_u32 get_space_pos(
  * 
  * @return  다음 라인까지의 변위
  */
-extern mild_i32 current_line_skip(
+mild_i32 current_line_skip(
     mild_str                    *ptr__
     );
 

@@ -54,6 +54,14 @@ static mild_bool add_config_list(
     return mild_true;
 }
 
+mild_bool addConfigList(
+	mild_str					label__,
+	mild_str					value__
+	)
+{
+	return add_config_list( label__, value__ );
+}
+
 
 /**
  * @brief   설정 파일을 개방하여 디스크립터를 반환

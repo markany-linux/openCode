@@ -66,8 +66,8 @@ static void get_plain_kernel_version(
     mild_str                    version__
     )
 {
-    mild_i32 i = 0;
-    mild_i32 cnt = 0;
+    mild_size i = 0;
+    mild_size cnt = 0;
     mild_i8 tmp[ STRLEN_16 ] = { 0, };
     mild_str ptr = version__;
 
@@ -417,7 +417,7 @@ static mild_bool get_distrib_info(
     )
 {
     mild_i32 fd = 0;
-    mild_i32 cnt = 0;
+    mild_size cnt = 0;
     mild_i32 moved = 0;
     mild_i8 buffer[ STRLEN_512 ] = { 0, };
     mild_str ptr = buffer;
