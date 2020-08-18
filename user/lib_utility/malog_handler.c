@@ -13,8 +13,6 @@
 #include "interface/lib_utility.h"
 
 
-/// 로그 파일 디스크립터
-mild_i32 g_malog_fd;
 
 
 /**
@@ -187,21 +185,8 @@ mild_bool initLogFile(
     return init_malog( fd__, pathname__, dir_name__ );
 }
 
-mild_bool initDefaultLogFile(
-    mild_cstr                   pathname__
-    )
-{
-    if( mild_null == pathname__ )
-    {
-        printf( "NULL pointer received\n" );
-        return mild_false;
-    }
 
-    return init_malog( &g_malog_fd, pathname__, mild_null );
-}
-
-
-static mild_bool malog_write(
+mild_bool malog_write(
     mild_i32                    fd__,
     mild_cstr                   log__
     )
@@ -235,13 +220,6 @@ mild_bool writeLogFile(
     return malog_write( fd__, log__ );
 }
 
-mild_bool writeDefaultLogFile(
-    mild_cstr                   log__
-    )
-{
-    return malog_write( g_malog_fd, log__ );
-}
-
 
 void cleanup_malog(
     mild_i32                    *fd__
@@ -259,9 +237,4 @@ void closeLogFile(
     )
 {
     return cleanup_malog( fd__ );
-}
-
-void closeDefaultLogFile( void )
-{
-    return cleanup_malog( &g_malog_fd );
 }

@@ -1,22 +1,32 @@
 /**
- * \file	proc_handler.h
- *
- * \brief	find module in "/proc/modules" for check module load stats
- * 			find system call address and return address
- *
- * \author	wikim (wikim@markany.com)
- *
- * \date	2018.05.10.
- * 			2020.06.25. modified by wikim.
- *
- * \copyright MarkAny Inc. 2020.
- **/
-#ifndef __LIB_UTILITY__PROC_HANDLER_H__
-#define __LIB_UTILITY__PROC_HANDLER_H__
+ * \file    interface/proc_handler.h 인터페이스 정의
+ * 
+ * \brief   유틸리티 라이브러리 인터페이스 정의
+ * 
+ * \date    2020.08.18.
+ * 
+ * \author  MaBling (swma@markany.com)
+ * 
+ * \copyleft MarkAny Inc. 2020.
+ */
+#ifndef __LIB_UTILITY__PROC_HANDLER_IMPL_H__
+#define __LIB_UTILITY__PROC_HANDLER_IMPL_H__
 
 
 #include "common.h"
-#include "utility_definitions.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// proc_handler.c/h 인터페이스 정의
+//  * "/proc/modules" 파일에서 특정 모듈 존재 여부 확인
+//  * "/proc/kallsyms" 파일에서 특정 커널 심볼 존재 여부 확인 
+//
+///////////////////////////////////////////////////////////////////////////////
 
 
 /**
@@ -29,8 +39,8 @@
  * 
  * @return  모듈이 발견되는 경우 true, 발견되지 않는 경우 false
  */
-mild_bool check_kernel_module_exist(
-	mild_cstr					target_str__
+extern mild_bool checkKernelModuleExist(
+	mild_cstr					target__
 	);
 
 
@@ -45,10 +55,15 @@ mild_bool check_kernel_module_exist(
  * 
  * @return  심볼이 존재할 경우 true, 존재하지 않는 경우 false
  */
-mild_bool check_kernel_symbol_exist(
+extern mild_bool checkKernelSymbolExist(
 	mild_cstr					symbol__,
 	mild_u64					*addr__
 	);
 
 
-#endif	//> #ifndef __LIB_UTILITY__PROC_HANDLER_H__
+#ifdef __cplusplus
+}
+#endif
+
+
+#endif  // #ifndef __LIB_UTILITY__PROC_HANDLER_IMPL_H__

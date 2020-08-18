@@ -259,5 +259,25 @@ mild_bool check_directory_exist(
 	);
 
 
+/**
+* @brief   디렉터리의 권한 확인
+*          ! 존재하는 디렉터리에 대한 권한만 확인
+*          ! 디렉터리 존재 여부는 checkDirectoryExist( )로 먼저 확인
+* 
+* @param   pathname__      확인할 디렉터리 경로
+* @param   read_check__    읽기 권한 확인 여부
+* @param   write_check__   쓰기 권한 확인 여부
+* @param   exec_check__    실행 권한 확인 여부
+* 
+* @return  디렉터리의 요청 권한 존재 시 true, 부재 시 false
+*/
+mild_bool check_directory_permissions(
+	mild_cstr					pathname__,
+	mild_bool					read_check__,
+	mild_bool					write_check__,
+	mild_bool					exec_check__
+	)
+
+
 #endif	// #ifndef __LIB_UTILITY__FILE_CHECK_H__
 

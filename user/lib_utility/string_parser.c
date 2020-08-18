@@ -535,7 +535,7 @@ mild_i32 current_line_skip(
     return cnt;
 }
 
-mild_i32 CurrentlineSkip(
+mild_i32 currentLineSkip(
     mild_str                    *ptr__
     )
 {

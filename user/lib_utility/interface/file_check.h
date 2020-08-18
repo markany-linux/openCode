@@ -1,9 +1,9 @@
 /**
- * \file    file_check.h 인터페이스 정의
+ * \file    interface/file_check.h 인터페이스 정의
  * 
  * \brief   유틸리티 라이브러리 인터페이스 정의
  * 
- * \date    2020.08.14.
+ * \date    2020.08.18.
  * 
  * \author  MaBling (swma@markany.com)
  * 

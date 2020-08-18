@@ -1,9 +1,9 @@
 /**
- * \file    time_handler.c
+ * \file    interface/time_handler.c
  * 
  * \brief   시간 정보 획득을 위한 인터페이스 정의
  * 
- * \date    2020.08.14.
+ * \date    2020.08.18.
  * 
  * \author  swma (swma@markany.com)
  * 

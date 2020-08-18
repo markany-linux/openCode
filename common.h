@@ -31,7 +31,7 @@ typedef long long                   mild_i64;
 typedef unsigned long long          mild_u64;
 typedef float                       mild_float;
 typedef double                      mild_double;
-typedef size_t						mild_size;
+typedef size_t                      mild_size;
 
 /**
 @brief  define Boolean type and true, false value

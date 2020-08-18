@@ -20,6 +20,19 @@
 #include "utility_definitions.h"
 
 
+mild_bool init_malog(
+    mild_i32                    *fd__,
+    mild_cstr                   pathname__,
+    mild_cstr                   dir_name__
+    );
+
+
+mild_bool malog_write(
+    mild_i32                    fd__,
+    mild_cstr                   log__
+    );
+
+
 void cleanup_malog (
 	mild_i32					*fd__
 	);
