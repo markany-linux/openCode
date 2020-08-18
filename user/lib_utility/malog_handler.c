@@ -236,5 +236,5 @@ void closeLogFile(
     mild_i32                    *fd__
     )
 {
-    return cleanup_malog( fd__ );
+    cleanup_malog( fd__ );
 }

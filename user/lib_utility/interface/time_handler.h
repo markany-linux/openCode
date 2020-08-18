@@ -137,8 +137,8 @@ extern mild_float setAppEndTime(
  * @param	start__	측정 시작 여부
  */
 extern void setTimeInterval(
+    PAPP_TIME                   app_time__,
 	mild_cstr					label__,
-	PTIME_INTERVAL				ti__,
 	mild_bool					start__
 	);
 
