@@ -22,6 +22,8 @@ static void attach_mm_nn(
 	mild_i64 msec = 0;
     mild_i8 buf[ STRLEN_16 ] = { 0, };
 
+	NULL_PTR_VOID( stamp__ );
+
     /// 시간 정보 획득
 	gettimeofday( &tv, NULL );
 
@@ -45,7 +47,7 @@ mild_bool get_current_timestamp(
     time_t tmp;
     struct tm *tinfo = mild_null;
 
-    NULL_PTR_RETURN( stamp__ );
+    NULL_PTR_BOOL( stamp__ );
 
     /// 현재 시간 획득
     if( -1 == time( &tmp ) )
@@ -74,7 +76,7 @@ mild_bool get_current_timestamp_mn(
 	mild_str					stamp__
 	)
 {
-    NULL_PTR_RETURN( stamp__ );
+    NULL_PTR_BOOL( stamp__ );
 
     /// 년월일시분초 형태의 타임 스템프 획득
     if( mild_false == get_current_timestamp( stamp__ ) )
@@ -100,7 +102,7 @@ mild_bool get_current_time(
 {
 	time_t tmp;
 
-	NULL_PTR_RETURN( time__ );
+	NULL_PTR_BOOL( time__ );
 
 	/// 현재 시간 획득
 	if( -1 == time( &tmp ) )
@@ -213,7 +215,7 @@ static void set_time_zero(
 }
 
 
-void get_date_time_readable(
+static void get_date_time_readable(
 	mild_u64					current__,
 	mild_str					buf__,
 	mild_bool					date__,
@@ -283,7 +285,7 @@ static mild_bool common_time_handler(
 {
 	mild_u64 ctime = 0;
 
-	NULL_PTR_RETURN( buf__ );
+	NULL_PTR_BOOL( buf__ );
 
 	/// 1. 현재 시간 획득	
 	if( mild_false == get_current_time( &ctime ) )
@@ -401,51 +403,63 @@ typedef struct app_execution_time_check_info
 } APP_TIME, *PAPP_TIME;
 
 
-/// * 응용 프로그램 동작 시간 획득을 위한 전역 변수
-static APP_TIME g_app_time;
-
-
-void set_app_start_time( void )
+static void set_app_start_time(
+	PAPP_TIME					app_time__
+	)
 {
+	NULL_PTR_VOID( app_time__ );
+
 	/// 시간 측정 시작 시간 설정 정보
-	g_app_time.set_app = mild_true;
+	app_time__->set_app = mild_true;
 
 	/// 현재 시간을 획득
-	g_app_time.app_start = clock( );
+	app_time__->app_start = clock( );
 }
 
-void setAppStartTime( void )
+void setAppStartTime(
+	PAPP_TIME					app_time__
+	)
 {
-	return set_app_start_time( );
+	return set_app_start_time( app_time__ );
 }
 
 
-mild_float set_app_end_time( void )
+mild_float set_app_end_time(
+	PAPP_TIME					app_time__
+)
 {
-	mild_float result = 0;
+	mild_float result = 0.0f;
+
+	/// TODO: NULL 포인터 검사 필요
+	if( NULL == app_time__ )
+	{
+		return 0.0f;
+	}
 
 	/// 시작 시간이 설정되어 있는지 여부 확인
-	if( mild_false == g_app_time.set_app )
+	if( mild_false == app_time__->set_app )
 	{
 		printf( "Application start time is not setup yet\n" );
-		return ( mild_float )0;
+		return 0.0f;
 	}
 
 	/// 종료 시간 획득
-	g_app_time.app_end = clock( );
+	app_time__->app_end = clock( );
 
 	/// 시작, 종료 시간을 이용하여 동작 시간 획득
-	result = ( mild_float )( g_app_time.app_end - g_app_time.app_start )/CLOCKS_PER_SEC;
+	result = ( mild_float )( app_time__->app_end - app_time__->app_start )/CLOCKS_PER_SEC;
 
 	/// 종료 시간 획득으로 초기화를 설정
-	g_app_time.set_app = mild_false;
+	app_time__->set_app = mild_false;
 
 	return result;
 }
 
-mild_float setAppEndTime( void )
+mild_float setAppEndTime(
+	PAPP_TIME					app_time__
+	)
 {
-	return set_app_end_time( );
+	return set_app_end_time( app_time__ );
 }
 
 
@@ -456,14 +470,17 @@ mild_float setAppEndTime( void )
  * @param	ti__	시간 정보 구조체
  */
 static void dprint_time_interval(
+	PAPP_TIME					app_time__,
 	mild_cstr					label__,
 	PTIME_INTERVAL				ti__
 	)
 {
-	mild_float result = 0.0;
+	mild_float result = 0.0f;
+
+	NULL_PTR_VOID( app_time__ );
 
 	/// 시작, 종료 시간을 이용하여 동작 시간 획득
-	result = ( mild_float )( g_app_time.app_end - g_app_time.app_start )/CLOCKS_PER_SEC;
+	result = ( mild_float )( app_time__->app_end - app_time__->.app_start )/CLOCKS_PER_SEC;
 
 	/// 라벨 존재 시, 출력
 	if( mild_null != label__ )

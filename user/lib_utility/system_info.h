@@ -65,7 +65,7 @@ typedef struct linux_distribution_system_informations
  * 
  * @return  모든 정보 획득 성공 true, 실패 false
  */
-extern mild_bool get_system_info(
+mild_bool get_system_info(
     PMADRM_LOCAL_SYSTEM         system__
     );
 

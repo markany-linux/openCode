@@ -53,7 +53,7 @@ mild_bool setup_single_instance(
 
     /// 잠금 파일 생성 및 확인
     *fd__ = open( pathname__, O_CREAT | O_RDWR, 0666 );
-    if( FD_START > fd__ )
+    if( FD_START > *fd__ )
     {
         printf( "Fail to create lock file" );
         return mild_false;

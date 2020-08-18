@@ -29,7 +29,7 @@
  * 
  * @return  모듈이 발견되는 경우 true, 발견되지 않는 경우 false
  */
-extern mild_bool check_module_exist(
+mild_bool check_module_exist(
     mild_cstr					module_name__
     );
 
@@ -45,7 +45,7 @@ extern mild_bool check_module_exist(
  * 
  * @return  심볼이 존재할 경우 true, 존재하지 않는 경우 false
  */
-extern mild_bool check_kernel_symbol_exist(
+mild_bool check_kernel_symbol_exist(
 	mild_cstr					sym_name__,
 	mild_u64					*addr__
 	);

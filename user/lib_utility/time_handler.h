@@ -28,7 +28,7 @@
  * 
  * @return  획득 및 반환 성공 true, 실패 false
  */
-extern mild_bool get_current_timestamp(
+mild_bool get_current_timestamp(
     mild_str                    stamp__
     );
 
@@ -42,7 +42,7 @@ extern mild_bool get_current_timestamp(
  * 
  * @return  획득 및 반환 성공 true, 실패 false
  */
-extern mild_bool get_current_timestamp_mn(
+mild_bool get_current_timestamp_mn(
 	mild_str					stamp__
 	);
 
@@ -54,7 +54,7 @@ extern mild_bool get_current_timestamp_mn(
  * 
  * @return	시간 획득 성공 true, 실패 false
  */
-extern mild_bool get_current_time(
+mild_bool get_current_time(
 	mild_u64					*time__
 	);
 
@@ -67,7 +67,7 @@ extern mild_bool get_current_time(
  * @param	time__	변환할 시간 값
  * @param	buf__	변환 정보를 반환할 버퍼
  */
-extern void get_time_readable(
+void get_time_readable(
 	mild_u64					time__,
 	mild_str					buf__
 	);
@@ -81,7 +81,7 @@ extern void get_time_readable(
  * @param	time__	변화할 시간 값
  * @param	buf__	변환 정보를 반환할 버퍼
  */
-extern void get_date_readable(
+void get_date_readable(
 	mild_u64					time__,
 	mild_str					buf__
 	);
@@ -97,7 +97,7 @@ extern void get_date_readable(
  * @param	date__		날짜 변환 및 반환 여부
  * @param	time__		시간 변환 및 반환 여부
  */
-extern void get_date_time_readable(
+void get_date_time_readable(
 	mild_u64					current__,
 	mild_str					buf__,
 	mild_bool					date__,
@@ -112,7 +112,7 @@ extern void get_date_time_readable(
  * 
  * @return	시간 획득 및 변환 성공 true, 실패 false
  */
-extern mild_bool get_current_time_readable(
+mild_bool get_current_time_readable(
 	mild_str					buf__
 	);
 
@@ -124,7 +124,7 @@ extern mild_bool get_current_time_readable(
  * 
  * @return	시간 획득 및 변환 성공 true, 실패 false
  */
-extern mild_bool get_current_date_readable(
+mild_bool get_current_date_readable(
 	mild_str					buf__
 	);
 
@@ -136,7 +136,7 @@ extern mild_bool get_current_date_readable(
  * 
  * @return	시간 획득 및 변환 성공 true, 실패 false
  */
-extern mild_bool get_current_date_time_readable(
+mild_bool get_current_date_time_readable(
 	mild_str					buf__
 	);
 
@@ -147,7 +147,7 @@ extern mild_bool get_current_date_time_readable(
  * @param	time__		출력할 시간
  * @param	linefeed__	시간 출력 후, 줄 바꿈 여부
  */
-extern void disp_time(
+void disp_time(
 	mild_u64					time__,
 	mild_bool					linefeed__
 	);
@@ -159,7 +159,7 @@ extern void disp_time(
  * @param	time__		출력할 시간
  * @param	linefeed__	날짜 출력 후, 줄 바꿈 여부
  */
-extern void disp_date(
+void disp_date(
 	mild_u64					time__,
 	mild_bool					linefeed__
 	);
@@ -170,7 +170,7 @@ extern void disp_date(
  * 
  * @param	time__	출력할 시간
  */
-extern void disp_date_time(
+void disp_date_time(
 	mild_u64					time__
 	);
 

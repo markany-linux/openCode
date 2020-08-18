@@ -20,4 +20,9 @@
 #include "utility_definitions.h"
 
 
+void cleanup_malog (
+	mild_i32					*fd__
+	);
+
+
 #endif // #ifndef __LIB_UTILITY__MALOG_HANDLER_H__

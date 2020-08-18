@@ -8,14 +8,17 @@ INCS		=	$(COMMON_HOME)
 
 INCLUDES	=	$(INCS:%=-I%)
 
-CFLAGS		=	-Wall $(INCLUDES) -ldl -fPIC
+CFLAGS		=	-W -Wall -Wextra $(INCLUDES) -ldl -fPIC
 LIBFLAGS	=	-shared
 
 SRCS		=	file_check.c			\
 				proc_handler.c			\
 				string_parser.c			\
 				system_info.c			\
-				utility_init.c
+				utility_init.c			\
+				crc.c					\
+				malog_handler.c			\
+				single_instance.c
 
 OBJS	= $(SRCS:%.c=%.o)
 TARGET	= libmautil.so
