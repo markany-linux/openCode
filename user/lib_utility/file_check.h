@@ -276,7 +276,7 @@ mild_bool check_directory_permissions(
 	mild_bool					read_check__,
 	mild_bool					write_check__,
 	mild_bool					exec_check__
-	)
+	);
 
 
 #endif	// #ifndef __LIB_UTILITY__FILE_CHECK_H__

@@ -8,7 +8,7 @@ INCS		=	$(COMMON_HOME)
 
 INCLUDES	=	$(INCS:%=-I%)
 
-CFLAGS		=	-W -Wall -Wextra $(INCLUDES) -ldl -fPIC
+CFLAGS		=	-Wall -Wextra -Werror $(INCLUDES) -ldl -fPIC
 LIBFLAGS	=	-shared
 
 SRCS		=	file_check.c			\
