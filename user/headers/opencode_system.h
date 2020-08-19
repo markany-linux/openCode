@@ -18,11 +18,13 @@
 
 #include "common.h"
 
+#include "../lib_utility/interface/system_info.h"
+
 
 /**
  * @brief   에이전트가 실행 중인 배포판 정보
  */
-typedef struct linux_distribution_system_informations
+/*typedef struct linux_distribution_system_informations
 {
     /// Distribution ID
     mild_i8                     distrib_id[ STRLEN_32 ];
@@ -54,7 +56,9 @@ typedef struct linux_distribution_system_informations
     /// current kernel version
     mild_i8                     kernel_version[ STRLEN_32 ];
 
-} OPENCODE_SYSTEM_INFO, *POPENCODE_SYSTEM_INFO;
+} OPENCODE_SYSTEM_INFO, *POPENCODE_SYSTEM_INFO;*/
+
+typedef MADRM_LOCAL_SYSTEM OPENCODE_SYSTEM_INFO, *POPENCODE_SYSTEM_INFO;
 
 
 #endif  // #ifndef __OPENCODE_SYSTEM_H__

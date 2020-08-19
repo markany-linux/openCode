@@ -20,6 +20,7 @@
 #include "proc_handler.h"
 #include "string_parser.h"
 #include "system_info.h"
+#include "config_handler.h"
 
 
 #ifdef __cplusplus

@@ -21,28 +21,15 @@
 #include "utility_definitions.h"
 #include "gpl_list.h"
 
-
-/**
- * @brief   설정 라벨과 정보 보관 구조체
- */
-typedef struct agent_configuration_info
-{
-    /// 설정 라벨
-    mild_i8                     label[ STRLEN_32 ];
-
-    /// 설정 값
-    mild_i8                     value[ STRLEN_64 ];
-
-    /// 이중 연결 리스트 포인터
-    struct list_head            ptr;
-
-} AGENT_CONFIG, *PAGENT_CONFIG;
+#include "interface/lib_utility.h"
 
 
 /**
  * @brief   파일을 읽어 획득된 모든 설정 정보의 출력
  */
-void disp_config_list( void );
+void disp_config_list(
+    PCONFIG_LIST                list__
+    );
 
 
 /**
@@ -53,6 +40,7 @@ void disp_config_list( void );
  * @return  파일 존재/읽어서 파싱이 모두 성공 true, 실패 false
  */
 mild_bool init_config_list(
+    PCONFIG_LIST                list__,
     mild_cstr                   pathname__
     );
 
@@ -67,6 +55,7 @@ mild_bool init_config_list(
  * @return  설정 존재 및 반환 성공 true, 존재하지 않음 false
  */
 mild_bool get_config_list_value(
+    PCONFIG_LIST                list__,
     mild_cstr                   label__,
     mild_str                    value__,
     mild_u32                    len__
@@ -75,8 +64,47 @@ mild_bool get_config_list_value(
 
 /**
  * @brief   리스트의 모든 노드와 리스트 제거
+ *
+ * @param   list__  대상 리스트
  */
-void cleanup_config_list( void );
+void cleanup_config_list(
+    PCONFIG_LIST                list__
+);
+
+
+/**
+ * @brief   설정 리스트 생성
+ *
+ * @param   list__  생성되는 리스트를 반환받을 변수
+ */
+mild_bool create_config_list(
+    PCONFIG_LIST                *list__
+    );
+
+
+/**
+ * @brief   설정 리스트 제거
+ *
+ * @param   list__  대상 리스트
+ */
+void destroy_config_list(
+    PCONFIG_LIST                list__
+    );
+
+
+/**
+ * @brief   설정 라벨과 값을 리스트에 추가
+ * 
+ * @param   label__ 추가할 설정 라벨
+ * @param   value__ 추가할 설정 값
+ * 
+ * @return  리스트 추가 성공 true, 실패 false
+ */
+mild_bool add_config_list(
+    PCONFIG_LIST                list__,
+    mild_str                    label__,
+    mild_str                    value__
+    );
 
 
 #endif // #ifndef __LIB_UTILITY__CONFIG_HANDLER_H__

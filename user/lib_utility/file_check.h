@@ -279,5 +279,19 @@ mild_bool check_directory_permissions(
 	);
 
 
+/**
+ * @brief   파일의 크기를 구함
+ * 
+ * @param   pathname__      확인할 파일 경로
+ * @param   size__          파일 크기를 반환받을 변수
+
+ * @return 파일이 존재하고 크기를 구했을 시 true, 파일이 없거나 크기를 구할 수 없을 시 false
+ */
+ mild_bool get_file_size(
+    mild_cstr                   pathname__,
+    mild_size                   *size__
+    );
+
+
 #endif	// #ifndef __LIB_UTILITY__FILE_CHECK_H__
 
