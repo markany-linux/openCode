@@ -1,36 +1,29 @@
-CC	= gcc
+CXX =			g++
 
-INSTALL_DIR	=	$(shell pwd)/bin
+LDLIBS =		$(shell pkg-config --libs gtkmm-3.0)
+CXXFLAGS =		-g -W -Wall -Wextra -Werror -std=c++14
 
-COMMON_HOME	=	$(shell pwd)/..
-HEADER_HOME =	$(shell pwd)/headers
-UTIL_HOME	=	$(shell pwd)/lib_utility
+INCLUDE_DIR =	./src ../common $(shell pkg-config --cflags-only-I gtkmm-3.0)
+INCLUDE_DIRS =	$(INCLUDE_DIR:%=-I%)
 
-INCS		=	$(COMMON_HOME) $(HEADER_HOME) $(UTIL_HOME)
+SOURCE_DIR =	./src
+SOURCES =		
 
-INCLUDES	=	$(INCS:%=-I%)
+OBJECTS =		$(SOURCES:%.cpp=$(SOURCE_DIR)/%.o)
 
-GTK_FKLAGS	=	$(shell pkg-config --cflags --libs gtk+-3.0)
-CFLAGS		=	-Wall $(INCLUDES) $(GTK_FKLAGS)
+INSTALL_DIR =	./bin
+TARGET =		test
 
-SRCS		=	code_main.c					\
-				code_init.c					\
-				code_helper.c
-
-OBJS	= $(SRCS:%.c=%.o)
-TARGET	= maOpen
-
-.SUFFIXES: .c .o
-
+.SUFFIXES:	.cpp .o
 
 all: $(TARGET)
 
-$(TARGET): $(OBJS)
-	$(CC) -o $@ $(OBJS) $(CFLAGS)
-	mv $(TARGET) $(INSTALL_DIR)
-	@printf "\nBuild Success : [32m%s[0m\n\n" $@
+$(TARGET): $(OBJECTS)
+	$(CXX) -o $(INSTALL_DIR)/$(TARGET) $? $(LDLIBS) $(CXXFLAGS)
+
+.cpp .o:
+	$(CXX) -c $< $(CXXFLAGS)
 
 clean:
-	rm -rf $(OBJS) $(INSTALL_DIR)/$(TARGET)
-	@printf "\nClean Success : [32m%s[0m\n\n" "$(OBJS) $(TARGET)"
-
+	rm -rf $(SOURCE_DIR)/*.o
+	rm -rf $(INSTALL_DIR)/$(TARGET)
