@@ -17,7 +17,7 @@ int main(
 	button_list.emplace_back( ButtonInfo{.text = "World"} );
 	button_list.emplace_back( ButtonInfo{.text = "Everone"} );
 
-	MainWindow main_window{"Hello World!", button_list };
+	MainWindow main_window{"Hello World!", button_list, app};
 
 	return app->run( main_window );
 }
