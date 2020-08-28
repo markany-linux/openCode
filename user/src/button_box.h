@@ -27,13 +27,6 @@ public:
 	explicit ButtonBox(
 		const std::vector<ButtonInfo>& info_list__
 		);
-	
-	/**
-	 * @brief ```AddButtons``` 실제 Button 객체들이 벡터에 push될 때 호출될 복사 생성자
-	 **/
-	explicit ButtonBox(
-		const ButtonBox& object
-	) = default;
 
 	virtual ~ButtonBox( );
 
@@ -42,6 +35,9 @@ protected:
 	std::vector<std::unique_ptr<Gtk::Button>> buttons_;
 
 private:
+	ButtonBox(
+		const ButtonBox&
+		) = delete;
 	ButtonBox(
 		const ButtonBox&&
 		) = delete;

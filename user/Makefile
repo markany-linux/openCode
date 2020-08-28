@@ -1,16 +1,19 @@
-CXX =			g++
+CXX =			clang++-10
 
 LDLIBS =		$(shell pkg-config --libs gtkmm-3.0)
-CXXFLAGS =		-g -W -Wall -Wextra -Werror -std=c++14 $(INCLUDE_DIRS)
+# glibmm에서 Copy Constructor Deprecated Copy Warning이 뜨는 문제가 있어 해당 Warning 제외
+CXXFLAGS =		-g -W -Wall -Wextra -Werror -Wno-deprecated-copy -std=c++14 $(INCLUDE_DIRS)
 
 INCLUDE_DIR =	./src
 INCLUDE_DIRS =	$(INCLUDE_DIR:%=-I%) $(shell pkg-config --cflags-only-I gtkmm-3.0)
 
 SOURCE_DIR =	./src
 SOURCES =		button_box.cpp		\
+				contents_box.cpp		\
 				main.cpp			\
 				main_window.cpp		\
-				subtitle_box.cpp
+				subtitle_box.cpp	\
+				text_window.cpp		\
 
 
 OBJECTS =		$(SOURCES:%.cpp=$(SOURCE_DIR)/%.o)
