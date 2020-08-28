@@ -23,7 +23,7 @@ void ContentsBox::AppendContents( )
 {
 	std::cout << "[+] ContentBox::AppendContents()\n";
 	/// 버튼 박스 추가
-	pack_start( button_box_, Gtk::PACK_EXPAND_PADDING );
+	pack_start( button_box_, Gtk::PACK_SHRINK, 20 );
 	/// 텍스트 창 추가
 	pack_start( text_window_ );
 	std::cout << "[-] ContentBox::AppendContents()\n";
