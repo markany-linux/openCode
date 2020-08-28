@@ -25,16 +25,16 @@ public:
 	 **/
 	virtual ~ContentsBox( );
 
+	/// 버튼 박스
+	ButtonBox button_box_;
+	/// 텍스트 창
+	TextWindow text_window_;
+
 protected:
 	/**
 	 * @brief	각종 컨텐츠들을 삽입
 	 **/
 	void AppendContents( );
-
-	/// 버튼 박스
-	ButtonBox button_box_;
-	/// 텍스트 창
-	TextWindow text_window_;
 
 private:
 	ContentsBox(

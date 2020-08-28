@@ -49,8 +49,9 @@ void MainWindow::AttachQuitButton( )
 	std::cout << "[+] MainWindow::AttachQuitButton()\n";
 	/// 종료 버튼 클릭 이벤트에 핸들러 등록
 	quit_button_.signal_clicked( )
-		.connect( sigc::mem_fun( *this,
-								 &MainWindow::on_quit_button_clicked ) );
+				.connect(
+					sigc::mem_fun( *this,
+								   &MainWindow::on_quit_button_clicked ) );
 	/// 박스에 종료 버튼을 붙임
 	quit_box_.pack_start( quit_button_, Gtk::PACK_EXPAND_PADDING );
 	/// 메인 박스에 종료 버튼이 담긴 박스를 붙임
