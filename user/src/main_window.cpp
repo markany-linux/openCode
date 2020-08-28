@@ -21,6 +21,9 @@ MainWindow::MainWindow(
 	AttachChildWidgets( );
 	/// 메인 박스를 메인 윈도우에 추가
 	add( main_box_ );
+
+	/// 사용자 임의로 창 크기 조절하는 것 방지
+	set_resizable( false );
 	
 	/// 모든 객체 보여주기
 	show_all_children( );
