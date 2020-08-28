@@ -2,18 +2,19 @@
 
 #include <iostream>
 
-Subtitle::Subtitle(
+SubtitleBox::SubtitleBox(
 	const std::string& text__
-	) : Gtk::Box(Gtk::ORIENTATION_HORIZONTAL), label_(text__)
+	) : Gtk::Box( Gtk::ORIENTATION_HORIZONTAL ), label_( text__ )
 {
-	std::cout << "[+] Subtitle::Subtitle()\n";
-	pack_start(label_, Gtk::PACK_EXPAND_WIDGET);
+	std::cout << "[+] SubtitleBox::SubtitleBox()\n";
+	/// 라벨을 SubtitleBox에 추가
+	pack_start( label_, Gtk::PACK_EXPAND_WIDGET );
 	/// 사용자에게 보여주기
 	show( );
-	std::cout << "[-] Subtitle::Subtitle()\n";
+	std::cout << "[-] SubtitleBox::SubtitleBox()\n";
 }
 
-Subtitle::~Subtitle( )
+SubtitleBox::~SubtitleBox( )
 {
-	std::cout << "Subtitle::~Subtitle()\n";
+	std::cout << "SubtitleBox::~SubtitleBox()\n";
 }

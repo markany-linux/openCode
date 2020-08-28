@@ -4,7 +4,7 @@
 #include <gtkmm/window.h>
 #include <gtkmm/application.h>
 
-#include "button_box.h"
+#include "contents_box.h"
 #include "subtitle_box.h"
 
 class MainWindow : public Gtk::Window
@@ -18,8 +18,7 @@ public:
 	 **/
 	explicit MainWindow(
 		const std::string& subtitle__,
-		const std::vector<ButtonInfo>& button_list__,
-		const Glib::RefPtr<Gtk::Application> app__
+		const std::vector<ButtonInfo>& button_list__
 		);
 	
 	/**
@@ -55,14 +54,12 @@ protected:
 	 **/
 	void on_quit_button_clicked( );
 
-	const Glib::RefPtr<Gtk::Application> app_;
-
 	/// 가장 최상단의 박스
 	Gtk::Box main_box_;
 	/// 상단 라벨 박스
-	Subtitle subtitle_;
-	/// 버튼들이 들어간 박스
-	ButtonBox button_box_;
+	SubtitleBox subtitle_box_;
+	/// 각종 컨텐츠가 들어간 박스
+	ContentsBox contents_box_;
 
 	/// 종료 박스
 	Gtk::Box quit_box_;

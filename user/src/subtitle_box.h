@@ -5,7 +5,7 @@
 #include <gtkmm/box.h>
 #include <gtkmm/label.h>
 
-class Subtitle : public Gtk::Box
+class SubtitleBox : public Gtk::Box
 {
 public:
 	/**
@@ -13,26 +13,26 @@ public:
 	 * 
 	 * @param	text__	라벨 텍스트
 	 **/
-	explicit Subtitle(
+	explicit SubtitleBox(
 		const std::string& text__
 		);
 	
-	virtual ~Subtitle( );
+	virtual ~SubtitleBox( );
 
 protected:
 	/// 실제 라벨 객체
 	Gtk::Label label_;
 
 private:
-	Subtitle( ) = delete;
-	Subtitle(
-		Subtitle&
+	SubtitleBox( ) = delete;
+	SubtitleBox(
+		SubtitleBox&
 		) = delete;
-	Subtitle(
-		const Subtitle&
+	SubtitleBox(
+		const SubtitleBox&
 		) = delete;
-	Subtitle(
-		const Subtitle&&
+	SubtitleBox(
+		const SubtitleBox&&
 		) = delete;
 };
 

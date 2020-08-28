@@ -5,7 +5,7 @@
 ButtonBox::ButtonBox(
 	const std::vector<ButtonInfo>& info_list__
 	)
-		: Gtk::Box(Gtk::ORIENTATION_VERTICAL, 0), buttons_()
+		: Gtk::Box( Gtk::ORIENTATION_VERTICAL, 0 ), buttons_( )
 {
 	std::cout << "[+] ButtonBox::ButtonBox()\n";
 	/// 버튼 생성 정보가 하나라도 있다면
@@ -36,15 +36,15 @@ void ButtonBox::AddButtons(
 	for( const auto& info : info_list__ )
 	{
 		/// GTK 버튼 객체 생성
-		button = std::make_unique<Gtk::Button>(info.text);
+		button = std::make_unique<Gtk::Button>( info.text );
 		if( nullptr == button )
 			continue;
 		
 		/// Box에 button을 추가
-		pack_start(*button, Gtk::PACK_EXPAND_WIDGET);
+		pack_start( *button, Gtk::PACK_EXPAND_WIDGET );
 		
 		/// 생성된 실제 Button 객체를 벡터에 push
-		buttons_.emplace_back(std::move(button));
+		buttons_.emplace_back( std::move( button ) );
 		button.reset();
 	}
 

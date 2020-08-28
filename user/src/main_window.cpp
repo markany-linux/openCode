@@ -5,12 +5,10 @@
 
 MainWindow::MainWindow(
 	const std::string& subtitle__,
-	const std::vector<ButtonInfo>& button_list__,
-	const Glib::RefPtr<Gtk::Application> app__
+	const std::vector<ButtonInfo>& button_list__
 	)
-		: app_( app__ ),
-		  main_box_( Gtk::ORIENTATION_VERTICAL ),
-		  subtitle_( subtitle__ ), button_box_( button_list__ ),
+		: main_box_( Gtk::ORIENTATION_VERTICAL ),
+		  subtitle_box_( subtitle__ ), contents_box_( button_list__, false ),
 		  quit_box_( ), quit_button_( kQuitButtonText )
 		 
 {
@@ -38,10 +36,10 @@ void MainWindow::AttachChildWidgets( )
 {
 	std::cout << "[+] MainWindow::AttachChildWidgets()\n";
 	/// 상단 제목 라벨 메인 박스에 추가
-	main_box_.pack_start( subtitle_ );
+	main_box_.pack_start( subtitle_box_ );
 	/// 버튼 박스 메인 박스에 추가
-	main_box_.pack_start( button_box_ );
-
+	main_box_.pack_start( contents_box_ );
+	/// 종료 버튼 메인 박스에 추가
 	AttachQuitButton( );
 	std::cout << "[-] MainWindow::AttachChildWidgets()\n";
 }
@@ -49,6 +47,7 @@ void MainWindow::AttachChildWidgets( )
 void MainWindow::AttachQuitButton( )
 {
 	std::cout << "[+] MainWindow::AttachQuitButton()\n";
+	/// 종료 버튼 클릭 이벤트에 핸들러 등록
 	quit_button_.signal_clicked( )
 		.connect( sigc::mem_fun( *this,
 								 &MainWindow::on_quit_button_clicked ) );
@@ -76,6 +75,6 @@ void MainWindow::on_quit_button_clicked( )
 	std::cout << "[+] MainWindow::on_quit_button_clicked()\n";
 	std::cout << "Bye bye\n";
 	/// 프로그램 종료
-	app_->quit( );
+	hide( );
 	std::cout << "[-] MainWindow::on_quit_button_clicked()\n";
 }
