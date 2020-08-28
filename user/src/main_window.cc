@@ -1,4 +1,5 @@
 #include "main_window.h"
+#include "gtkmm/box.h"
 
 #include <iostream>
 #include <tuple>
@@ -42,7 +43,7 @@ void MainWindow::AttachChildWidgets( )
 {
 	std::cout << "[+] MainWindow::AttachChildWidgets()\n";
 	/// 상단 제목 라벨 메인 박스에 추가
-	main_box_.pack_start( subtitle_box_ );
+	main_box_.pack_start( subtitle_box_, Gtk::PACK_SHRINK, 20 );
 	/// 버튼 박스 메인 박스에 추가
 	main_box_.pack_start( contents_box_ );
 	/// 종료 버튼 메인 박스에 추가
@@ -61,7 +62,7 @@ void MainWindow::AttachQuitButton( )
 	/// 박스에 종료 버튼을 붙임
 	quit_box_.pack_start( quit_button_, Gtk::PACK_EXPAND_PADDING );
 	/// 메인 박스에 종료 버튼이 담긴 박스를 붙임
-	main_box_.pack_start( quit_box_, Gtk::PACK_SHRINK );
+	main_box_.pack_start( quit_box_, Gtk::PACK_SHRINK, 20 );
 	std::cout << "[-] MainWindow::AttachQuitButton()\n";
 }
 
