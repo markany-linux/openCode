@@ -8,27 +8,27 @@ INCLUDE_DIR =	./src
 INCLUDE_DIRS =	$(INCLUDE_DIR:%=-I%) $(shell pkg-config --cflags-only-I gtkmm-3.0)
 
 SOURCE_DIR =	./src
-SOURCES =		button_box.cpp		\
-				contents_box.cpp		\
-				main.cpp			\
-				main_window.cpp		\
-				subtitle_box.cpp	\
-				text_window.cpp		\
+SOURCES =		button_box.cc		\
+				contents_box.cc		\
+				main.cc			\
+				main_window.cc		\
+				subtitle_box.cc	\
+				text_window.cc		\
 
 
-OBJECTS =		$(SOURCES:%.cpp=$(SOURCE_DIR)/%.o)
+OBJECTS =		$(SOURCES:%.cc=$(SOURCE_DIR)/%.o)
 
 INSTALL_DIR =	./bin
 TARGET =		maOpen
 
-.SUFFIXES:	.cpp .o
+.SUFFIXES:	.cc .o
 
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	$(CXX) -o $(INSTALL_DIR)/$(TARGET) $? $(LDLIBS) $(CXXFLAGS)
 
-.cpp .o:
+.cc .o:
 	$(CXX) $(CXXFLAGS) -c $<
 
 clean:
