@@ -22,6 +22,9 @@ MainWindow::MainWindow(
 	/// 메인 박스를 메인 윈도우에 추가
 	add( main_box_ );
 
+	/// 기본 창 사이즈 설정
+	set_default_size( kWindowWidth, kWindowHeight );
+
 	/// 사용자 임의로 창 크기 조절하는 것 방지
 	set_resizable( false );
 	

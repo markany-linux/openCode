@@ -29,6 +29,8 @@ public:
 protected:
 	/// 종료 버튼 텍스트 상수
 	static constexpr const char* kQuitButtonText = "종료";
+	static constexpr int kWindowWidth = 300;
+	static constexpr int kWindowHeight = 400;
 
 	/**
 	 * @brief	메인 박스에 파생 위젯 attach
