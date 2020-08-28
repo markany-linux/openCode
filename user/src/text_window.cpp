@@ -38,10 +38,13 @@ bool TextWindow::AddText(
 			std::cout << "Failed to allocate memory for text writing.\n";
 			return false;
 		}
+
+		/// 텍스트 뷰에 생성된 텍스트 버퍼 지정
+		text_view_.set_buffer( text_buffer_ );
 	}
 
-	text_buffer_->set_text( text_buffer_->get_text( ) + text__ );
-	text_view_.set_buffer( text_buffer_ );
+	/// 자동으로 텍스트 뷰에 업데이트 됨
+	text_buffer_->set_text( text__ );
 	std::cout << "[-] TextWindow::AddText()\n";
 	return true;
 }
@@ -51,8 +54,5 @@ void TextWindow::AppendTextViewBox( )
 	std::cout << "[+] TextWindow::AppendTextViewBox()\n";
 	text_view_box_.pack_start( text_view_ );
 	add( text_view_box_ );
-
-	AddText( "asdf " );
-	AddText( "ddd " );
 	std::cout << "[-] TextWindow::AppendTextViewBox()\n";
 }

@@ -1,23 +1,21 @@
 #include "button_box.h"
+#include "contents_box.h"
 
 #include <iostream>
 
 ButtonBox::ButtonBox(
+	ContentsBox* contents_box__,
 	const std::vector<ButtonInfo>& info_list__
 	)
-		: Gtk::Box( Gtk::ORIENTATION_VERTICAL, 0 ), buttons_( )
+		: Gtk::Box( Gtk::ORIENTATION_VERTICAL, 0 ),
+		  buttons_( ),
+		  contents_box_( contents_box__)
 {
 	std::cout << "[+] ButtonBox::ButtonBox()\n";
 	/// 버튼 생성 정보가 하나라도 있다면
 	if( 0 < info_list__.size( ) )
-	{
-		/// 실제 GTK Button 객체를 생성 후 벡터에 push
-		AddButtons( info_list__ );
-
-		/// 성공적으로 버튼들을 생성하였다면 모두 보여주기
-		// show_all_children( true );
-		show( );
-	}
+		AddButtons( info_list__ ); /// 실제 GTK Button 객체를 생성 후 벡터에 push
+	
 	std::cout << "[-] ButtonBox::ButtonBox()\n";
 }
 
@@ -41,7 +39,13 @@ void ButtonBox::AddButtons(
 			continue;
 		
 		/// Box에 button을 추가
-		pack_start( *button, Gtk::PACK_EXPAND_WIDGET );
+		pack_start( *button, Gtk::PACK_EXPAND_PADDING );
+		button->signal_clicked()
+				.connect(
+					sigc::bind(
+						sigc::mem_fun( *this,
+										 &ButtonBox::on_button_clicked ),
+						button.get() ) );
 		
 		/// 생성된 실제 Button 객체를 벡터에 push
 		buttons_.emplace_back( std::move( button ) );
@@ -49,4 +53,9 @@ void ButtonBox::AddButtons(
 	}
 
 	std::cout << "[-] ButtonBox::AddButtons()\n";
+}
+
+void ButtonBox::on_button_clicked( Gtk::Button* button__ )
+{
+	contents_box_->text_window_.AddText( button__->get_label() );
 }
