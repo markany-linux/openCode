@@ -16,3 +16,8 @@ int AgentMain::Run( )
 	return app_->run( );
 }
 
+void AgentMain::on_startup( )
+{
+	
+}
+
