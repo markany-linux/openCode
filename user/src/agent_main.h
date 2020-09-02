@@ -4,6 +4,8 @@
 #include <glibmm/refptr.h>
 #include <gtkmm/application.h>
 
+#include "agent_window.h"
+
 class AgentMain
 {
 public:
@@ -27,6 +29,8 @@ public:
 	int Run( );
 
 private:
+	void on_startup( );
+
 	static constexpr const char* kAppIdentifier = "com.gnome.opencode";
 
 	Glib::RefPtr<Gtk::Application> app_ =
