@@ -481,3 +481,25 @@ mild_bool checkDirectoryPermissions(
 {
 	return check_directory_permissions( pathname__, read_check__, write_check__, exec_check__ );
 }
+
+
+mild_bool get_file_size(
+    mild_cstr                   pathname__,
+    mild_size                   *size__
+    )
+{
+    if( mild_null == size__ )
+        return mild_false;
+
+    if( ( mild_null == pathname__ )
+        || ( mild_false == check_file_exist( pathname__ ) ) )
+        return mild_false;
+
+    struct stat file_stat;
+
+    if( -1 == stat( pathname__, &file_stat ) )
+        return mild_false;
+
+    *size__ = file_stat.st_size;
+    return mild_true;
+}

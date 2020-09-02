@@ -23,7 +23,7 @@
  * 
  * @return	대상이 존재하고, 권한이 존재하면 true, 아니면 false
  **/
-extern mild_bool check_access_read(
+mild_bool check_access_read(
 	mild_cstr					pathname__
 	);
 
@@ -35,7 +35,7 @@ extern mild_bool check_access_read(
  * 
  * @return	대상이 존재하고, 권한이 존재하면 true, 아니면 false
  **/
-extern mild_bool check_access_write(
+mild_bool check_access_write(
 	mild_cstr					pathname__
 	);
 
@@ -47,7 +47,7 @@ extern mild_bool check_access_write(
  * 
  * @return	대상이 존재하고, 권한이 존재하면 true, 아니면 false
  **/
-extern mild_bool check_access_read_write(
+mild_bool check_access_read_write(
 	mild_cstr					pathname__
 	);
 
@@ -59,7 +59,7 @@ extern mild_bool check_access_read_write(
  * 
  * @return	대상이 존재하고, 권한이 존재하면 true, 아니면 false
  **/
-extern mild_bool check_access_executable(
+mild_bool check_access_executable(
 	mild_cstr					pathname__
 	);
 
@@ -71,7 +71,7 @@ extern mild_bool check_access_executable(
  * 
  * @return	대상이 존재하고, 권한이 존재하면 true, 아니면 false
  */
-extern mild_bool check_access_rwx(
+mild_bool check_access_rwx(
 	mild_cstr					pathname__
 	);
 
@@ -83,7 +83,7 @@ extern mild_bool check_access_rwx(
  * 
  * @return	대상 파일이 존재하고, 권한이 존재하면 true, 아니면 false
  **/
-extern mild_bool check_can_file_read(
+mild_bool check_can_file_read(
 	mild_cstr					pathname__
 	);
 
@@ -95,7 +95,7 @@ extern mild_bool check_can_file_read(
  * 
  * @return	대상 파일이 존재하고, 권한이 존재하면 true, 아니면 false
  **/
-extern mild_bool check_can_file_write(
+mild_bool check_can_file_write(
 	mild_cstr					pathname__
 	);
 
@@ -107,7 +107,7 @@ extern mild_bool check_can_file_write(
  * 
  * @return	대상 파일이 존재하고, 권한이 존재하면 true, 아니면 false
  **/
-extern mild_bool check_can_file_readwrite(
+mild_bool check_can_file_readwrite(
 	mild_cstr					pathname__
 	);
 
@@ -119,7 +119,7 @@ extern mild_bool check_can_file_readwrite(
  * 
  * @return	대상 파일이 존재하고, 권한이 존재하면 true, 아니면 false
  **/
-extern mild_bool check_can_file_executable(
+mild_bool check_can_file_executable(
 	mild_cstr					pathname__
 	);
 
@@ -131,7 +131,7 @@ extern mild_bool check_can_file_executable(
  * 
  * @return	대상 파일이 존재하고, 권한이 존재하면 true, 아니면 false
  */
-extern mild_bool check_can_file_rwx(
+mild_bool check_can_file_rwx(
 	mild_cstr					pathname__
 	);
 
@@ -143,7 +143,7 @@ extern mild_bool check_can_file_rwx(
  * 
  * @return	존재하면 true, 존재 하지 않으면 false
  **/
-extern mild_bool check_file_exist(
+mild_bool check_file_exist(
 	mild_cstr					pathname__
 	);
 
@@ -158,7 +158,7 @@ extern mild_bool check_file_exist(
  * 
  * @return	존재하면 true, 존재 하지 않으면 false
  **/
-extern mild_bool check_file_status(
+mild_bool check_file_status(
 	mild_cstr					pathname__
 	);
 
@@ -170,7 +170,7 @@ extern mild_bool check_file_status(
  * 
  * @return	대상이 존재하고, 일반 파일이면 true, 아니면 false
  **/
-extern mild_bool check_regular_filetype(
+mild_bool check_regular_filetype(
 	mild_cstr					pathname__
 	);
 
@@ -182,7 +182,7 @@ extern mild_bool check_regular_filetype(
  * 
  * @return	대상이 존재하고, 소켓이면 true, 아니면 false
  */
-extern mild_bool check_socket_filetype(
+mild_bool check_socket_filetype(
 	mild_cstr					pathname__
 	);
 
@@ -194,7 +194,7 @@ extern mild_bool check_socket_filetype(
  * 
  * @return	대상이 존재하고, 심볼릭 링크이면 true, 아니면 false
  */
-extern mild_bool check_symlink_filetype(
+mild_bool check_symlink_filetype(
 	mild_cstr					pathname__
 	);
 
@@ -206,7 +206,7 @@ extern mild_bool check_symlink_filetype(
  * 
  * @return	대상이 존재하고, 블록 디바이스 파일이면 true, 아니면 false
  */
-extern mild_bool check_block_device_filetype(
+mild_bool check_block_device_filetype(
 	mild_cstr					pathname__
 	);
 
@@ -218,7 +218,7 @@ extern mild_bool check_block_device_filetype(
  * 
  * @return	대상이 존재하고, 디렉터리면 true, 아니면 false
  */
-extern mild_bool check_directory_filetype(
+mild_bool check_directory_filetype(
 	mild_cstr					pathname__
 	);
 
@@ -230,7 +230,7 @@ extern mild_bool check_directory_filetype(
  * 
  * @return	대상이 존재하고, 문자 디바이스 파일이면 true, 아니면 false
  */
-extern mild_bool check_charater_device_filetype(
+mild_bool check_charater_device_filetype(
 	mild_cstr					pathname__
 	);
 
@@ -242,7 +242,7 @@ extern mild_bool check_charater_device_filetype(
  * 
  * @return	대상이 존재하고, FIFO 라면 true, 아니면 false
  */
-extern mild_bool check_fifo_filetype(
+mild_bool check_fifo_filetype(
 	mild_cstr					pathname__
 	);
 
@@ -254,9 +254,43 @@ extern mild_bool check_fifo_filetype(
  * 
  * @return	디렉터리 존재 시 true, 부재 시 false
  */
-extern mild_bool check_directory_exist(
+mild_bool check_directory_exist(
 	mild_cstr					pathname__
 	);
+
+
+/**
+* @brief   디렉터리의 권한 확인
+*          ! 존재하는 디렉터리에 대한 권한만 확인
+*          ! 디렉터리 존재 여부는 checkDirectoryExist( )로 먼저 확인
+* 
+* @param   pathname__      확인할 디렉터리 경로
+* @param   read_check__    읽기 권한 확인 여부
+* @param   write_check__   쓰기 권한 확인 여부
+* @param   exec_check__    실행 권한 확인 여부
+* 
+* @return  디렉터리의 요청 권한 존재 시 true, 부재 시 false
+*/
+mild_bool check_directory_permissions(
+	mild_cstr					pathname__,
+	mild_bool					read_check__,
+	mild_bool					write_check__,
+	mild_bool					exec_check__
+	);
+
+
+/**
+ * @brief   파일의 크기를 구함
+ * 
+ * @param   pathname__      확인할 파일 경로
+ * @param   size__          파일 크기를 반환받을 변수
+
+ * @return 파일이 존재하고 크기를 구했을 시 true, 파일이 없거나 크기를 구할 수 없을 시 false
+ */
+ mild_bool get_file_size(
+    mild_cstr                   pathname__,
+    mild_size                   *size__
+    );
 
 
 #endif	// #ifndef __LIB_UTILITY__FILE_CHECK_H__
