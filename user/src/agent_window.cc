@@ -14,6 +14,7 @@ AgentWindow::AgentWindow( )
 
 	/// 메인 박스에 파생 위젯들을 attach
 	AttachChildWidgets( );
+
 	/// 메인 박스를 메인 윈도우에 추가
 	add( main_box_ );
 

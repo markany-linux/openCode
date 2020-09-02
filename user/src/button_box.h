@@ -12,9 +12,11 @@ public:
 	/**
 	 * @brief	버튼들을 가지는 박스 객체 생성
 	 * 
-	 * @param	info_list__	단일 또는 복수의 버튼 생성 정보들을 담은 벡터
+	 * @param	contents_box__	상위 컨텐츠 박스
 	 **/
-	ButtonBox( );
+	ButtonBox(
+		ContentsBox*			contents_box__
+		);
 
 	ButtonBox(
 		const ButtonBox&
