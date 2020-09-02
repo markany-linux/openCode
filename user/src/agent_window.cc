@@ -9,10 +9,7 @@ AgentWindow::AgentWindow(
 	const std::string& subtitle__,
 	const std::vector<ButtonInfo>& button_list__
 	)
-		: main_box_( Gtk::ORIENTATION_VERTICAL ),
-		  subtitle_box_( subtitle__ ), contents_box_( button_list__, false ),
-		  quit_box_( ), quit_button_( kQuitButtonText )
-		 
+		: subtitle_box_( subtitle__ ), contents_box_( button_list__, false )
 {
 	std::cout << "[+] AgentWindow::AgentWindow()\n";
 	/// 사용자가 임의로 종료를 시도할 때에 대한 핸들러 등록
