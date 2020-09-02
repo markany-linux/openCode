@@ -1,23 +1,12 @@
 #include <iostream>
-#include <gtkmm/application.h>
+#include <tuple>
 
-#include "main_window.h"
+#include "agent_main.h"
 
-int main(
-	int							argc,
-	char**						argv
-	)
+int main( )
 {
-	std::cout << "main()\n";
-	auto app = Gtk::Application::create( argc, argv, "org.gtkmm.opencode" );
+	AgentMain agent;
 
-	std::vector<ButtonInfo> button_list{ };
-
-	button_list.emplace_back( ButtonInfo{ .text = "Hello" } );
-	button_list.emplace_back( ButtonInfo{ .text = "World" } );
-	button_list.emplace_back( ButtonInfo{ .text = "Everone" } );
-
-	MainWindow main_window{ "Hello World!", button_list };
-
-	return app->run( main_window );
+	return agent.Run( );
 }
+
