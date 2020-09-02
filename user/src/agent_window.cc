@@ -5,11 +5,7 @@
 
 #include <gtkmm/box.h>
 
-AgentWindow::AgentWindow(
-	const std::string& subtitle__,
-	const std::vector<ButtonInfo>& button_list__
-	)
-		: subtitle_box_( subtitle__ ), contents_box_( button_list__, false )
+AgentWindow::AgentWindow( )
 {
 	std::cout << "[+] AgentWindow::AgentWindow()\n";
 	/// 사용자가 임의로 종료를 시도할 때에 대한 핸들러 등록
@@ -28,7 +24,7 @@ AgentWindow::AgentWindow(
 	set_resizable( false );
 	
 	/// 모든 객체 보여주기
-	show_all_children( );
+	show_all_children( true );
 	std::cout << "[-] AgentWindow::AgentWindow()\n";
 }
 
@@ -64,23 +60,10 @@ void AgentWindow::AttachQuitButton( )
 	std::cout << "[-] AgentWindow::AttachQuitButton()\n";
 }
 
-bool AgentWindow::on_delete_event(
-	GdkEventAny* any_event__
-	)
-{
-	std::cout << "[+] AgentWindow::on_delete_event()\n";
-	/// any_event는 아직 꼭 사용해야 하는 것은 아님.
-	std::ignore = any_event__;
-	std::cout << "[-] AgentWindow::on_delete_event()\n";
-	/// 종료 명령 무시
-	return true;
-}
-
 void AgentWindow::on_quit_button_clicked( )
 {
 	std::cout << "[+] AgentWindow::on_quit_button_clicked()\n";
-	std::cout << "Bye bye\n";
-	/// 프로그램 종료
+	/// 에이전트 창 종료
 	hide( );
 	std::cout << "[-] AgentWindow::on_quit_button_clicked()\n";
 }

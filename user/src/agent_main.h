@@ -30,11 +30,16 @@ public:
 
 private:
 	void on_startup( );
+	bool on_delete_event(
+		GdkEventAny* any_event__
+		);
 
 	static constexpr const char* kAppIdentifier = "com.gnome.opencode";
 
 	Glib::RefPtr<Gtk::Application> app_ =
 		Gtk::Application::create( kAppIdentifier );
+	
+	AgentWindow agent_window_;
 };
 
 #endif

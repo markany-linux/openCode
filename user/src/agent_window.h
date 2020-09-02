@@ -16,10 +16,7 @@ public:
 	 * @param	subtitle__		상단 라벨 텍스트
 	 * @param	button_list__	버튼 생성 정보들을 담은 벡터
 	 **/
-	explicit AgentWindow(
-		const std::string& subtitle__,
-		const std::vector<ButtonInfo>& button_list__
-		);
+	AgentWindow( );
 	
 	/**
 	 * @brief	메인 윈도우 객체 소멸
