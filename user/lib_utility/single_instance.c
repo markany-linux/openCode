@@ -8,10 +8,6 @@
 #include "file_check.h"
 
 
-/// 기능 자체적으로 파일 디스크립터를 관리하기 위해 선언
-static mild_i32 g_lockfd;
-
-
 mild_bool setup_single_instance(
     mild_i32                    *fd__,
     mild_cstr                   pathname__
@@ -53,7 +49,7 @@ mild_bool setup_single_instance(
 
     /// 잠금 파일 생성 및 확인
     *fd__ = open( pathname__, O_CREAT | O_RDWR, 0666 );
-    if( FD_START > fd__ )
+    if( FD_START > *fd__ )
     {
         printf( "Fail to create lock file" );
         return mild_false;
@@ -86,10 +82,6 @@ mild_bool setupSingleInstance(
     mild_cstr                   pathname__
     )
 {
-    /// 디스크립터가 전달되지 않으면, 자체 전역 변수 이용
-    if( mild_null == fd__ )
-        return setup_single_instance( &g_lockfd, pathname__ );
-
     return setup_single_instance( fd__, pathname__ );
 }
 
@@ -124,9 +116,5 @@ void cleanupSingleInstance(
     mild_cstr                   pathname__
     )
 {
-    /// 디스크립터가 전달되지 않으면, 자체 전역 변수 이용
-    if( mild_null == fd__ )
-        return cleanup_single_instance( &g_lockfd, pathname__ );
-
-    return cleanup_single_instance( fd__, pathname__ );
+    cleanup_single_instance( fd__, pathname__ );
 }

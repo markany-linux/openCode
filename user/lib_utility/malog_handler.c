@@ -4,16 +4,15 @@
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
 #include "file_check.h"
 #include "time_handler.h"
-#include "utility_interface.h"
+#include "interface/lib_utility.h"
 
 
-/// 로그 파일 디스크립터
-mild_i32 g_malog_fd;
 
 
 /**
@@ -35,7 +34,7 @@ static mild_bool setup_malog_dir(
     /// 1. 전달 경로에 대한 권한 존재 여부 확인
     if( mild_false == check_access_read_write( pathname__ ) )
     {
-        printf( "%s directory access permission not exist\n" );
+        printf( "%s directory access permission not exist\n", pathname__ );
         return mild_false;
     }
 
@@ -90,6 +89,9 @@ mild_bool init_malog(
 	mild_i8 today[ STRLEN_24 ] = { 0, };
     mild_str log_name = mild_null;
 
+	if( mild_null == fd__ )
+		return mild_false;
+
     /// 로그 파일이 개방 상태인지 확인
     if( FD_START <= *fd__ )
         return mild_true;
@@ -142,6 +144,7 @@ mild_bool init_malog(
         if( FD_START > *fd__ )
         {
             printf( "Fail to create log file: %s\n", log_name );
+			free( log_name );
             return mild_false;
         }
     }
@@ -152,6 +155,7 @@ mild_bool init_malog(
         if( FD_START > *fd__ )
         {
             printf( "Fail to open log file: %s\n", log_name );
+			free( log_name );
             return mild_false;
         }
     }
@@ -181,21 +185,8 @@ mild_bool initLogFile(
     return init_malog( fd__, pathname__, dir_name__ );
 }
 
-mild_bool initDefaultLogFile(
-    mild_cstr                   pathname__
-    )
-{
-    if( mild_null == pathname__ )
-    {
-        printf( "NULL pointer received\n" );
-        return mild_false;
-    }
 
-    return init_malog( &g_malog_fd, pathname__, mild_null );
-}
-
-
-static mild_bool malog_write(
+mild_bool malog_write(
     mild_i32                    fd__,
     mild_cstr                   log__
     )
@@ -229,13 +220,6 @@ mild_bool writeLogFile(
     return malog_write( fd__, log__ );
 }
 
-mild_bool writeDefaultLogFile(
-    mild_cstr                   log__
-    )
-{
-    return malog_write( g_malog_fd, log__ );
-}
-
 
 void cleanup_malog(
     mild_i32                    *fd__
@@ -252,10 +236,5 @@ void closeLogFile(
     mild_i32                    *fd__
     )
 {
-    return cleanup_malog( fd__ );
-}
-
-void closeDefaultLogFile( void )
-{
-    return cleanup_malog( &g_malog_fd );
+    cleanup_malog( fd__ );
 }

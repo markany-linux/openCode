@@ -1,23 +1,33 @@
 /**
- * \file    system_info.h
+ * \file    interface/system_info.h 인터페이스 정의
  * 
- * \brief   리눅스 배포판과 시스템에 대한 정보를 획득
- *          * "/etc/os-release" 파일 파싱을 통한 배포판 정보 획득
- *          * 현재 활성화된 IP 주소와 hostname 및 NIC 이름 획득
- *          * 현재 커널 버전 획득
+ * \brief   유틸리티 라이브러리 인터페이스 정의
  * 
- * \date    2018.08.29.
- *          2020.06.26. modified by wikim
+ * \date    2020.08.18.
  * 
- * \author  wikim (wikim@markany.com)
+ * \author  MaBling (swma@markany.com)
  * 
- * \copyright MarkAny Inc. 2020.
+ * \copyleft MarkAny Inc. 2020.
  */
-#ifndef __LIB_UTILITY__SYSTEM_INFO_H__
-#define __LIB_UTILITY__SYSTEM_INFO_H__
+#ifndef __LIB_UTILITY__SYSTEM_INFO_IMPL_H__
+#define __LIB_UTILITY__SYSTEM_INFO_IMPL_H__
 
 
 #include "common.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// system_info.c/h 인터페이스 정의
+//  * 
+//  * 
+//  * 
+//
+///////////////////////////////////////////////////////////////////////////////
 
 
 /**
@@ -65,9 +75,14 @@ typedef struct linux_distribution_system_informations
  * 
  * @return  모든 정보 획득 성공 true, 실패 false
  */
-mild_bool get_system_info(
+extern mild_bool getLocalSystemInfo(
     PMADRM_LOCAL_SYSTEM         system__
     );
 
 
-#endif //>  #ifndef __LIB_UTILITY__SYSTEM_INFO_H__
+#ifdef __cplusplus
+}
+#endif
+
+
+#endif  // #ifndef __LIB_UTILITY__SYSTEM_INFO_IMPL_H__

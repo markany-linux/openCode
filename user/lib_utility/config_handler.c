@@ -1,21 +1,17 @@
 #include "config_handler.h"
 
+#include <stdio.h>
 #include <fcntl.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
 
-#include "dprint.h"
+#include "malog_handler.h"
 #include "string_parser.h"
-#include "file_handler.h"
+#include "file_check.h"
 
-
-/// 리스트 관리 전역 변수
-LIST_HEAD( config_list_head );
-
-/// 리스트 동기화 제어를 위한 동기화 변수
-pthread_mutex_t g_config_lock = PTHREAD_MUTEX_INITIALIZER;
+#include "interface/lib_utility.h"
 
 
 /**
@@ -26,18 +22,23 @@ pthread_mutex_t g_config_lock = PTHREAD_MUTEX_INITIALIZER;
  * 
  * @return  리스트 추가 성공 true, 실패 false
  */
-static mild_bool add_config_list(
+mild_bool add_config_list(
+    PCONFIG_LIST                list__,
     mild_str                    label__,
     mild_str                    value__
     )
 {
     PAGENT_CONFIG config = mild_null;
 
-    NULL_PTR_RETURNS( label__, value__ );
+    if( ( mild_null == list__ )
+        || ( mild_null == label__ )
+        || ( mild_null == value__ ) )
+        return mild_false;
 
     /// 1. 리스트에 보관할 구조체 할당
     config = ( PAGENT_CONFIG )malloc( sizeof( AGENT_CONFIG ) );
-    NULL_PTR_RETURN( config );
+    if( mild_null == config )
+        return mild_false;
 
     /// 2. 할당된 메모리 초기화
     memset( config, 0x00, sizeof( AGENT_CONFIG ) );
@@ -47,11 +48,20 @@ static mild_bool add_config_list(
     memcpy( config->value, value__, strlen( value__ ) );
 
     /// 4. 리스트에 추가
-    pthread_mutex_lock( &g_config_lock );
-    list_add_tail( &config->ptr, &config_list_head );
-    pthread_mutex_unlock( &g_config_lock );
+    pthread_mutex_lock( &( list__->list_lock ) );
+    list_add_tail( &config->ptr, &( list__->list_head ) );
+    pthread_mutex_unlock( &( list__->list_lock ) );
 
     return mild_true;
+}
+
+mild_bool addConfigList(
+    PCONFIG_LIST                list__,
+	mild_str					label__,
+	mild_str					value__
+	)
+{
+	return add_config_list( list__, label__, value__ );
 }
 
 
@@ -70,9 +80,14 @@ static mild_bool open_config_file(
 {
     mild_i32 fd = 0;
 
+    if( ( mild_null == fd__ )
+        || ( mild_null == pathname__ ) )
+        return mild_false;
+
     /// 1. 파일 개방
     fd = open( pathname__, O_RDONLY );
-    NULL_PTR_RETURN( fd );
+    if( -1 == fd )
+        return mild_false;
 
     /// 2. 반환 디스크립터에 할당
     *fd__ = fd;
@@ -161,6 +176,11 @@ static mild_i32 get_config_label(
 {
     mild_i32 i = 0;
 
+    /// TODO: NULL 포인터가 올 경우의 반환값 지정 필요
+    /*if( ( mild_null == buf__ )
+        || ( mild_null == label__ ) )
+        return 0;*/
+
     /// 1. 설정 라벨이 아닐 때까지 반복
     while( mild_false != check_config_char( *( buf__ + i ) ) )
     {
@@ -190,6 +210,11 @@ static mild_i32 get_config_value(
 {
     mild_i32 i = 0;
 
+    /// TODO: NULL 포인터가 올 경우의 반환값 지정 필요
+    /*if( ( mild_null == buf__ )
+        || ( mild_null == label__ ) )
+        return 0;*/
+
     /// 1. 설정 값이 아닐 때까지 반복
     while( mild_false != check_value_char( *( buf__ + i ), mild_true ) )
     {
@@ -216,6 +241,10 @@ static mild_i32 skip_to_value(
     )
 {
     mild_i32 i = 0;
+
+    /// TODO: NULL 포인터가 올 경우의 반환값 지정 필요
+    /*if( mild_null == buf__ )
+        return 0;*/
 
     /// 1. 설정 값에 해당하는 문자가 확인될 때까지 반복
     while( mild_false == check_value_char( *( buf__ + i ) , mild_false ) )
@@ -245,6 +274,10 @@ static mild_i32 move_to_config(
     mild_i32 cnt = 0;
     mild_i32 moved = 0;
     mild_str ptr = buf__;
+
+    /// TODO: NULL 포인터가 올 경우의 반환값 지정 필요
+    /*if( mild_null == buf__ )
+        return 0;*/
 
     /// 1. 설정 라벨을 만날 때까지 반복
     while( mild_true )
@@ -290,21 +323,23 @@ static mild_i32 move_to_config(
 static mild_bool prepare_config_search(
     mild_cstr                   pathname__,
     mild_i32                    *fd__,
-    mild_i32                    *size__,
+    mild_size                   *size__,
     mild_str                    *buf__
     )
 {
     /// 1. 설정 파일의 크기를 획득. 존재 확인은 내부에서 수행
     if( mild_false == get_file_size( pathname__, size__ ) )
     {
-        dprint( _CM_, "Cannot get config file[ %s ] size", pathname__ );
+        //dprint( _CM_, "Cannot get config file[ %s ] size", pathname__ );
+        printf( "Cannot get config file[ %s ] size\n", pathname__ );
         return mild_false;
     }
 
     /// 2. 설정 파일을 개방
     if( mild_false == open_config_file( fd__, pathname__ ) )
     {
-        dprint( _CM_, "Cannot open config file[ %s ]", pathname__ );
+        //dprint( _CM_, "Cannot open config file[ %s ]", pathname__ );
+        printf( "Cannot open config file[ %s ]\n", pathname__ );
         return mild_false;
     }
 
@@ -315,7 +350,8 @@ static mild_bool prepare_config_search(
         /// 3-1F. 버퍼 획득 실패 시, 디스크립터를 닫고 반환
         close( *fd__ );
 
-        dprint( _CM_, "Cannot allocate memory for config file read" );
+        //dprint( _CM_, "Cannot allocate memory for config file read" );
+        printf( "Cannot allocate memory for config file read\n" );
         return mild_false;
     }
 
@@ -327,7 +363,8 @@ static mild_bool prepare_config_search(
         /// 4-2F. 할당된 버퍼를 해제
         free( *buf__ );
 
-        dprint( _CM_, "Cannot read config file[ %s ]", pathname__ );
+        //dprint( _CM_, "Cannot read config file[ %s ]", pathname__ );
+        printf( "Cannot read config file[ %s ]\n", pathname__ );
         return mild_false;
     }
 
@@ -335,45 +372,56 @@ static mild_bool prepare_config_search(
 }
 
 
-void disp_config_list( void )
+void disp_config_list(
+    PCONFIG_LIST                list__
+    )
 {
     mild_i32 i = 0;
     PAGENT_CONFIG config = mild_null;
     struct list_head *pos = mild_null;
 
-    pthread_mutex_lock( &g_config_lock );
+    if( mild_null == list__ )
+        return;
 
-    list_for_each( pos, &config_list_head )
+    pthread_mutex_lock( &( list__->list_lock ) );
+
+    list_for_each( pos, &( list__->list_head ) )
     {
         config = list_entry( pos, AGENT_CONFIG, ptr );
 
-        dprint( _IM_, "%d: config[ %s ] value[ %s ]\n", ++i, config->label, config->value );
+        //dprint( _IM_, "%d: config[ %s ] value[ %s ]\n", ++i, config->label, config->value );
+        printf( "%d: config[ %s ] value[ %s ]\n", ++i, config->label, config->value );
     }
 
-    pthread_mutex_unlock( &g_config_lock );
+    pthread_mutex_unlock( &( list__->list_lock ) );
 }
 
 
-void dispConfigListValue( void )
+void dispConfigListValue(
+    PCONFIG_LIST                list__
+    )
 {
-    return disp_config_list( );
+    disp_config_list( list__ );
 }
 
 
 mild_bool init_config_list(
+    PCONFIG_LIST                list__,
     mild_cstr                   pathname__
     )
 {
     mild_i32 fd = 0;
     mild_i32 offset = 0;
-    mild_i32 moved = 0;
-    mild_i32 size = 0;
+    mild_size moved = 0;
+    mild_size size = 0;
     mild_i8 label[ STRLEN_32 ] = { 0, };
     mild_i8 value[ STRLEN_64 ] = { 0, };
     mild_str ptr = mild_null;
     mild_str buf = mild_null;
 
-    NULL_PTR_RETURN( pathname__ );
+    if( ( mild_null == list__ )
+        || ( mild_null == pathname__ ) )
+        return mild_false;
 
     /// 1. 설정 정보 획득을 위한 준비
     if( mild_false == prepare_config_search( pathname__, &fd, &size, &buf ) )
@@ -413,7 +461,7 @@ mild_bool init_config_list(
         moved += offset;
 
         /// 2-10. 획득된 설정 라벨과 값을 리스트에 등록
-        add_config_list( label, value );
+        add_config_list( list__, label, value );
 
         /// 2-11. 획득 버퍼 초기화
         memset( label, 0x00, STRLEN_32 );
@@ -429,14 +477,16 @@ mild_bool init_config_list(
 
 
 mild_bool initConfigList(
+    PCONFIG_LIST                list__,
     mild_cstr                   pathname__
     )
 {
-    return init_config_list( pathname__ );
+    return init_config_list( list__, pathname__ );
 }
 
 
 mild_bool get_config_list_value(
+    PCONFIG_LIST                list__,
     mild_cstr                   label__,
     mild_str                    value__,
     mild_u32                    len__
@@ -445,13 +495,15 @@ mild_bool get_config_list_value(
     PAGENT_CONFIG config = mild_null;
     struct list_head *pos = mild_null;
 
-    NULL_PTR_RETURNS( label__, value__ );
+    if( ( mild_null == label__ )
+        || ( mild_null == value__ ) )
+        return mild_false;
 
     /// 1. 리스트 접근을 위한 잠금
-    pthread_mutex_lock( &g_config_lock );
+    pthread_mutex_lock( &( list__->list_lock ) );
 
     /// 2. 리스트 노드들 순환
-    list_for_each( pos, &config_list_head )
+    list_for_each( pos, &( list__->list_head ) )
     {
         /// 2-1. 리스트의 현재 노드 포인터 획득
         config = list_entry( pos, AGENT_CONFIG, ptr );
@@ -462,51 +514,56 @@ mild_bool get_config_list_value(
             /// 설정 값을 반환할 버퍼 길이 확인
             if( len__ <= strlen( config->value ) )
             {
-                dprint( _CM_, "Request buffer size isnot enough" );
-                pthread_mutex_unlock( &g_config_lock );
+                ///dprint( _CM_, "Request buffer size isnot enough" );
+                printf( "Request buffer size isnot enough" );
+                pthread_mutex_unlock( &( list__->list_lock ) );
                 return mild_false;
             }
             /// 2-2-1T. 반환 버퍼에 설정 값을 복사
             memcpy( value__, config->value, strlen( config->value ) );
             /// 2-2-2T. 리스트 잠금 해제
-            pthread_mutex_unlock( &g_config_lock );
+            pthread_mutex_unlock( &( list__->list_lock ) );
             return mild_true;
         }
     }
 
     /// 3. 리스트 잠금 해제
-    pthread_mutex_unlock( &g_config_lock );
+    pthread_mutex_unlock( &( list__->list_lock ) );
 
     return mild_false;
 }
 
 
 mild_bool getConfigListValue(
+    PCONFIG_LIST                list__,
     mild_cstr                   label__,
     mild_str                    value__,
     mild_u32                    len__
     )
 {
-    return get_config_list_value( label__, value__, len__ );
+    return get_config_list_value( list__, label__, value__, len__ );
 }
 
 
-void cleanup_config_list( void )
+void cleanup_config_list(
+    PCONFIG_LIST                list__
+    )
 {
     PAGENT_CONFIG config = mild_null;
 
     /// 1. 정리할 리스트가 존재하는지 여부 확인
-    if( 0 != list_empty( &config_list_head ) )
+    if( ( mild_null == list__ )
+        || ( 0 != list_empty( &( list__->list_head ) ) ) )
         return;
 
     /// 2. 리스트 접근을 위한 잠금
-    pthread_mutex_lock( &g_config_lock );
+    pthread_mutex_lock( &( list__->list_lock ) );
 
     /// 3. 리스트가 존재하지 않을 때까지 반복
-    while( 0 == list_empty( &config_list_head ) )
+    while( 0 == list_empty( &( list__->list_head ) ) )
     {
         /// 3-1. 리스트의 현재 노드 포인터 획득
-        config = list_entry( config_list_head.next, AGENT_CONFIG, ptr );
+        config = list_entry( list__->list_head.next, AGENT_CONFIG, ptr );
         /// 3-2. 리스트에서 현재 노드 제거
         list_del( &config->ptr );
         /// 3-3. 메모리 초기화
@@ -516,13 +573,66 @@ void cleanup_config_list( void )
     }
 
     /// 4. 리스트 잠금 해제
-    pthread_mutex_unlock( &g_config_lock );
+    pthread_mutex_unlock( &( list__->list_lock ) );
 
-    dprint( _IM_, "All configuration info. cleanup" );
+    //dprint( _IM_, "All configuration info. cleanup" );
+    printf( "All configuration info. cleanup\n" );
 }
 
 
-void cleanupConfigList( void )
+void cleanupConfigList(
+    PCONFIG_LIST                list__
+    )
 {
-    return cleanup_config_list( );
+    cleanup_config_list( list__ );
+}
+
+mild_bool create_config_list(
+    PCONFIG_LIST                *list__
+    )
+{
+    PCONFIG_LIST list = mild_null;
+
+    if( mild_null == list__ )
+        return mild_false;
+
+    *list__ = mild_null;
+
+    /// 리스트 정보를 담을 공간 할당
+    list = ( PCONFIG_LIST )malloc( sizeof( *list ) );
+    if( mild_null == list )
+        return mild_false;
+
+    /// 리스트 헤드 및 동기화 객체 초기화
+    INIT_LIST_HEAD( &( list->list_head ) );
+    pthread_mutex_init( &( list->list_lock ), mild_null );
+
+    /// 생성 된 리스트 공간 넘겨줌
+    *list__ = list;
+    return mild_true;
+}
+
+mild_bool createConfigList(
+    PCONFIG_LIST                *list__
+    )
+{
+    return create_config_list( list__ );
+}
+
+void destroy_config_list(
+    PCONFIG_LIST                list__
+    )
+{
+    if( mild_null == list__ )
+        return;
+
+    cleanup_config_list( list__ );
+    pthread_mutex_destroy( &( list__->list_lock ) );
+}
+
+void destroyConfigList(
+    PCONFIG_LIST                list__
+    )
+{
+    destroy_config_list( list__ );
 }

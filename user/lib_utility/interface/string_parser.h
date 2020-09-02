@@ -1,23 +1,33 @@
 /**
- * \file    string_parser.h
+ * \file    interface/string_parser.h 인터페이스 정의
  * 
- * \brief   각종 문자열 파싱을 위한 기능들
+ * \brief   유틸리티 라이브러리 인터페이스 정의
  * 
- * \date    2019.01.16.
- *          2020.06.25. modified by wikim.
+ * \date    2020.08.18.
  * 
- * \author  wikim (wikim@markany.com)
+ * \author  MaBling (swma@markany.com)
  * 
- * \copyright MarkAny Inc. 2020.
+ * \copyleft MarkAny Inc. 2020.
  */
-#ifndef __LIB_UTILITY__STRING_PARSER_H__
-#define __LIB_UTILITY__STRING_PARSER_H__
+#ifndef __LIB_UTILITY__STRING_PARSER_IMPL_H__
+#define __LIB_UTILITY__STRING_PARSER_IMPL_H__
 
 
 #include "common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-// TODO: 길이를 받는 경우, 확인 범위가 길이를 초과하는지 확인해야 함
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// string_parser.c/h 인터페이스 정의
+//  * 
+//  * 
+//  * 
+//
+///////////////////////////////////////////////////////////////////////////////
 
 
 /**
@@ -29,7 +39,7 @@
  * 
  * @return  현재 위치에서 이동해야 할 변위. 없는 경우 -1
  */
-mild_i32 get_target_string_offset(
+extern mild_i32 getTargetStringOffset(
     mild_cstr                   target__,
     mild_cstr                   buf__,
     mild_i32                    len__
@@ -45,7 +55,7 @@ mild_i32 get_target_string_offset(
  * 
  * @return  시작 위치 포인터, 찾지 못한 경우 NULL
  */
-mild_str get_target_string_ptr(
+extern mild_str getTargetStringPtr(
     mild_cstr                   target__,
     mild_cstr                   buf__,
     mild_i32                    len__
@@ -61,7 +71,7 @@ mild_str get_target_string_ptr(
  * 
  * @return  문자열이 존재하면 true, 존재하지 않으면 false
  */
-mild_bool check_target_string_exist(
+extern mild_bool checkTargetStringExist(
     mild_cstr                   target__,
     mild_cstr                   buf__,
     mild_i32                    len__
@@ -77,7 +87,7 @@ mild_bool check_target_string_exist(
  * 
  * @return  이동해야 할 변위. 없는 경우 -1
  */
-mild_i32 get_target_char_offset(
+extern mild_i32 getTargetCharOffset(
     mild_i8                     char__,
     mild_cstr                   buf__,
     mild_i32                    len__
@@ -93,7 +103,7 @@ mild_i32 get_target_char_offset(
  * 
  * @return  문자 위치 포인터, 존재하지 않으면 NULL
  */
-mild_str get_target_char_ptr(
+extern mild_str getTargetCharPtr(
     mild_i8                     char__,
     mild_cstr                   buf__,
     mild_i32                    len__
@@ -109,7 +119,7 @@ mild_str get_target_char_ptr(
  * 
  * @return  문자가 존재하면 true, 존재하지 않으면 false
  */
-mild_bool check_target_char_exist(
+extern mild_bool checkTargetCharExist(
     mild_i8                     char__,
     mild_cstr                   buf__,
     mild_i32                    len__
@@ -125,7 +135,7 @@ mild_bool check_target_char_exist(
  * 
  * @return  이동해야 할 변위. 없는 경우 -1
  */
-mild_i32 get_next_line_offset(
+extern mild_i32 getNextLineOffset(
     mild_cstr                   buf__,
     mild_i32                    len__
     );
@@ -140,7 +150,7 @@ mild_i32 get_next_line_offset(
  * 
  * @return  다음 라인 위치 포인터. 없는 경우 NULL
  */
-mild_str get_next_line_ptr(
+extern mild_str getNextLinePtr(
     mild_cstr                   buf__,
     mild_i32                    len__
     );
@@ -155,7 +165,7 @@ mild_str get_next_line_ptr(
  * 
  * @return  바로 이전 '\n' 까지 변위 값
  */
-mild_i32 get_current_line_start_offset(
+extern mild_i32 getCurrentLineStartOffset(
     mild_cstr                   buf__
     );
 
@@ -167,7 +177,7 @@ mild_i32 get_current_line_start_offset(
  * 
  * @return  바로 이전 '\n' 위치 포인터
  */
-mild_str get_current_line_start_ptr(
+extern mild_str getCurrentLineStartPtr(
     mild_cstr                   buf__
     );
 
@@ -180,7 +190,7 @@ mild_str get_current_line_start_ptr(
  * 
  * @return  다음 공백까지 변위. 존재하지 않으면 -1
  */
-mild_i32 get_next_space_offset(
+extern mild_i32 getNextSpaceOffset(
     mild_cstr                   buf__,
     mild_i32                    len__
     );
@@ -194,7 +204,7 @@ mild_i32 get_next_space_offset(
  * 
  * @return  다음 공백의 시작 위치 포인터. 존재하지 않으면 NULL
  */
-mild_str get_next_space_ptr(
+extern mild_str getNextSpacePtr(
     mild_cstr                   buf__,
     mild_i32                    len__
     );
@@ -207,7 +217,7 @@ mild_str get_next_space_ptr(
  * 
  * @return  이전 공백까지의 변위
  */
-mild_i32 get_previous_space_offset(
+extern mild_i32 getPreviousSpaceOffset(
     mild_cstr                   buf__
     );
 
@@ -219,7 +229,7 @@ mild_i32 get_previous_space_offset(
  * 
  * @return  이전 공백 위치 포인터
  */
-mild_str get_previous_space_ptr(
+extern mild_str getPreviousSpacePtr(
     mild_cstr                   buf__
     );
 
@@ -233,9 +243,9 @@ mild_str get_previous_space_ptr(
  * 
  * @return	문자의 개수
  */
-mild_u32 get_space_pos(
+extern mild_u32 getSpacePos(
 	mild_str					str__
-	);
+    );
 
 
 /**
@@ -245,9 +255,14 @@ mild_u32 get_space_pos(
  * 
  * @return  다음 라인까지의 변위
  */
-mild_i32 current_line_skip(
+extern mild_i32 currentLineSkip(
     mild_str                    *ptr__
     );
 
 
-#endif // #ifndef __LIB_UTILITY__STRING_PARSER_H__
+#ifdef __cplusplus
+}
+#endif
+
+
+#endif  // #ifndef __LIB_UTILITY__STRING_PARSER_IMPL_H__
