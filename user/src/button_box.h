@@ -43,6 +43,8 @@ private:
 	void on_button_clicked(
 		Gtk::Button* button__
 		);
+
+	void AttachButtonsToSignal( );
 	
 	static constexpr const char* kConfigButtonLabel = "Config Info";
 	static constexpr const char* kSystemButtonLabel = "System Info";
