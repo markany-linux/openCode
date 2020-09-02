@@ -1,8 +1,8 @@
 #ifndef __AGENT_WINDOW_H__
 #define __AGENT_WINDOW_H__
 
+#include <gtkmm/enums.h>
 #include <gtkmm/window.h>
-#include <gtkmm/application.h>
 
 #include "contents_box.h"
 #include "subtitle_box.h"
@@ -57,7 +57,7 @@ protected:
 	void on_quit_button_clicked( );
 
 	/// 가장 최상단의 박스
-	Gtk::Box main_box_;
+	Gtk::Box main_box_{ Gtk::ORIENTATION_VERTICAL };
 	/// 상단 라벨 박스
 	SubtitleBox subtitle_box_;
 	/// 각종 컨텐츠가 들어간 박스
@@ -66,7 +66,7 @@ protected:
 	/// 종료 박스
 	Gtk::Box quit_box_;
 	/// 종료 버튼
-	Gtk::Button quit_button_;
+	Gtk::Button quit_button_{ kQuitButtonText };
 };
 
 #endif
