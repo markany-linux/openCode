@@ -1,6 +1,7 @@
 #include "button_box.h"
 
 #include <iostream>
+#include <vector>
 
 #include "contents_box.h"
 
@@ -14,13 +15,35 @@ ButtonBox::ButtonBox(
 
 ButtonBox::~ButtonBox( )
 {
-	std::cout << "ButtonBox::~ButtonBox()\n";
 }
 
 void ButtonBox::on_button_clicked(
 	Gtk::Button* button__
 	)
 {
-	contents_box_->text_window_.AddText( button__->get_label() );
+	if( &config_button_ == button__ ) { }
+	else if( &system_button_ == button__ ) { }
+	else if( &process_button_ == button__ ) { }
+	else if( &proc_button_ == button__ ) { }
+	else { }
+}
+
+void ButtonBox::AttachButtonsToSignal( )
+{
+	std::vector<Gtk::Button*> buttons;
+
+	buttons.push_back( &config_button_ );
+	buttons.push_back( &system_button_ );
+	buttons.push_back( &process_button_ );
+	buttons.push_back( &proc_button_ );
+	buttons.push_back( &time_button_ );
+
+	for( auto* button : buttons )
+	{
+		button->signal_clicked( ).connect(
+				sigc::bind(
+					sigc::mem_fun(
+						*this, &ButtonBox::on_button_clicked ), button ) );
+	}
 }
 
