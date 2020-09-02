@@ -1,5 +1,5 @@
-#ifndef __MAIN_WINDOW_H__
-#define __MAIN_WINDOW_H__
+#ifndef __AGENT_WINDOW_H__
+#define __AGENT_WINDOW_H__
 
 #include <gtkmm/window.h>
 #include <gtkmm/application.h>
@@ -7,7 +7,7 @@
 #include "contents_box.h"
 #include "subtitle_box.h"
 
-class MainWindow : public Gtk::Window
+class AgentWindow : public Gtk::Window
 {
 public:
 	/**
@@ -16,7 +16,7 @@ public:
 	 * @param	subtitle__		상단 라벨 텍스트
 	 * @param	button_list__	버튼 생성 정보들을 담은 벡터
 	 **/
-	explicit MainWindow(
+	explicit AgentWindow(
 		const std::string& subtitle__,
 		const std::vector<ButtonInfo>& button_list__
 		);
@@ -24,7 +24,7 @@ public:
 	/**
 	 * @brief	메인 윈도우 객체 소멸
 	 **/
-	virtual ~MainWindow( );
+	virtual ~AgentWindow( );
 
 protected:
 	/// 종료 버튼 텍스트 상수
@@ -70,3 +70,4 @@ protected:
 };
 
 #endif
+
