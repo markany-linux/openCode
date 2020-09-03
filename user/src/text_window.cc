@@ -23,7 +23,7 @@ TextWindow::~TextWindow( )
 	std::cout << "TextWindow::TextWindow()\n";
 }
 
-bool TextWindow::AddText(
+bool TextWindow::ShowText(
 		std::string text__
 	)
 {

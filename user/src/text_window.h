@@ -11,13 +11,22 @@ class TextWindow : public Gtk::ScrolledWindow
 public:
 	/**
 	 * @brief	텍스트 창 생성
-	 * 
-	 * @param	editable__	사용자가 직접 텍스트 내용을 수정 가능한지에 대한 여부
-	 * 						(true: 가능, false 불가능)
 	 **/
-	explicit TextWindow(
-		bool editable__
-		);
+	TextWindow( );
+
+	TextWindow(
+		const TextWindow&
+		) = delete;
+	TextWindow& operator=(
+		const TextWindow&
+		) = delete;
+
+	TextWindow(
+		TextWindow&&
+		) = delete;
+	TextWindow& operator=(
+		TextWindow&&
+		) = delete;
 	
 	/**
 	 * @brief	텍스트 창 소멸
@@ -25,17 +34,17 @@ public:
 	virtual ~TextWindow( );
 
 	/**
-	 * @brief	텍스트 뷰에서 보여질 텍스트 추가
+	 * @brief	텍스트 뷰에서 보여질 텍스트
 	 * 
-	 * @param	text__	붙여질 텍스트
+	 * @param	text__	보여질 텍스트
 	 * 
-	 * @return	텍스트가 성공적으로 쓰였다면 true, 아닐 경우 false
+	 * @return	텍스트가 성공적으로 작성되었다면 true, 아닐 경우 false
 	 **/
-	bool AddText(
+	bool ShowText(
 		std::string text__
 		);
 
-protected:
+private:
 	/**
 	 * @brief	텍스트 뷰 박스를 스크롤 가능한 윈도우에 삽입
 	 **/

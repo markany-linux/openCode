@@ -6,6 +6,8 @@
 #include "button_box.h"
 #include "text_window.h"
 
+class AgentWindow;
+
 class ContentsBox : public Gtk::Box
 {
 public:
@@ -36,16 +38,19 @@ public:
 		ContentsBox&&
 		) = delete;
 
-	/// 버튼 박스
-	ButtonBox button_box_;
-	/// 텍스트 창
-	TextWindow text_window_;
-
-protected:
+	protected:
 	/**
 	 * @brief	각종 컨텐츠들을 삽입
 	 **/
 	void AppendContents( );
+
+private:
+	AgentWindow* agent_window_ = nullptr;
+
+	/// 버튼 박스
+	ButtonBox button_box_;
+	/// 텍스트 창
+	TextWindow text_window_;
 };
 
 #endif
