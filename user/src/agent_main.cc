@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+#include "button_box.h"
+#include "contents_box.h"
+
 AgentMain::AgentMain( )
 {
 	/// 애플리케이션이 구동을 시작할 때에 대한 핸들러 등록
@@ -11,6 +14,8 @@ AgentMain::AgentMain( )
 	/// 사용자가 임의로 종료를 시도할 때에 대한 핸들러 등록
 	agent_window_.signal_delete_event( )
 		.connect( sigc::mem_fun( *this, &AgentMain::on_delete_event ) );
+
+	AttachButtonHandlers( );
 }
 
 AgentMain::~AgentMain( )
@@ -33,5 +38,12 @@ bool AgentMain::on_delete_event(
 {
 	/// 종료 명령 무시
 	return true;
+}
+
+void AgentMain::AttachButtonHandlers( )
+{
+	ContentsBox& contents_box = agent_window_.get_contents_box( );
+
+	contents_box.AttachButtonsToSignal( this );
 }
 

@@ -5,11 +5,14 @@
 
 #include "contents_box.h"
 
-ButtonBox::ButtonBox(
-	ContentsBox* contents_box__
-	)
-		: Gtk::Box( Gtk::ORIENTATION_VERTICAL, 0 ),
-		  contents_box_( contents_box__)
+AgentButton::AgentButton(
+	const std::string label__
+	) : button_( label__ )
+{
+}
+
+ButtonBox::ButtonBox( )
+		: Gtk::Box( Gtk::ORIENTATION_VERTICAL, 0 )
 {
 }
 

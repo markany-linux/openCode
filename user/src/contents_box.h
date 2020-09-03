@@ -38,17 +38,15 @@ public:
 		ContentsBox&&
 		) = delete;
 
-	protected:
+protected:
 	/**
 	 * @brief	각종 컨텐츠들을 삽입
 	 **/
 	void AppendContents( );
 
 private:
-	AgentWindow* agent_window_ = nullptr;
-
 	/// 버튼 박스
-	ButtonBox button_box_;
+	ButtonBox button_box_{ this };
 	/// 텍스트 창
 	TextWindow text_window_;
 };
