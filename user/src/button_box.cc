@@ -3,50 +3,48 @@
 #include <iostream>
 #include <vector>
 
-#include "contents_box.h"
+#include "agent_main.h"
 
 AgentButton::AgentButton(
-	const std::string label__
-	) : button_( label__ )
-{
+	AgentButtonType				type__,
+	const std::string&			label__
+	) : Gtk::Button( label__ ), type_( type__)
+{	
 }
 
-ButtonBox::ButtonBox( )
+ButtonBox::ButtonBox(
+	AgentMain*					agent_main__
+	)
 		: Gtk::Box( Gtk::ORIENTATION_VERTICAL, 0 )
 {
+	AddButton( agent_main__, kAgentButtonConfig, kConfigButtonLabel );
+	AddButton( agent_main__, kAgentButtonSystem, kSystemButtonLabel );
+	AddButton( agent_main__, kAgentButtonProcess, kProcessButtonLabel );
+	AddButton( agent_main__, kAgentButtonProc, kProcButtonLabel );
+	AddButton( agent_main__, kAgentButtonTime, kTimeButtonLabel );
 }
 
 ButtonBox::~ButtonBox( )
 {
 }
 
-void ButtonBox::on_button_clicked(
-	Gtk::Button* button__
+bool ButtonBox::AddButton(
+	AgentMain*					agent_main__,
+	AgentButtonType				type__,
+	const std::string			label__
 	)
 {
-	if( &config_button_ == button__ ) { }
-	else if( &system_button_ == button__ ) { }
-	else if( &process_button_ == button__ ) { }
-	else if( &proc_button_ == button__ ) { }
-	else { }
-}
+	auto button = std::make_unique<AgentButton>( type__, label__ );
+	if( !button )
+		return false;
 
-void ButtonBox::AttachButtonsToSignal( )
-{
-	std::vector<Gtk::Button*> buttons;
+	button->signal_clicked( ).connect(
+		sigc::bind(
+			sigc::mem_fun(
+				agent_main__,
+				&AgentMain::on_button_clicked ), button->GetType( ) ) );
 
-	buttons.push_back( &config_button_ );
-	buttons.push_back( &system_button_ );
-	buttons.push_back( &process_button_ );
-	buttons.push_back( &proc_button_ );
-	buttons.push_back( &time_button_ );
-
-	for( auto* button : buttons )
-	{
-		button->signal_clicked( ).connect(
-				sigc::bind(
-					sigc::mem_fun(
-						*this, &ButtonBox::on_button_clicked ), button ) );
-	}
+	buttons_.emplace_back( std::move( button ) );
+	return true;
 }
 

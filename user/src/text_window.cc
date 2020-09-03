@@ -2,16 +2,15 @@
 
 #include <iostream>
 
-TextWindow::TextWindow( bool editable__ )
+TextWindow::TextWindow( )
 	: Gtk::ScrolledWindow( ),
 	  text_view_box_( ),
 	  text_view_( ),
 	  text_buffer_( )
 {
 	std::cout << "[+] TextWindow::TextWindow()\n";
-	/// 사용자가 직접 텍스트 내용을 수정하지 않도록 할 때
-	if( !editable__ )
-		text_view_.set_editable( false );
+	/// 사용자가 직접 텍스트 내용을 수정하지 못하도록 설정
+	text_view_.set_editable( false );
 	
 	/// 텍스트 뷰 박스를 스크롤 가능한 윈도우에 삽입
 	AppendTextViewBox( );

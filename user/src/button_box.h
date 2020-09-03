@@ -7,7 +7,7 @@
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
 
-class ContentsBox;
+class AgentMain;
 
 enum AgentButtonType
 {
@@ -18,17 +18,22 @@ enum AgentButtonType
 	kAgentButtonTime
 };
 
-class AgentButton
+class AgentButton : public Gtk::Button
 {
 public:
 	explicit AgentButton(
-		const std::string label__
+		AgentButtonType			type__,
+		const std::string&		label__
 		);
 	~AgentButton( ) { }
 
+	AgentButtonType GetType( )
+	{
+		return type_;
+	}
+
 private:
 	AgentButtonType type_;
-	Gtk::Button button_;
 };
 
 class ButtonBox : public Gtk::Box
@@ -39,7 +44,9 @@ public:
 	 * 
 	 * @param	contents_box__	상위 컨텐츠 박스
 	 **/
-	ButtonBox( );
+	ButtonBox(
+		AgentMain*				agent_main__
+		);
 
 	ButtonBox(
 		const ButtonBox&
@@ -57,25 +64,20 @@ public:
 
 	virtual ~ButtonBox( );
 
-	void AttachButtonsToSignal( );
+	bool AddButton(
+		AgentMain*				agent_main__,
+		AgentButtonType			type__,
+		const std::string		label__
+		);
 
 private:
-	/**
-	 * @brief	버튼 클릭 이벤트가 발생됐을 때 호출되는 핸들러
-	 * 
-	 * @param
-	 **/
-	void on_button_clicked(
-		Gtk::Button* button__
-		);
-	
 	static constexpr const char* kConfigButtonLabel = "Config Info";
 	static constexpr const char* kSystemButtonLabel = "System Info";
 	static constexpr const char* kProcessButtonLabel = "Process Info";
 	static constexpr const char* kProcButtonLabel = "Proc Info";
 	static constexpr const char* kTimeButtonLabel = "Time Info";
 
-	std::vector<std::unique_ptr<AgentButton>> buttons_;
+	std::vector< std::unique_ptr< AgentButton > > buttons_;
 };
 
 #endif
