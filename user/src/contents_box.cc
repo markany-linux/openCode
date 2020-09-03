@@ -3,10 +3,7 @@
 
 #include <iostream>
 
-ContentsBox::ContentsBox(
-	const std::vector<ButtonInfo>& info_list__,
-	bool text_editable__
-	) : button_box_( this, info_list__ ), text_window_( text_editable__ )
+ContentsBox::ContentsBox( )
 {
 	std::cout << "[+] ContentBox::ContentBox()\n";
 	/// 각종 컨텐츠를 컨텐트 박스에 추가

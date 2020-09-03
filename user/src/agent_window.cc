@@ -8,9 +8,6 @@
 AgentWindow::AgentWindow( )
 {
 	std::cout << "[+] AgentWindow::AgentWindow()\n";
-	/// 사용자가 임의로 종료를 시도할 때에 대한 핸들러 등록
-	signal_delete_event( )
-		.connect( sigc::mem_fun( *this, &AgentWindow::on_delete_event ) );
 
 	/// 메인 박스에 파생 위젯들을 attach
 	AttachChildWidgets( );
