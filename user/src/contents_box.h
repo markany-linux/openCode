@@ -46,14 +46,6 @@ protected:
 	 * @brief	각종 컨텐츠들을 삽입
 	 **/
 	void AppendContents( );
-
-private:
-	ContentsBox(
-		const ContentsBox&
-		) = delete;
-	ContentsBox(
-		const ContentsBox&&
-		) = delete;
 };
 
 #endif
