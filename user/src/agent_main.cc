@@ -22,7 +22,10 @@ AgentMain::~AgentMain( )
 
 int AgentMain::Run( )
 {
-	return app_->run( );
+	std::cout << "[+] AppMain::Run()\n";
+	int ret = app_->run( );
+	std::cout << "[-] AppMain::Run()\n";
+	return ret;
 }
 
 void AgentMain::on_button_clicked(
