@@ -1,10 +1,35 @@
 #ifndef __BUTTON_BOX_H__
 #define __BUTTON_BOX_H__
 
+#include <memory>
+#include <utility>
+
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
 
 class ContentsBox;
+
+enum AgentButtonType
+{
+	kAgentButtonConfig,
+	kAgentButtonSystem,
+	kAgentButtonProcess,
+	kAgentButtonProc,
+	kAgentButtonTime
+};
+
+class AgentButton
+{
+public:
+	explicit AgentButton(
+		const std::string label__
+		);
+	~AgentButton( ) { }
+
+private:
+	AgentButtonType type_;
+	Gtk::Button button_;
+};
 
 class ButtonBox : public Gtk::Box
 {
@@ -14,25 +39,25 @@ public:
 	 * 
 	 * @param	contents_box__	상위 컨텐츠 박스
 	 **/
+	ButtonBox( );
+
 	ButtonBox(
-		ContentsBox*			contents_box__
+		const ButtonBox&
+		) = delete;
+	ButtonBox& operator=(
+		const ButtonBox&
+		) = delete;
+
+	ButtonBox(
+		ButtonBox&&
+		);
+	ButtonBox& operator=(
+		ButtonBox&&
 		);
 
-	ButtonBox(
-		const ButtonBox&
-		) = delete;
-	ButtonBox& operator=(
-		const ButtonBox&
-		) = delete;
-
-	ButtonBox(
-		ButtonBox&&
-		) = delete;
-	ButtonBox& operator=(
-		ButtonBox&&
-		) = delete;
-
 	virtual ~ButtonBox( );
+
+	void AttachButtonsToSignal( );
 
 private:
 	/**
@@ -43,8 +68,6 @@ private:
 	void on_button_clicked(
 		Gtk::Button* button__
 		);
-
-	void AttachButtonsToSignal( );
 	
 	static constexpr const char* kConfigButtonLabel = "Config Info";
 	static constexpr const char* kSystemButtonLabel = "System Info";
@@ -52,14 +75,7 @@ private:
 	static constexpr const char* kProcButtonLabel = "Proc Info";
 	static constexpr const char* kTimeButtonLabel = "Time Info";
 
-	/// 컨텐츠 박스
-	ContentsBox* contents_box_ = nullptr;
-
-	Gtk::Button config_button_{ kConfigButtonLabel };
-	Gtk::Button system_button_{ kSystemButtonLabel };
-	Gtk::Button process_button_{ kProcessButtonLabel };
-	Gtk::Button proc_button_{ kProcButtonLabel };
-	Gtk::Button time_button_{ kTimeButtonLabel };
+	std::vector<std::unique_ptr<AgentButton>> buttons_;
 };
 
 #endif

@@ -34,6 +34,8 @@ private:
 		GdkEventAny* any_event__
 		);
 
+	void AttachButtonHandlers( );
+
 	static constexpr const char* kAppIdentifier = "com.gnome.opencode";
 
 	Glib::RefPtr<Gtk::Application> app_ =

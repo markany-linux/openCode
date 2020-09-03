@@ -35,12 +35,22 @@ void AgentWindow::AttachChildWidgets( )
 {
 	std::cout << "[+] AgentWindow::AttachChildWidgets()\n";
 	/// 상단 제목 라벨 메인 박스에 추가
-	main_box_.pack_start( subtitle_box_, Gtk::PACK_SHRINK, 20 );
-	/// 버튼 박스 메인 박스에 추가
+	main_box_.pack_start( subtitle_, Gtk::PACK_SHRINK, 20 );
 	main_box_.pack_start( contents_box_ );
+
+	/// 버튼 박스 컨텐츠 박스에 추가
+	AttachContentsToContentsBox( );
 	/// 종료 버튼 메인 박스에 추가
 	AttachQuitButton( );
 	std::cout << "[-] AgentWindow::AttachChildWidgets()\n";
+}
+
+void AgentWindow::AttachContentsToContentsBox( )
+{
+	/// 정보 표시를 요청할 수 있는 버튼들 추가
+	contents_box_.pack_start( button_box_ );
+	/// 정보들을 표시할 텍스트 뷰 윈도우 추가
+	contents_box_.pack_start( text_window_ );
 }
 
 void AgentWindow::AttachQuitButton( )
