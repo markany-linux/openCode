@@ -15,15 +15,26 @@ public:
 	 * @param	info_list__		버튼 생성 정보들이 담긴 벡터
 	 * @param	text_editable__	텍스트 창의 내용을 사용자가 수정할 수 있는 지에 대한 여부
 	 */
-	explicit ContentsBox(
-		const std::vector<ButtonInfo>& info_list__,
-		bool text_editable__
-		);
+	ContentsBox( );
 	
 	/**
 	 * @brief	컨텐트 박스 소멸
 	 **/
 	virtual ~ContentsBox( );
+
+	ContentsBox(
+		const ContentsBox&
+		) = delete;
+	ContentsBox& operator=(
+		const ContentsBox&
+		) = delete;
+
+	ContentsBox(
+		ContentsBox&&
+		) = delete;
+	ContentsBox& operator=(
+		ContentsBox&&
+		) = delete;
 
 	/// 버튼 박스
 	ButtonBox button_box_;
