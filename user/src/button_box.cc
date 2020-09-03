@@ -17,15 +17,18 @@ ButtonBox::ButtonBox(
 	)
 		: Gtk::Box( Gtk::ORIENTATION_VERTICAL, 0 )
 {
+	std::cout << "[+] ButtonBox::ButtonBox()\n";
 	AddButton( agent_main__, kAgentButtonConfig, kConfigButtonLabel );
 	AddButton( agent_main__, kAgentButtonSystem, kSystemButtonLabel );
 	AddButton( agent_main__, kAgentButtonProcess, kProcessButtonLabel );
 	AddButton( agent_main__, kAgentButtonProc, kProcButtonLabel );
 	AddButton( agent_main__, kAgentButtonTime, kTimeButtonLabel );
+	std::cout << "[-] ButtonBox::ButtonBox()\n";
 }
 
 ButtonBox::~ButtonBox( )
 {
+	std::cout << "ButtonBox::~ButtonBox()\n";
 }
 
 bool ButtonBox::AddButton(
@@ -34,9 +37,13 @@ bool ButtonBox::AddButton(
 	const std::string			label__
 	)
 {
+	std::cout << "[+] ButtonBox::AddButton()\n";
 	auto button = std::make_unique<AgentButton>( type__, label__ );
 	if( !button )
+	{
+		std::cout << "Failed to create button.\n";
 		return false;
+	}
 
 	button->signal_clicked( ).connect(
 		sigc::bind(
@@ -45,6 +52,7 @@ bool ButtonBox::AddButton(
 				&AgentMain::on_button_clicked ), button->GetType( ) ) );
 
 	buttons_.emplace_back( std::move( button ) );
+	std::cout << "[-] ButtonBox::AddButton()\n";
 	return true;
 }
 
