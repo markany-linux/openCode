@@ -1,10 +1,10 @@
 #ifndef __AGENT_MAIN_H__
 #define __AGENT_MAIN_H__
 
-#include <glibmm/refptr.h>
 #include <gtkmm/application.h>
 
 #include "agent_window.h"
+#include "button_box.h"
 
 class AgentMain
 {
@@ -27,6 +27,9 @@ public:
 		) = delete;
 
 	int Run( );
+	void on_button_clicked(
+		AgentButtonType			button_type__
+		);
 
 private:
 	void on_startup( );
@@ -34,14 +37,12 @@ private:
 		GdkEventAny* any_event__
 		);
 
-	void AttachButtonHandlers( );
-
 	static constexpr const char* kAppIdentifier = "com.gnome.opencode";
 
 	Glib::RefPtr<Gtk::Application> app_ =
 		Gtk::Application::create( kAppIdentifier );
 	
-	AgentWindow agent_window_;
+	AgentWindow agent_window_{ this };
 };
 
 #endif

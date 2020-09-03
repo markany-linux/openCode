@@ -5,7 +5,12 @@
 
 #include <gtkmm/box.h>
 
-AgentWindow::AgentWindow( )
+#include "agent_main.h"
+#include "button_box.h"
+
+AgentWindow::AgentWindow(
+	AgentMain*					agent_main__
+	) : button_box_( agent_main__ )
 {
 	std::cout << "[+] AgentWindow::AgentWindow()\n";
 

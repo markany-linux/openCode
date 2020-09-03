@@ -1,11 +1,15 @@
 #ifndef __AGENT_WINDOW_H__
 #define __AGENT_WINDOW_H__
 
+#include <gtkmm/box.h>
 #include <gtkmm/enums.h>
 #include <gtkmm/label.h>
 #include <gtkmm/window.h>
 
-#include "contents_box.h"
+#include "button_box.h"
+#include "text_window.h"
+
+class AgentMain;
 
 class AgentWindow : public Gtk::Window
 {
@@ -13,7 +17,9 @@ public:
 	/**
 	 * @brief	메인 윈도우 객체 생성
 	 **/
-	AgentWindow( );
+	AgentWindow(
+		AgentMain*				agent_main__
+		);
 	
 	/**
 	 * @brief	메인 윈도우 객체 소멸

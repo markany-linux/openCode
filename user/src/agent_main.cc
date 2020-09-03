@@ -3,7 +3,6 @@
 #include <iostream>
 
 #include "button_box.h"
-#include "contents_box.h"
 
 AgentMain::AgentMain( )
 {
@@ -14,12 +13,11 @@ AgentMain::AgentMain( )
 	/// 사용자가 임의로 종료를 시도할 때에 대한 핸들러 등록
 	agent_window_.signal_delete_event( )
 		.connect( sigc::mem_fun( *this, &AgentMain::on_delete_event ) );
-
-	AttachButtonHandlers( );
 }
 
 AgentMain::~AgentMain( )
 {
+	app_->quit( );
 }
 
 int AgentMain::Run( )
@@ -27,9 +25,31 @@ int AgentMain::Run( )
 	return app_->run( );
 }
 
+void AgentMain::on_button_clicked(
+	AgentButtonType				button_type__
+	)
+{
+	switch( button_type__ )
+	{
+	case kAgentButtonConfig:
+		break;
+	case kAgentButtonSystem:
+		break;
+	case kAgentButtonProcess:
+		break;
+	case kAgentButtonProc:
+		break;
+	case kAgentButtonTime:
+		break;
+	}
+}
+
 void AgentMain::on_startup( )
 {
+	std::cout << "[+] AgentMain::on_startup()\n";
 	app_->add_window( agent_window_ );
+	agent_window_.show( );
+	std::cout << "[-] AgentMain::on_startup()\n";
 }
 
 bool AgentMain::on_delete_event(
@@ -38,12 +58,5 @@ bool AgentMain::on_delete_event(
 {
 	/// 종료 명령 무시
 	return true;
-}
-
-void AgentMain::AttachButtonHandlers( )
-{
-	ContentsBox& contents_box = agent_window_.get_contents_box( );
-
-	contents_box.AttachButtonsToSignal( this );
 }
 
