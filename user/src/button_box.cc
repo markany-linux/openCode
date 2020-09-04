@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 
+#include <gtkmm/enums.h>
+
 #include "agent_main.h"
 
 AgentButton::AgentButton(
@@ -18,11 +20,11 @@ ButtonBox::ButtonBox(
 		: Gtk::Box( Gtk::ORIENTATION_VERTICAL, 0 )
 {
 	std::cout << "[+] ButtonBox::ButtonBox()\n";
-	AddButton( agent_main__, kAgentButtonConfig, kConfigButtonLabel );
-	AddButton( agent_main__, kAgentButtonSystem, kSystemButtonLabel );
-	AddButton( agent_main__, kAgentButtonProcess, kProcessButtonLabel );
-	AddButton( agent_main__, kAgentButtonProc, kProcButtonLabel );
-	AddButton( agent_main__, kAgentButtonTime, kTimeButtonLabel );
+	AddButton( agent_main__, AgentButtonType::kConfig, kConfigButtonLabel );
+	AddButton( agent_main__, AgentButtonType::kSystem, kSystemButtonLabel );
+	AddButton( agent_main__, AgentButtonType::kProcess, kProcessButtonLabel );
+	AddButton( agent_main__, AgentButtonType::kProc, kProcButtonLabel );
+	AddButton( agent_main__, AgentButtonType::kTime, kTimeButtonLabel );
 	std::cout << "[-] ButtonBox::ButtonBox()\n";
 }
 
@@ -50,6 +52,8 @@ bool ButtonBox::AddButton(
 			sigc::mem_fun(
 				agent_main__,
 				&AgentMain::on_button_clicked ), button->GetType( ) ) );
+
+	pack_start( *button );
 
 	buttons_.emplace_back( std::move( button ) );
 	std::cout << "[-] ButtonBox::AddButton()\n";

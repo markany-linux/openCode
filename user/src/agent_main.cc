@@ -34,15 +34,15 @@ void AgentMain::on_button_clicked(
 {
 	switch( button_type__ )
 	{
-	case kAgentButtonConfig:
+	case AgentButtonType::kConfig:
 		break;
-	case kAgentButtonSystem:
+	case AgentButtonType::kSystem:
 		break;
-	case kAgentButtonProcess:
+	case AgentButtonType::kProcess:
 		break;
-	case kAgentButtonProc:
+	case AgentButtonType::kProc:
 		break;
-	case kAgentButtonTime:
+	case AgentButtonType::kTime:
 		break;
 	}
 }
