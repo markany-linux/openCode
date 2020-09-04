@@ -4,6 +4,8 @@
 #include <memory>
 #include <string>
 
+#include "lib_utility/interface/config_handler.h"
+
 class AgentMain;
 
 using DataString = std::shared_ptr< std::string >;
@@ -15,7 +17,8 @@ public:
 	 * @brief	에이전트에서 각종 데이터를 가져오는 객체 생성
 	 **/
 	AgentData(
-		AgentMain* agent_main__
+		AgentMain*				agent_main__,
+		std::string&			config_file_path__
 		);
 
 	AgentData(
@@ -41,6 +44,7 @@ public:
 
 private:
 	AgentMain* agent_main_ = nullptr;
+	CONFIG_LIST config_list_;
 };
 
 #endif
