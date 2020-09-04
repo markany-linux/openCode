@@ -11,11 +11,11 @@ class AgentMain;
 
 enum AgentButtonType
 {
-	kAgentButtonConfig,
-	kAgentButtonSystem,
-	kAgentButtonProcess,
-	kAgentButtonProc,
-	kAgentButtonTime
+	kConfig,
+	kSystem,
+	kProcess,
+	kProc,
+	kTime
 };
 
 class AgentButton : public Gtk::Button
