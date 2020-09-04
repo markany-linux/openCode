@@ -29,8 +29,8 @@ public:
 protected:
 	/// 종료 버튼 텍스트 상수
 	static constexpr const char* kQuitButtonText = "종료";
-	static constexpr int kWindowWidth = 300;
-	static constexpr int kWindowHeight = 400;
+	static constexpr int kWindowWidth = 600;
+	static constexpr int kWindowHeight = 500;
 	static constexpr const char* kTitle = "openCode Agent";
 
 	/**
@@ -61,7 +61,7 @@ protected:
 	Gtk::Box quit_box_{ Gtk::ORIENTATION_HORIZONTAL };
 	
 	/// 상단 타이틀 라벨
-	Gtk::Label subtitle_;
+	Gtk::Label subtitle_{ kTitle };
 
 	/// 버튼들이 들어간 박스
 	ButtonBox button_box_;

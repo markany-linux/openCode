@@ -12,10 +12,14 @@ AgentWindow::AgentWindow(
 	AgentMain*					agent_main__
 	) : button_box_( agent_main__ )
 {
+	constexpr int kMargin = 20;
 	std::cout << "[+] AgentWindow::AgentWindow()\n";
 
 	/// 메인 박스에 파생 위젯들을 attach
 	AttachChildWidgets( );
+
+	main_box_.set_margin_start( kMargin );
+	main_box_.set_margin_end( kMargin );
 
 	/// 메인 박스를 메인 윈도우에 추가
 	add( main_box_ );
@@ -53,9 +57,9 @@ void AgentWindow::AttachChildWidgets( )
 void AgentWindow::AttachContentsToContentsBox( )
 {
 	/// 정보 표시를 요청할 수 있는 버튼들 추가
-	contents_box_.pack_start( button_box_ );
+	contents_box_.pack_start( button_box_, Gtk::PACK_SHRINK, 50 );
 	/// 정보들을 표시할 텍스트 뷰 윈도우 추가
-	contents_box_.pack_start( text_window_ );
+	contents_box_.pack_start( text_window_, Gtk::PACK_EXPAND_WIDGET );
 }
 
 void AgentWindow::AttachQuitButton( )
