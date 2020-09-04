@@ -6,6 +6,7 @@
 -std=c++14
 -I./src
 -I./
+-I../
 -I/usr/include/gtkmm-3.0
 -I/usr/lib/x86_64-linux-gnu/gtkmm-3.0/include
 -I/usr/include/atkmm-1.6
