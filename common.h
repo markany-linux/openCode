@@ -12,6 +12,9 @@
 #define __COMMON_H__
 
 
+#include <stddef.h>
+
+
 /// defin nULL type
 #define mild_null					(0)
 
@@ -28,6 +31,7 @@ typedef long long                   mild_i64;
 typedef unsigned long long          mild_u64;
 typedef float                       mild_float;
 typedef double                      mild_double;
+typedef size_t                      mild_size;
 
 /**
 @brief  define Boolean type and true, false value

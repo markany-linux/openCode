@@ -13,6 +13,9 @@
 #define __LIB_UTILITY__CONFIG_HANDLER_IMPL_H__
 
 
+#include <pthread.h>
+
+
 #include "common.h"
 
 #include "../gpl_list.h"
