@@ -5,7 +5,7 @@ CXX =			clang++-10
 CXXFLAGS =		-W -Wall -Wextra -Werror -Wno-deprecated-copy -std=c++14 $(INCLUDE_DIRS)
 LDLIBS =		$(shell pkg-config --libs gtkmm-3.0)
 
-INCLUDE_DIR =	./src
+INCLUDE_DIR =	./src ./
 INCLUDE_DIRS =	$(INCLUDE_DIR:%=-I%) $(shell pkg-config --cflags-only-I gtkmm-3.0)
 
 SOURCE_DIR =	./src
