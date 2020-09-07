@@ -9,9 +9,6 @@
 
 class AgentMain;
 
-using ConfigKeyList = std::vector< std::string >;
-using DataString = std::shared_ptr< std::string >;
-
 class AgentData
 {
 public:
@@ -24,8 +21,7 @@ public:
 	 **/
 	AgentData(
 		AgentMain*				agent_main__,
-		std::string&			config_file_path__,
-		const ConfigKeyList&	key_list__
+		std::string&			config_file_path__
 		);
 
 	AgentData(
@@ -54,13 +50,12 @@ public:
 	 * 
 	 * @return	설정 파일에 있는 정보들을 읽을 수 있도록 변환된 문자열
 	 **/
-	const DataString GetConfigData(
-		const ConfigKeyList&	key_list__
-		);
+	const std::shared_ptr< std::string >  GetConfigData( );
 
 private:
 	/// 설정 파일에서 특정 키에 대한 값을 읽을 때 값의 최대 길이 지정
 	static constexpr int kConfigValueSize = 256;
+	static const std::vector< const char* > kConfigKeys;
 
 	AgentMain* agent_main_ = nullptr;
 	CONFIG_LIST config_list_;

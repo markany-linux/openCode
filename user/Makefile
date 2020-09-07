@@ -1,4 +1,4 @@
-CXX =			clang++-10
+CXX =			clang++
 
 # glibmm에서 Copy Constructor Deprecated Copy Warning이 뜨는 문제가 있어
 # 해당 Warning 제외
