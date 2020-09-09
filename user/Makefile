@@ -9,11 +9,12 @@ INCLUDE_DIR =	./src ./ ../
 INCLUDE_DIRS =	$(INCLUDE_DIR:%=-I%) $(shell pkg-config --cflags-only-I gtkmm-3.0)
 
 SOURCE_DIR =	./src
-SOURCES =		agent_main.cc		\
+SOURCES =		agent_data.cc		\
+				agent_main.cc		\
 				agent_window.cc		\
 				button_box.cc		\
 				main.cc				\
-				text_window.cc		\
+				text_window.cc
 
 OBJECTS =		$(SOURCES:%.cc=$(SOURCE_DIR)/%.o)
 

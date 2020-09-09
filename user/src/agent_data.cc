@@ -10,6 +10,54 @@ const std::vector< const char* > AgentData::kConfigKeys = {
 	"PORT"
 };
 
+template< typename ... Args >
+static size_t string_format(
+	std::string*				destination__,
+	const char*					format__,
+	Args ...					args__
+	)
+{
+	size_t buffer_size = 0;
+	std::unique_ptr< char[ ] > cstring_buffer = nullptr;
+
+	if( ( !destination__ ) || ( !format__ ) )
+		return 0;
+	
+	buffer_size = snprintf( nullptr, 0, format__, args__ ... );
+	if( 0 == buffer_size )
+		return 0;
+	
+	cstring_buffer.reset( new char[ buffer_size + 1 ] );
+	if( !cstring_buffer )
+		return 0;
+	
+	buffer_size = snprintf( cstring_buffer.get( ), buffer_size,
+							format__, args__ ... );
+	if( 0 == buffer_size )
+		return 0;
+	
+	*destination__ = cstring_buffer.get( );
+	return buffer_size;
+}
+
+template< typename ... Args >
+static size_t string_append_format(
+	std::string*				destination__,
+	const char*					format__,
+	Args ...					args__
+	)
+{
+	std::string format_string;
+	size_t format_size = 0;
+
+	format_size = string_format( destination__, format__, args__ ... );
+	if( 0 == format_size )
+		return 0;
+	
+	destination__->append( format_string );
+	return format_size;
+}
+
 AgentData::AgentData(
 	AgentMain*					agent_main__,
 	std::string&				config_file_path__
@@ -47,6 +95,8 @@ const std::shared_ptr< std::string > AgentData::GetConfigData( )
 		/// SERVER_IP = 192.168.1.1
 		/// PORT = 7777
 		//string_append( output.get( ), "%s = %s\n", key, value );
+		string_append_format( output.get( ),
+							  "%s = %s\n", key, value );
 	}
 
 	return output;
