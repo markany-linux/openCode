@@ -3,7 +3,9 @@
 #include <string>
 #include <cstring>
 
+#include "common.h"
 #include "lib_utility/interface/config_handler.h"
+#include "lib_utility/interface/crc.h"
 #include "lib_utility/interface/time_handler.h"
 
 static constexpr int kTimeBufferLength = 64;
@@ -84,6 +86,28 @@ static size_t string_append_format(
 	return format_size;
 }
 
+static void AppendDataPairWithCRC(
+	std::string*			destination__,
+	const char* 			key__,
+	const char*				value__
+	)
+{
+	const char* format = "%s [CRC: %x] = %s [CRC: %x]\n";
+	mild_custr key =
+		reinterpret_cast< mild_custr >( key__ );
+	mild_custr value =
+		reinterpret_cast< mild_custr >( value__ );
+	mild_u32 key_crc = 0;
+	mild_u32 value_crc = 0;
+
+	key_crc = getCRCValue( key, strlen( key__ ) );
+	value_crc = getCRCValue( value, strlen( value__ ) );
+
+	string_append_format( destination__, format,
+						  key__, key_crc,
+						  value__, value_crc);
+}
+
 const std::string AgentData::GetConfigData( )
 {
 	char value[ kConfigValueSize ] = { 0, };
@@ -115,8 +139,7 @@ const std::string AgentData::GetConfigData( )
 		/// SERVER_IP = 192.168.1.1
 		/// PORT = 7777
 		//string_append( output.get( ), "%s = %s\n", key, value );
-		string_append_format( &output,
-							  "%s = %s\n", key, value );
+		AppendDataPairWithCRC( &output, key, value );
 	}
 
 	return output;
@@ -133,25 +156,34 @@ const std::string AgentData::GetSystemInfo( )
 	if( !getLocalSystemInfo( &system_info_ ) )
 		return output;
 	
-	string_format( &output, "distrib_id = %s\n", system_info_.distrib_id );
-	string_append_format( &output, "distrib_id_like = %s\n",
-						  system_info_.distrib_id_like );
-	string_append_format( &output, "distrib_name = %s\n",
-						  system_info_.distrib_name );
-	string_append_format( &output, "distrib_version = %s\n",
-						  system_info_.distrib_version );
-	string_append_format( &output, "distrib_version_id = %s\n",
-						  system_info_.distrib_version_id );
-	string_append_format( &output, "distrib_pretty = %s\n",
-						  system_info_.distrib_pretty );
-	string_append_format( &output, "local_ip = %s\n",
-						  system_info_.local_ip );
-	string_append_format( &output, "local_hostname = %s\n",
-						  system_info_.local_hostname );
-	string_append_format( &output, "local_nic = %s\n",
-						  system_info_.local_nic );	
-	string_append_format( &output, "kernel_version = %s\n",
-						  system_info_.kernel_version );										  												  						  						  						  
+	AppendDataPairWithCRC( &output, "distrib_id", system_info_.distrib_id );
+
+	AppendDataPairWithCRC(
+		&output, "distrib_id_like", system_info_.distrib_id_like );
+	
+	AppendDataPairWithCRC(
+		&output, "distrib_name", system_info_.distrib_name );
+	
+	AppendDataPairWithCRC(
+		&output, "distrib_version", system_info_.distrib_version );
+	
+	AppendDataPairWithCRC(
+		&output, "distrib_version_id", system_info_.distrib_version_id );
+	
+	AppendDataPairWithCRC(
+		&output, "distrib_pretty", system_info_.distrib_pretty );
+	
+	AppendDataPairWithCRC(
+		&output, "local_ip", system_info_.local_ip );
+	
+	AppendDataPairWithCRC(
+		&output, "local_hostname", system_info_.local_hostname );
+	
+	AppendDataPairWithCRC(
+		&output, "local_nic", system_info_.local_nic );	
+	
+	AppendDataPairWithCRC(
+		&output, "kernel_version", system_info_.kernel_version );										  												  						  						  						  
 
 	return output;
 }
@@ -159,38 +191,38 @@ const std::string AgentData::GetSystemInfo( )
 const std::string AgentData::GetTimeInfo( )
 {
 	mild_u64 current_time = 0;
-	char time_result[ kTimeBufferLength ];
+	char time_result[ kTimeBufferLength ] = { 0, };
 	std::string output;
 
 	if( getCurrentTimestamp( time_result ) )
-		string_format( &output, "Current Timestamp = %s\n", time_result );
+		AppendDataPairWithCRC( &output, "Current Timestamp", time_result );
 	
 	if( getCurrentTimestampMn( time_result ) )
-		string_append_format( &output, "Current Timestamp Mn = %s\n",
-							  time_result );
+		AppendDataPairWithCRC(
+			&output, "Current Timestamp Mn", time_result );
 	
 	if( getCurrentTimeReadable( time_result ) )
-		string_append_format( &output, "Current Time Readable = %s\n",
-							  time_result );
+		AppendDataPairWithCRC(
+			&output, "Current Time Readable", time_result );
 	
 	if( getCurrentDateReadable( time_result ) )
-		string_append_format( &output, "Current Time Readable = %s\n",
-							  time_result );
+		AppendDataPairWithCRC(
+			&output, "Current Time Readable", time_result );
 
 	if( getCurrentDateTimeReadable( time_result ) )
-		string_append_format( &output, "Current Date Time Readable = %s\n",
-							  time_result );
+		AppendDataPairWithCRC(
+			&output, "Current Date Time Readable", time_result );
 
 	if( getCurrentTime( &current_time ) )
 	{
 		getTimeReadable( current_time, time_result );
-		string_append_format( &output, "Time Readable = %s\n", time_result );
+		AppendDataPairWithCRC( &output, "Time Readable", time_result );
 
 		getDateReadable( current_time, time_result );
-		string_append_format( &output, "Date Readable = %s\n", time_result );
+		AppendDataPairWithCRC( &output, "Date Readable", time_result );
 
 		getDateTimeReadable( current_time, time_result, mild_true, mild_true );
-		string_append_format( &output, "Time Readable = %s\n", time_result );
+		AppendDataPairWithCRC( &output, "Time Readable", time_result );
 	}
 
 	return output;
