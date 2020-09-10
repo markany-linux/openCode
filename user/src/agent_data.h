@@ -57,6 +57,13 @@ public:
 	 **/
 	const std::string GetSystemInfo( );
 
+	/**
+	 * @brief	각종 시간 정보를 가져와서 문자열로 변환
+	 * 
+	 * @return	시간 정보들을 읽을 수 있도록 변환된 문자열
+	 **/
+	const std::string GetTimeInfo( );
+
 private:
 	/// 설정 파일에서 특정 키에 대한 값을 읽을 때 값의 최대 길이 지정
 	static constexpr int kConfigValueSize = 256;

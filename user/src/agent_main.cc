@@ -52,7 +52,10 @@ void AgentMain::on_button_clicked(
 		case AgentButtonType::kProc:
 			break;
 		case AgentButtonType::kTime:
+		{
+			agent_window_.ShowText( agent_data_.GetTimeInfo( ) );
 			break;
+		}
 	}
 	std::cout << "[-] AgentMain::on_button_clicked()\n";
 }

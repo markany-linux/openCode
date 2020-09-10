@@ -1,9 +1,12 @@
 #include "agent_data.h"
 
-#include "lib_utility/interface/config_handler.h"
-
 #include <string>
 #include <cstring>
+
+#include "lib_utility/interface/config_handler.h"
+#include "lib_utility/interface/time_handler.h"
+
+static constexpr int kTimeBufferLength = 64;
 
 const std::vector< const char* > AgentData::kConfigKeys = {
 	"SERVER_IP",
@@ -149,6 +152,46 @@ const std::string AgentData::GetSystemInfo( )
 						  system_info_.local_nic );	
 	string_append_format( &output, "kernel_version = %s\n",
 						  system_info_.kernel_version );										  												  						  						  						  
+
+	return output;
+}
+
+const std::string AgentData::GetTimeInfo( )
+{
+	mild_u64 current_time = 0;
+	char time_result[ kTimeBufferLength ];
+	std::string output;
+
+	if( getCurrentTimestamp( time_result ) )
+		string_format( &output, "Current Timestamp = %s\n", time_result );
+	
+	if( getCurrentTimestampMn( time_result ) )
+		string_append_format( &output, "Current Timestamp Mn = %s\n",
+							  time_result );
+	
+	if( getCurrentTimeReadable( time_result ) )
+		string_append_format( &output, "Current Time Readable = %s\n",
+							  time_result );
+	
+	if( getCurrentDateReadable( time_result ) )
+		string_append_format( &output, "Current Time Readable = %s\n",
+							  time_result );
+
+	if( getCurrentDateTimeReadable( time_result ) )
+		string_append_format( &output, "Current Date Time Readable = %s\n",
+							  time_result );
+
+	if( getCurrentTime( &current_time ) )
+	{
+		getTimeReadable( current_time, time_result );
+		string_append_format( &output, "Time Readable = %s\n", time_result );
+
+		getDateReadable( current_time, time_result );
+		string_append_format( &output, "Date Readable = %s\n", time_result );
+
+		getDateTimeReadable( current_time, time_result, mild_true, mild_true );
+		string_append_format( &output, "Time Readable = %s\n", time_result );
+	}
 
 	return output;
 }
