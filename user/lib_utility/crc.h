@@ -26,7 +26,7 @@
  * @return  버퍼에서 획득된 CRC 값
  */
 mild_u32 get_crc_value(
-    mild_ustr                   buffer__,
+    mild_custr                  buffer__,
     mild_i32                    len__
     );
 

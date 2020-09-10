@@ -62,6 +62,9 @@ typedef unsigned char*              mild_ustr;
 /// const string type
 typedef const char*                 mild_cstr;
 
+/// const unsigned string type
+typedef const unsigned char*        mild_custr;
+
 /// void pointer type
 typedef void*                       mild_ptr;
 
