@@ -3,11 +3,34 @@
 #include "lib_utility/interface/config_handler.h"
 
 #include <string>
+#include <cstring>
 
 const std::vector< const char* > AgentData::kConfigKeys = {
 	"SERVER_IP",
 	"PORT"
 };
+
+AgentData::AgentData(
+	const std::string&			config_file_path__
+	)
+{
+	bool config_create = false;
+
+	config_create = createConfigList( &config_list_ );
+	if( config_create)
+		config_init_ = initConfigList( config_list_, config_file_path__.c_str( ) );
+}
+
+AgentData::~AgentData()
+{
+	if( config_list_ )
+	{
+		if( config_init_ )
+			cleanupConfigList( config_list_ );
+		
+		destroyConfigList( config_list_ );
+	}
+}
 
 template< typename ... Args >
 static size_t string_format(
@@ -16,24 +39,25 @@ static size_t string_format(
 	Args ...					args__
 	)
 {
-	size_t buffer_size = 0;
+	int buffer_size = 0;
 	std::unique_ptr< char[ ] > cstring_buffer = nullptr;
 
 	if( ( !destination__ ) || ( !format__ ) )
 		return 0;
 	
-	buffer_size = snprintf( nullptr, 0, format__, args__ ... );
-	if( 0 == buffer_size )
-		return 0;
+	/// + 1은 '\0'을 추가한 길이를 적용하기 위함
+	buffer_size = snprintf( nullptr, 0, format__, args__ ... ) + 1;
+	if( 0 >= buffer_size )
+		return buffer_size;
 	
-	cstring_buffer.reset( new char[ buffer_size + 1 ] );
+	cstring_buffer.reset( new char[ buffer_size ] );
 	if( !cstring_buffer )
 		return 0;
 	
 	buffer_size = snprintf( cstring_buffer.get( ), buffer_size,
-							format__, args__ ... );
-	if( 0 == buffer_size )
-		return 0;
+							format__, args__ ... ) + 1;
+	if( 0 >= buffer_size )
+		return buffer_size;
 	
 	*destination__ = cstring_buffer.get( );
 	return buffer_size;
@@ -49,7 +73,7 @@ static size_t string_append_format(
 	std::string format_string;
 	size_t format_size = 0;
 
-	format_size = string_format( destination__, format__, args__ ... );
+	format_size = string_format( &format_string, format__, args__ ... );
 	if( 0 == format_size )
 		return 0;
 	
@@ -57,29 +81,23 @@ static size_t string_append_format(
 	return format_size;
 }
 
-AgentData::AgentData(
-	AgentMain*					agent_main__,
-	std::string&				config_file_path__
-	) : agent_main_( agent_main__ )
-{
-	initConfigList( &config_list_, config_file_path__.c_str( ) );
-	GetConfigData( );
-}
-
-const std::shared_ptr< std::string > AgentData::GetConfigData( )
+const std::string AgentData::GetConfigData( )
 {
 	char value[ kConfigValueSize ] = { 0, };
 	bool has_value = false;
-	std::shared_ptr< std::string > output = std::make_shared< std::string >( );
+	std::string output;
+
+	if( !config_init_ )
+		return output;
 
 	for( auto* key : kConfigKeys )
 	{
 		/// 문자열 항상 초기화
-		value[ 0 ] = '\0';
+		memset( value, 0x00, sizeof( value ) );
 		
 		/// 키를 통하여 값을 요청
 		has_value = getConfigListValue(
-										&config_list_,
+										config_list_,
 										key,
 										value,
 										sizeof( value ) );
@@ -94,10 +112,9 @@ const std::shared_ptr< std::string > AgentData::GetConfigData( )
 		/// SERVER_IP = 192.168.1.1
 		/// PORT = 7777
 		//string_append( output.get( ), "%s = %s\n", key, value );
-		string_append_format( output.get( ),
+		string_append_format( &output,
 							  "%s = %s\n", key, value );
 	}
 
 	return output;
 }
-

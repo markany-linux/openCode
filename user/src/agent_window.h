@@ -26,6 +26,15 @@ public:
 	 **/
 	virtual ~AgentWindow( );
 
+	/**
+	 * @brief	텍스트 보여주기
+	 *
+	 * @param	text__	보여줄 텍스트
+	 **/
+	void ShowText(
+		const std::string&		text__
+		);
+
 protected:
 	/// 종료 버튼 텍스트 상수
 	static constexpr const char* kQuitButtonText = "종료";

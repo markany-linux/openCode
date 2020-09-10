@@ -1,10 +1,13 @@
 #ifndef __AGENT_MAIN_H__
 #define __AGENT_MAIN_H__
 
-#include <gtkmm/application.h>
-
+#include "agent_data.h"
 #include "agent_window.h"
 #include "button_box.h"
+
+namespace Gtk {
+class Application;
+}
 
 class AgentMain
 {
@@ -32,17 +35,19 @@ public:
 		);
 
 private:
+	static constexpr const char* kAppIdentifier = "com.gnome.opencode";
+	static const std::string kConfigFilePath;
+
 	void on_startup( );
 	bool on_delete_event(
 		GdkEventAny* any_event__
 		);
 
-	static constexpr const char* kAppIdentifier = "com.gnome.opencode";
-
 	Glib::RefPtr<Gtk::Application> app_ =
 		Gtk::Application::create( kAppIdentifier );
 	
 	AgentWindow agent_window_{ this };
+	AgentData agent_data_{ kConfigFilePath };
 };
 
 #endif

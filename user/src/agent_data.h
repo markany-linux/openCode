@@ -20,8 +20,7 @@ public:
 	 * @param	key_list__			설정 파일에서 읽어올 키 리스트
 	 **/
 	AgentData(
-		AgentMain*				agent_main__,
-		std::string&			config_file_path__
+		const std::string&		config_file_path__
 		);
 
 	AgentData(
@@ -50,15 +49,16 @@ public:
 	 * 
 	 * @return	설정 파일에 있는 정보들을 읽을 수 있도록 변환된 문자열
 	 **/
-	const std::shared_ptr< std::string >  GetConfigData( );
+	const std::string GetConfigData( );
 
 private:
 	/// 설정 파일에서 특정 키에 대한 값을 읽을 때 값의 최대 길이 지정
 	static constexpr int kConfigValueSize = 256;
 	static const std::vector< const char* > kConfigKeys;
 
-	AgentMain* agent_main_ = nullptr;
-	CONFIG_LIST config_list_;
+	CONFIG_LIST* config_list_ = nullptr;
+
+	bool config_init_ = false;
 };
 
 #endif

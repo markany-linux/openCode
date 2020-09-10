@@ -41,7 +41,7 @@ public:
 	 * @return	텍스트가 성공적으로 작성되었다면 true, 아닐 경우 false
 	 **/
 	bool ShowText(
-		std::string text__
+		const std::string&		text__
 		);
 
 private:
