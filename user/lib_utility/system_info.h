@@ -20,6 +20,11 @@
 #include "common.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 /**
  * @brief   에이전트가 설치된 배포판 정보
  */
@@ -68,6 +73,11 @@ typedef struct linux_distribution_system_informations
 mild_bool get_system_info(
     PMADRM_LOCAL_SYSTEM         system__
     );
+
+
+#ifdef __cplusplus // extern "C" {
+}
+#endif
 
 
 #endif //>  #ifndef __LIB_UTILITY__SYSTEM_INFO_H__
