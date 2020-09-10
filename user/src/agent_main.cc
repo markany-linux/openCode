@@ -43,7 +43,10 @@ void AgentMain::on_button_clicked(
 			break;
 		}
 		case AgentButtonType::kSystem:
+		{
+			agent_window_.ShowText( agent_data_.GetSystemInfo( ) );
 			break;
+		}
 		case AgentButtonType::kProcess:
 			break;
 		case AgentButtonType::kProc:

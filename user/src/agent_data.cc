@@ -118,3 +118,37 @@ const std::string AgentData::GetConfigData( )
 
 	return output;
 }
+
+const std::string AgentData::GetSystemInfo( )
+{
+	std::string output;
+
+	/// 시스템 정보를 저장할 멤버변수 초기화
+	memset( &system_info_, 0x00, sizeof( system_info_ ) );
+
+	/// 시스템 정보 가져오기
+	if( !getLocalSystemInfo( &system_info_ ) )
+		return output;
+	
+	string_format( &output, "distrib_id = %s\n", system_info_.distrib_id );
+	string_append_format( &output, "distrib_id_like = %s\n",
+						  system_info_.distrib_id_like );
+	string_append_format( &output, "distrib_name = %s\n",
+						  system_info_.distrib_name );
+	string_append_format( &output, "distrib_version = %s\n",
+						  system_info_.distrib_version );
+	string_append_format( &output, "distrib_version_id = %s\n",
+						  system_info_.distrib_version_id );
+	string_append_format( &output, "distrib_pretty = %s\n",
+						  system_info_.distrib_pretty );
+	string_append_format( &output, "local_ip = %s\n",
+						  system_info_.local_ip );
+	string_append_format( &output, "local_hostname = %s\n",
+						  system_info_.local_hostname );
+	string_append_format( &output, "local_nic = %s\n",
+						  system_info_.local_nic );	
+	string_append_format( &output, "kernel_version = %s\n",
+						  system_info_.kernel_version );										  												  						  						  						  
+
+	return output;
+}

@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "lib_utility/interface/config_handler.h"
+#include "lib_utility/interface/system_info.h"
 
 class AgentMain;
 
@@ -44,19 +45,25 @@ public:
 
 	/**
 	 * @brief	설정 파일의 정보를 가져와서 문자열로 변환
-	 *
-	 * @param	key_list__	키를 담은 리스트
 	 * 
 	 * @return	설정 파일에 있는 정보들을 읽을 수 있도록 변환된 문자열
 	 **/
 	const std::string GetConfigData( );
+
+	/**
+	 * @brief	각종 시스템 정보를 가져와서 문자열로 변환
+	 * 
+	 * @return	시스템 정보들을 읽을 수 있도록 변환된 문자열
+	 **/
+	const std::string GetSystemInfo( );
 
 private:
 	/// 설정 파일에서 특정 키에 대한 값을 읽을 때 값의 최대 길이 지정
 	static constexpr int kConfigValueSize = 256;
 	static const std::vector< const char* > kConfigKeys;
 
-	CONFIG_LIST* config_list_ = nullptr;
+	PCONFIG_LIST config_list_ = nullptr;
+	MADRM_LOCAL_SYSTEM system_info_;
 
 	bool config_init_ = false;
 };
