@@ -207,7 +207,7 @@ const std::string AgentData::GetTimeInfo( )
 	
 	if( getCurrentDateReadable( time_result ) )
 		AppendDataPairWithCRC(
-			&output, "Current Time Readable", time_result );
+			&output, "Current Date Readable", time_result );
 
 	if( getCurrentDateTimeReadable( time_result ) )
 		AppendDataPairWithCRC(
@@ -222,7 +222,7 @@ const std::string AgentData::GetTimeInfo( )
 		AppendDataPairWithCRC( &output, "Date Readable", time_result );
 
 		getDateTimeReadable( current_time, time_result, mild_true, mild_true );
-		AppendDataPairWithCRC( &output, "Time Readable", time_result );
+		AppendDataPairWithCRC( &output, "Date Time Readable", time_result );
 	}
 
 	return output;
