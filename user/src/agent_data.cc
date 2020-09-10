@@ -1,6 +1,5 @@
 #include "agent_data.h"
 
-#include "lib_utility/gpl_list.h"
 #include "lib_utility/interface/config_handler.h"
 
 #include <string>

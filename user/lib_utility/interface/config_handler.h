@@ -18,8 +18,6 @@
 
 #include "common.h"
 
-#include "../gpl_list.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -40,28 +38,11 @@ extern "C" {
  */
 typedef struct config_list_info
 {
-    /// 리스트 관리를 위한 헤드
-    struct list_head            list_head;
-    /// 리스트 동기화 제어를 위한 동기화 멤버
-    pthread_mutex_t             list_lock;
+	/// 리스트 관리를 위한 헤드
+	void*						list_head;
+	/// 리스트 동기화 제어를 위한 동기화 멤버
+	void*						list_lock;
 } CONFIG_LIST, *PCONFIG_LIST;
-
-
-/**
- * @brief   설정 라벨과 정보 보관 구조체
- */
-typedef struct agent_configuration_info
-{
-    /// 설정 라벨
-    mild_i8                     label[ STRLEN_32 ];
-
-    /// 설정 값
-    mild_i8                     value[ STRLEN_64 ];
-
-    /// 이중 연결 리스트 포인터
-    struct list_head            ptr;
-
-} AGENT_CONFIG, *PAGENT_CONFIG;
 
 
 /**
@@ -70,8 +51,8 @@ typedef struct agent_configuration_info
  * @param   list__  생성되는 리스트를 반환받을 변수
  */
 extern mild_bool createConfigList(
-    PCONFIG_LIST                *list__
-    );
+	PCONFIG_LIST                *list__
+	);
 
 
 /**
@@ -80,8 +61,8 @@ extern mild_bool createConfigList(
  * @param   list__  대상 리스트
  */
 extern void destroyConfigList(
-    PCONFIG_LIST                list__
-    );
+	PCONFIG_LIST                list__
+	);
 
 /**
  * @brief   리스트의 모든 노드와 리스트 제거
@@ -89,8 +70,8 @@ extern void destroyConfigList(
  * @param   list__  대상 리스트
  */
 extern void cleanupConfigList(
-    PCONFIG_LIST                list__
-    );
+	PCONFIG_LIST                list__
+	);
 
 
 /**
@@ -103,11 +84,11 @@ extern void cleanupConfigList(
  * @return  설정 존재 및 반환 성공 true, 존재하지 않음 false
  */
 extern mild_bool getConfigListValue(
-    PCONFIG_LIST                list__,
-    mild_cstr                   label__,
-    mild_str                    value__,
-    mild_u32                    len__
-    );
+	PCONFIG_LIST                list__,
+	mild_cstr                   label__,
+	mild_str                    value__,
+	mild_u32                    len__
+	);
 
 
 /**
@@ -118,17 +99,17 @@ extern mild_bool getConfigListValue(
  * @return  파일 존재/읽어서 파싱이 모두 성공 true, 실패 false
  */
 extern mild_bool initConfigList(
-    PCONFIG_LIST                list__,
-    mild_cstr                   pathname__
-    );
+	PCONFIG_LIST                list__,
+	mild_cstr                   pathname__
+	);
 
 
 /**
  * @brief   파일을 읽어 획득된 모든 설정 정보의 출력
  */
 extern void dispConfigListValue(
-    PCONFIG_LIST                list__
-    );
+	PCONFIG_LIST                list__
+	);
 
 
 /**
@@ -140,7 +121,7 @@ extern void dispConfigListValue(
  * @return  리스트 추가 성공 true, 실패 false
  */
 extern mild_bool addConfigList(
-    PCONFIG_LIST                list__,
+	PCONFIG_LIST                list__,
 	mild_str					label__,
 	mild_str					value__
 	);
