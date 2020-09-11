@@ -80,11 +80,15 @@ public:
 private:
 	/// 설정 파일에서 특정 키에 대한 값을 읽을 때 값의 최대 길이 지정
 	static constexpr int kConfigValueSize = 256;
+	/// 설정 파일에서 읽어올 정보의 키들을 담은 벡터 상수
 	static const std::vector< const char* > kConfigKeys;
 
+	/// 설정 정보 리스트 포인터
 	PCONFIG_LIST config_list_ = nullptr;
+	/// 시스템 정보를 받아올 구조체
 	MADRM_LOCAL_SYSTEM system_info_;
 
+	/// 설정 파일을 정상적으로 읽어왔는지에 대한 상태
 	bool config_init_ = false;
 };
 
