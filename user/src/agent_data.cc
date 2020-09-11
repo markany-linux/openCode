@@ -39,7 +39,7 @@ AgentData::~AgentData()
 
 template< typename ... Args >
 static size_t string_format(
-	std::string*				destination__,
+	std::string&				destination__,
 	const char*					format__,
 	Args ...					args__
 	)
@@ -47,7 +47,7 @@ static size_t string_format(
 	int buffer_size = 0;
 	std::unique_ptr< char[ ] > cstring_buffer = nullptr;
 
-	if( ( !destination__ ) || ( !format__ ) )
+	if( !format__ )
 		return 0;
 	
 	/// + 1은 '\0'을 추가한 길이를 적용하기 위함
@@ -64,13 +64,13 @@ static size_t string_format(
 	if( 0 >= buffer_size )
 		return buffer_size;
 	
-	*destination__ = cstring_buffer.get( );
+	destination__ = cstring_buffer.get( );
 	return buffer_size;
 }
 
 template< typename ... Args >
 static size_t string_append_format(
-	std::string*				destination__,
+	std::string&				destination__,
 	const char*					format__,
 	Args ...					args__
 	)
@@ -78,18 +78,18 @@ static size_t string_append_format(
 	std::string format_string;
 	size_t format_size = 0;
 
-	format_size = string_format( &format_string, format__, args__ ... );
+	format_size = string_format( format_string, format__, args__ ... );
 	if( 0 == format_size )
 		return 0;
 	
-	destination__->append( format_string );
+	destination__.append( format_string );
 	return format_size;
 }
 
 static void AppendDataPairWithCRC(
-	std::string*			destination__,
-	const char* 			key__,
-	const char*				value__
+	std::string&				destination__,
+	const char* 				key__,
+	const char*					value__
 	)
 {
 	const char* format = "%s [CRC: %x] = %s [CRC: %x]\n";
@@ -106,6 +106,15 @@ static void AppendDataPairWithCRC(
 	string_append_format( destination__, format,
 						  key__, key_crc,
 						  value__, value_crc);
+}
+
+static void AppendDataPair(
+	std::string&				destination__,
+	const char*					key__,
+	const char*					value__
+	)
+{
+	string_append_format( destination__, "%s = %s\n", key__, value__ );
 }
 
 const std::string AgentData::GetConfigData( )
@@ -139,7 +148,7 @@ const std::string AgentData::GetConfigData( )
 		/// SERVER_IP = 192.168.1.1
 		/// PORT = 7777
 		//string_append( output.get( ), "%s = %s\n", key, value );
-		AppendDataPairWithCRC( &output, key, value );
+		AppendDataPairWithCRC( output, key, value );
 	}
 
 	return output;
@@ -156,34 +165,34 @@ const std::string AgentData::GetSystemInfo( )
 	if( !getLocalSystemInfo( &system_info_ ) )
 		return output;
 	
-	AppendDataPairWithCRC( &output, "distrib_id", system_info_.distrib_id );
+	AppendDataPair( output, "distrib_id", system_info_.distrib_id );
 
-	AppendDataPairWithCRC(
-		&output, "distrib_id_like", system_info_.distrib_id_like );
+	AppendDataPair(
+		output, "distrib_id_like", system_info_.distrib_id_like );
 	
-	AppendDataPairWithCRC(
-		&output, "distrib_name", system_info_.distrib_name );
+	AppendDataPair(
+		output, "distrib_name", system_info_.distrib_name );
 	
-	AppendDataPairWithCRC(
-		&output, "distrib_version", system_info_.distrib_version );
+	AppendDataPair(
+		output, "distrib_version", system_info_.distrib_version );
 	
-	AppendDataPairWithCRC(
-		&output, "distrib_version_id", system_info_.distrib_version_id );
+	AppendDataPair(
+		output, "distrib_version_id", system_info_.distrib_version_id );
 	
-	AppendDataPairWithCRC(
-		&output, "distrib_pretty", system_info_.distrib_pretty );
+	AppendDataPair(
+		output, "distrib_pretty", system_info_.distrib_pretty );
 	
-	AppendDataPairWithCRC(
-		&output, "local_ip", system_info_.local_ip );
+	AppendDataPair(
+		output, "local_ip", system_info_.local_ip );
 	
-	AppendDataPairWithCRC(
-		&output, "local_hostname", system_info_.local_hostname );
+	AppendDataPair(
+		output, "local_hostname", system_info_.local_hostname );
 	
-	AppendDataPairWithCRC(
-		&output, "local_nic", system_info_.local_nic );	
+	AppendDataPair(
+		output, "local_nic", system_info_.local_nic );	
 	
-	AppendDataPairWithCRC(
-		&output, "kernel_version", system_info_.kernel_version );										  												  						  						  						  
+	AppendDataPair(
+		output, "kernel_version", system_info_.kernel_version );										  												  						  						  						  
 
 	return output;
 }
@@ -195,34 +204,34 @@ const std::string AgentData::GetTimeInfo( )
 	std::string output;
 
 	if( getCurrentTimestamp( time_result ) )
-		AppendDataPairWithCRC( &output, "Current Timestamp", time_result );
+		AppendDataPair( output, "Current Timestamp", time_result );
 	
 	if( getCurrentTimestampMn( time_result ) )
-		AppendDataPairWithCRC(
-			&output, "Current Timestamp Mn", time_result );
+		AppendDataPair(
+			output, "Current Timestamp Mn", time_result );
 	
 	if( getCurrentTimeReadable( time_result ) )
-		AppendDataPairWithCRC(
-			&output, "Current Time Readable", time_result );
+		AppendDataPair(
+			output, "Current Time Readable", time_result );
 	
 	if( getCurrentDateReadable( time_result ) )
-		AppendDataPairWithCRC(
-			&output, "Current Date Readable", time_result );
+		AppendDataPair(
+			output, "Current Date Readable", time_result );
 
 	if( getCurrentDateTimeReadable( time_result ) )
-		AppendDataPairWithCRC(
-			&output, "Current Date Time Readable", time_result );
+		AppendDataPair(
+			output, "Current Date Time Readable", time_result );
 
 	if( getCurrentTime( &current_time ) )
 	{
 		getTimeReadable( current_time, time_result );
-		AppendDataPairWithCRC( &output, "Time Readable", time_result );
+		AppendDataPair( output, "Time Readable", time_result );
 
 		getDateReadable( current_time, time_result );
-		AppendDataPairWithCRC( &output, "Date Readable", time_result );
+		AppendDataPair( output, "Date Readable", time_result );
 
 		getDateTimeReadable( current_time, time_result, mild_true, mild_true );
-		AppendDataPairWithCRC( &output, "Date Time Readable", time_result );
+		AppendDataPair( output, "Date Time Readable", time_result );
 	}
 
 	return output;

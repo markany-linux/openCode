@@ -107,7 +107,7 @@ public:
 
 private:
 	/// Config 버튼 라벨
-	static constexpr const char* kConfigButtonLabel = "Config Info";
+	static constexpr const char* kConfigButtonLabel = "Config Info\n(With CRC)";
 	/// System 버튼 라벨
 	static constexpr const char* kSystemButtonLabel = "System Info";
 	/// Process 버튼 라벨
