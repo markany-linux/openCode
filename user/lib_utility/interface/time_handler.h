@@ -13,7 +13,7 @@
 #define __LIB_UTILITY__TIME_HANDLER_IMPL_H__
 
 
-#include <bits/types/clock_t.h>
+#include <time.h>
 
 
 #include "common.h"
