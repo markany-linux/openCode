@@ -5,7 +5,7 @@
  * 
  * \date    2020.08.18.
  * 
- * \author  MaBling (swma@markany.com)
+ * \author  swma (swma@markany.com)
  * 
  * \copyleft MarkAny Inc. 2020.
  */

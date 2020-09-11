@@ -5,7 +5,7 @@
  * 
  * \date    2020.08.18.
  * 
- * \author  wikim (wikim@markany.com), MaBling (swma@markany.com)
+ * \author  wikim (wikim@markany.com), swma (swma@markany.com)
  * 
  * \copyleft MarkAny Inc. 2020.
  */

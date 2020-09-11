@@ -12,7 +12,7 @@
  * 
  * \author  wikim (wikim@markany.com)
  * 
- * \copyright MarkAny Inc. 2019.
+ * \copyleft MarkAny Inc. 2019.
  */
 #ifndef __LIB_UTILITY__CONFIG_HANDLER_H__
 #define __LIB_UTILITY__CONFIG_HANDLER_H__
