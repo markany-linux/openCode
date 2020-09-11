@@ -1,3 +1,14 @@
+/**
+ * \file		agent_window.h
+ * 
+ * \brief		에이전트 Top-Level 윈도우
+ * 
+ * \date		2020.09.11.
+ * 
+ * \author		swma (swma@markany.com)
+ * 
+ * \copyleft	MarkAny Inc. 2020.
+ */
 #ifndef __AGENT_WINDOW_H__
 #define __AGENT_WINDOW_H__
 
@@ -38,8 +49,11 @@ public:
 protected:
 	/// 종료 버튼 텍스트 상수
 	static constexpr const char* kQuitButtonText = "종료";
+	/// 창 가로 픽셀
 	static constexpr int kWindowWidth = 600;
+	/// 창 세로 픽셀
 	static constexpr int kWindowHeight = 500;
+	/// 윈도우 내부 상단의 라벨 텍스트
 	static constexpr const char* kTitle = "openCode Agent";
 
 	/**

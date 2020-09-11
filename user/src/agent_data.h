@@ -1,3 +1,16 @@
+/**
+ * \file		agent_data.h
+ *
+ * \brief		에이전트의 각종 정보들을 얻고,
+ 				사용자가 읽을 수 있는 문자열로 변환해주는 클래스 선언
+ *
+ * \date		2020.09.11.
+ *
+ * \author		swma (swma@markany.com)
+ * 
+ * \copyleft	MarkAny Inc. 2020.
+ */
+
 #ifndef __AGENT_DATA_H__
 #define __AGENT_DATA_H__
 
