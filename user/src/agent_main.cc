@@ -4,6 +4,8 @@
 
 #include "button_box.h"
 
+const std::string AgentMain::kConfigFilePath = "config.cfg";
+
 AgentMain::AgentMain( )
 {
 	/// 애플리케이션이 구동을 시작할 때에 대한 핸들러 등록
@@ -32,19 +34,30 @@ void AgentMain::on_button_clicked(
 	AgentButtonType				button_type__
 	)
 {
+	std::cout << "[+] AgentMain::on_button_clicked()\n";
 	switch( button_type__ )
 	{
-	case AgentButtonType::kConfig:
-		break;
-	case AgentButtonType::kSystem:
-		break;
-	case AgentButtonType::kProcess:
-		break;
-	case AgentButtonType::kProc:
-		break;
-	case AgentButtonType::kTime:
-		break;
+		case AgentButtonType::kConfig:
+		{
+			agent_window_.ShowText( agent_data_.GetConfigData( ) );
+			break;
+		}
+		case AgentButtonType::kSystem:
+		{
+			agent_window_.ShowText( agent_data_.GetSystemInfo( ) );
+			break;
+		}
+		case AgentButtonType::kProcess:
+			break;
+		case AgentButtonType::kProc:
+			break;
+		case AgentButtonType::kTime:
+		{
+			agent_window_.ShowText( agent_data_.GetTimeInfo( ) );
+			break;
+		}
 	}
+	std::cout << "[-] AgentMain::on_button_clicked()\n";
 }
 
 void AgentMain::on_startup( )

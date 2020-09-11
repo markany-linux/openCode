@@ -40,6 +40,15 @@ AgentWindow::~AgentWindow( )
 	std::cout << "AgentWindow::~AgentWindow()\n";
 }
 
+void AgentWindow::ShowText(
+	const std::string&		text__
+	)
+{
+	std::cout << "[+] AgentWindow::ShowText()\n";
+	text_window_.ShowText( text__ );
+	std::cout << "[-] AgentWindow::ShowText()\n";
+}
+
 void AgentWindow::AttachChildWidgets( )
 {
 	std::cout << "[+] AgentWindow::AttachChildWidgets()\n";

@@ -12,7 +12,16 @@
 #define __COMMON_H__
 
 
+#ifndef __cplusplus
 #include <stddef.h>
+#else
+#include <cstddef>
+
+extern "C" {
+#endif
+
+
+
 
 
 /// defin nULL type
@@ -52,6 +61,9 @@ typedef unsigned char*              mild_ustr;
 
 /// const string type
 typedef const char*                 mild_cstr;
+
+/// const unsigned string type
+typedef const unsigned char*        mild_custr;
 
 /// void pointer type
 typedef void*                       mild_ptr;
@@ -138,5 +150,11 @@ typedef const void*                 mild_cptr;
 #define MA_GET_PATCH_VERSION(v)             ((mild_u32)(v<<12)>>22)
 /// get custom version from all version value. TODO: use more custom value to MAX 4095, modify 3FF to FFF
 #define MA_GET_CUSTOM_VERSION(v)            ((mild_u32)v&0x3FF)
+
+
+#ifdef __cplusplus // extern "C" {
+}
+#endif
+
 
 #endif  // #ifndef __COMMON_H__

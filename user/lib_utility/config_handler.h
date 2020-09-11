@@ -25,6 +25,23 @@
 
 
 /**
+ * @brief   설정 라벨과 정보 보관 구조체
+ */
+typedef struct agent_configuration_info
+{
+	/// 설정 라벨
+	mild_i8                     label[ STRLEN_32 ];
+
+	/// 설정 값
+	mild_i8                     value[ STRLEN_64 ];
+
+	/// 이중 연결 리스트 포인터
+	struct list_head			ptr;
+
+} AGENT_CONFIG, *PAGENT_CONFIG;
+
+
+/**
  * @brief   파일을 읽어 획득된 모든 설정 정보의 출력
  */
 void disp_config_list(

@@ -75,7 +75,7 @@ static void make_crc_table( void )
  */
 static mild_u32 update_crc(
     mild_u32                    crc__,
-    mild_ustr                   buffer__,
+    mild_custr                  buffer__,
     mild_i32                    len__
     )
 {
@@ -95,7 +95,7 @@ static mild_u32 update_crc(
 
 
 mild_u32 get_crc_value(
-    mild_ustr                   buffer__,
+    mild_custr                  buffer__,
     mild_i32                    len__
     )
 {
@@ -103,7 +103,7 @@ mild_u32 get_crc_value(
 }
 
 mild_u32 getCRCValue(
-    mild_ustr                   buffer__,
+    mild_custr                  buffer__,
     mild_i32                    len__
     )
 {

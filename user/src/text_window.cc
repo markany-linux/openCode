@@ -24,7 +24,7 @@ TextWindow::~TextWindow( )
 }
 
 bool TextWindow::ShowText(
-		std::string text__
+	const std::string&			text__
 	)
 {
 	std::cout << "[+] TextWindow::AddText()\n";
@@ -42,9 +42,14 @@ bool TextWindow::ShowText(
 		/// 텍스트 뷰에 생성된 텍스트 버퍼 지정
 		text_view_.set_buffer( text_buffer_ );
 	}
+	
+	/// 쓰여질 텍스트가 빈 텍스트이고 텍스트 뷰 또한 비어있을 경우 텍스트 변경을 하지 않음
+	if( ( 0 < text_buffer_->size( ) ) || ( 0 < text__.size( ) ) )
+	{
+		/// 자동으로 텍스트 뷰에 업데이트 됨
+		text_buffer_->set_text( text__ );
+	}
 
-	/// 자동으로 텍스트 뷰에 업데이트 됨
-	text_buffer_->set_text( text__ );
 	std::cout << "[-] TextWindow::AddText()\n";
 	return true;
 }

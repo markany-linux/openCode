@@ -1,19 +1,21 @@
-CXX =			clang++-10
+CXX =			clang++
 
 # glibmm에서 Copy Constructor Deprecated Copy Warning이 뜨는 문제가 있어
 # 해당 Warning 제외
-CXXFLAGS =		-W -Wall -Wextra -Werror -Wno-deprecated-copy -std=c++14 $(INCLUDE_DIRS)
-LDLIBS =		$(shell pkg-config --libs gtkmm-3.0)
+CXXFLAGS =		-g -W -Wall -Wextra -Werror -Wno-deprecated-copy -std=c++14 $(INCLUDE_DIRS)
+LDLIBS =		-lmautil $(shell pkg-config --libs gtkmm-3.0)
+LDFLAGS =		-L./bin -Wl,--rpath=./
 
 INCLUDE_DIR =	./src ./ ../
 INCLUDE_DIRS =	$(INCLUDE_DIR:%=-I%) $(shell pkg-config --cflags-only-I gtkmm-3.0)
 
 SOURCE_DIR =	./src
-SOURCES =		agent_main.cc		\
+SOURCES =		agent_data.cc		\
+				agent_main.cc		\
 				agent_window.cc		\
 				button_box.cc		\
 				main.cc				\
-				text_window.cc		\
+				text_window.cc
 
 OBJECTS =		$(SOURCES:%.cc=$(SOURCE_DIR)/%.o)
 
@@ -25,7 +27,7 @@ TARGET =		maOpen
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	$(CXX) -o $(INSTALL_DIR)/$(TARGET) $? $(LDLIBS) $(CXXFLAGS)
+	$(CXX) -o $(INSTALL_DIR)/$(TARGET) $? $(LDFLAGS) $(LDLIBS) $(CXXFLAGS)
 
 .cc .o:
 	$(CXX) $(CXXFLAGS) -c $<

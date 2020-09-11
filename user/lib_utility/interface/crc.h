@@ -40,7 +40,7 @@ extern "C" {
  * @return  버퍼에서 획득된 CRC 값
  */
 extern mild_u32 getCRCValue(
-    mild_ustr                   buffer__,
+    mild_custr                  buffer__,
     mild_i32                    len__
     );
 
