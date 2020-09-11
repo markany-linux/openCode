@@ -1,9 +1,11 @@
 #include "single_instance.h"
 
 #include <fcntl.h>
+#include <libgen.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "file_check.h"
 
@@ -15,6 +17,8 @@ mild_bool setup_single_instance(
 {
     mild_i8 buf[ STRLEN_8 ] = { 0, };
     struct flock fl;
+    mild_str path_dir = mild_null;
+    mild_str pathname = mild_null;
 
     /// 잠금 파일 생성 버퍼 확인
     if( mild_null == pathname__ )
@@ -24,19 +28,32 @@ mild_bool setup_single_instance(
     if( FD_START < *fd__ )
         return mild_true;
 
+    /// dirname 사용을 위해 pathname__을 복사
+    pathname = strdup( pathname__ );
+    if( mild_null == pathname )
+        return mild_false;
+
+    path_dir = dirname( pathname );
     /// 생성할 디렉터리 경로 존재 여부 확인
-    if( mild_false == check_directory_exist( pathname__ ) )
+    if( ( mild_false == path_dir ) ||
+        ( mild_false == check_directory_exist( path_dir ) ) )
     {
         printf( "Request pathname is not exist\n" );
         return mild_false;
     }
 
     /// 디렉터리 접근 권한 존재 여부 확인
-    if( mild_false == check_access_read_write( pathname__ ) )
+    if( mild_false == check_access_read_write( path_dir ) )
     {
         printf( "Not enough permission to request pathname\n" );
         return mild_false;
     }
+
+    /// pathname__의 복사본인 pathname은 더 이상 필요하지 않음
+    /// dirname에서 반환된 포인터는 free하면 안됨 (man dirname에서 참고)
+    free( pathname );
+    pathname = mild_null;
+    path_dir = mild_null;
 
     /// PID 값으로 기록할 내용 생성
     sprintf( buf, "%d", getpid( ) );
