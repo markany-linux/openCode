@@ -11,7 +11,7 @@
  * 
  * \author  wikim (wikim@markany.com)
  * 
- * \copyright MarkAny Inc. 2020.
+ * \copyleft MarkAny Inc. 2020.
  */
 #ifndef __LIB_UTILITY__SYSTEM_INFO_H__
 #define __LIB_UTILITY__SYSTEM_INFO_H__

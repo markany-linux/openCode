@@ -7,10 +7,12 @@
  * 
  * \date    2018.05.09.
  *          2020.07.09. modified by wikim.
+ *          2020.09.11. modified by swma.
  * 
  * \author  wikim (wikim@markany.com)
+ *          swma (swma@markany.com)
  * 
- * \copyright MarkAny Inc. 2020.
+ * \copyleft MarkAny Inc. 2020.
  */
 #ifndef __LIB_UTILITY__SINGLE_INSTANCE_H__
 #define __LIB_UTILITY__SINGLE_INSTANCE_H__

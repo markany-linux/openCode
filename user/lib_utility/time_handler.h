@@ -8,7 +8,7 @@
  * 
  * \author	wikim (wikim@markany.com)
  *
- * \copyright MarkAny Inc. 2020.
+ * \copyleft MarkAny Inc. 2020.
 */
 #ifndef __LIB_UTILITY__TIME_HANDLER_H__
 #define __LIB_UTILITY__TIME_HANDLER_H__

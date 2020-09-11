@@ -7,7 +7,7 @@
  * 
  * \author  wikim (wikim@markany.com)
  * 
- * \copyright Mark Inc. 2020.
+ * \copyleft Mark Inc. 2020.
  */
 #ifndef __LIB_UTILITY__UTILITY_DEFINITIONS_H__
 #define __LIB_UTILITY__UTILITY_DEFINITIONS_H__

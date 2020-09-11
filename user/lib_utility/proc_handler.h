@@ -9,7 +9,7 @@
  * \date	2018.05.10.
  * 			2020.06.25. modified by wikim.
  *
- * \copyright MarkAny Inc. 2020.
+ * \copyleft MarkAny Inc. 2020.
  **/
 #ifndef __LIB_UTILITY__PROC_HANDLER_H__
 #define __LIB_UTILITY__PROC_HANDLER_H__
