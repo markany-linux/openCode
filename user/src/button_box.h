@@ -12,13 +12,14 @@
 #ifndef __BUTTON_BOX_H__
 #define __BUTTON_BOX_H__
 
+#include "agent_data.h"
 #include <memory>
 #include <utility>
 
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
 
-class AgentMain;
+class TextWindow;
 
 enum AgentButtonType
 {
@@ -64,10 +65,10 @@ public:
 	/**
 	 * @brief	버튼들을 가지는 박스 객체 생성
 	 * 
-	 * @param	agent_main__	상위 컨텐츠 박스
+	 * @param	text_window__	정보를 표시할 텍스트 윈도우
 	 **/
 	ButtonBox(
-		AgentMain*				agent_main__
+		TextWindow&				text_window__
 		);
 
 	ButtonBox(
@@ -93,14 +94,13 @@ public:
 	/**
 	 * @brief	버튼을 생성하고 클릭 시그널에 대한 핸들러 등록
 	 * 
-	 * @param	agent_main__	클릭 시그널을 받을 에이전트 메인 객체
 	 * @param	type__			생성될 버튼의 종류
 	 * @param	label__			생성될 버튼의 라벨
+	 *
 	 * @return	true			버튼 생성 및 클릭 시그널 핸들러 등록 성공
 	 * @return	false			버튼 생성이나 클릭 시그널 핸들러 등록 실패
 	 */
 	bool AddButton(
-		AgentMain*				agent_main__,
 		AgentButtonType			type__,
 		const std::string		label__
 		);
@@ -117,8 +117,26 @@ private:
 	/// Time 버튼 라벨
 	static constexpr const char* kTimeButtonLabel = "Time Info";
 
+	/// 설정 파일 경로
+	static const std::string kConfigFilePath;
+
+	/**
+	 * @brief	버튼 박스에 등록된 버튼들 중 클릭된 것이 있을 경우 호출되는 핸들러
+	 * 
+	 * @param	button_type__	클릭된 버튼의 종류
+	 */
+	void on_button_clicked(
+		AgentButtonType				button_type__
+		);
+
 	/// 동적으로 생성된 버튼들을 담는 벡터
 	std::vector< std::unique_ptr< AgentButton > > buttons_;
+
+	/// 설정 파일 정보를 제공해주는 객체
+	data::ConfigData config_data_{ kConfigFilePath };
+
+	/// 정보를 표시할 텍스트 윈도우 객체 포인터
+	TextWindow& text_window_;
 };
 
 #endif

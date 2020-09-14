@@ -28,9 +28,7 @@ public:
 	/**
 	 * @brief	메인 윈도우 객체 생성
 	 **/
-	AgentWindow(
-		AgentMain*				agent_main__
-		);
+	AgentWindow( );
 	
 	/**
 	 * @brief	메인 윈도우 객체 소멸
@@ -86,10 +84,10 @@ protected:
 	/// 상단 타이틀 라벨
 	Gtk::Label subtitle_{ kTitle };
 
-	/// 버튼들이 들어간 박스
-	ButtonBox button_box_;
 	/// 텍스트 뷰가 들어간 박스
 	TextWindow text_window_;
+	/// 버튼들이 들어간 박스
+	ButtonBox button_box_;
 
 	/// 종료 버튼
 	Gtk::Button quit_button_{ kQuitButtonText };

@@ -12,7 +12,6 @@
 #ifndef __AGENT_MAIN_H__
 #define __AGENT_MAIN_H__
 
-#include "agent_data.h"
 #include "agent_window.h"
 #include "button_box.h"
 
@@ -75,18 +74,12 @@ public:
 	 * @return	false	초기화에 실패할 시
 	 */
 	bool Init( );
-	
-	void on_button_clicked(
-		AgentButtonType			button_type__
-		);
 
 private:
 	/// GTK 애플리케이션 ID
 	static constexpr const char* kAppIdentifier = "com.gnome.opencode";
 	/// 싱글 인스턴스로 이용될 파일의 경로
 	static constexpr const char* kDefaultInstancePath = "/tmp/openCode.pid";
-	/// 설정 파일 경로
-	static const std::string kConfigFilePath;
 
 	/**
 	 * @brief	GTK 애플리케이션이 시작될 때 호출되는 핸들러
@@ -108,9 +101,7 @@ private:
 		Gtk::Application::create( kAppIdentifier );
 	
 	/// 에이전트 윈도우
-	AgentWindow agent_window_{ this };
-	/// 에이전트 데이터
-	AgentData agent_data_{ kConfigFilePath };
+	AgentWindow agent_window_;
 
 	/// 싱글 인스턴스로 이용될 파일의 경로
 	std::string instance_path_;

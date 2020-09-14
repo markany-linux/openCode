@@ -9,8 +9,6 @@
 #include "button_box.h"
 #include "lib_utility/interface/single_instance.h"
 
-const std::string AgentMain::kConfigFilePath = "config.cfg";
-
 AgentMain::~AgentMain( )
 {
 	std::cout << "[+] AgentMain::~AgentMain()\n";
@@ -57,36 +55,6 @@ bool AgentMain::Init( )
 	return Init( kDefaultInstancePath );
 }
 
-void AgentMain::on_button_clicked(
-	AgentButtonType				button_type__
-	)
-{
-	std::cout << "[+] AgentMain::on_button_clicked()\n";
-	switch( button_type__ )
-	{
-		case AgentButtonType::kConfig:
-		{
-			agent_window_.ShowText( agent_data_.GetConfigData( ) );
-			break;
-		}
-		case AgentButtonType::kSystem:
-		{
-			agent_window_.ShowText( agent_data_.GetSystemInfo( ) );
-			break;
-		}
-		case AgentButtonType::kProcess:
-			break;
-		case AgentButtonType::kProc:
-			break;
-		case AgentButtonType::kTime:
-		{
-			agent_window_.ShowText( agent_data_.GetTimeInfo( ) );
-			break;
-		}
-	}
-	std::cout << "[-] AgentMain::on_button_clicked()\n";
-}
-
 void AgentMain::on_startup( )
 {
 	std::cout << "[+] AgentMain::on_startup()\n";
@@ -105,4 +73,3 @@ bool AgentMain::on_delete_event(
 	/// 종료 명령 무시
 	return true;
 }
-

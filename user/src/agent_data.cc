@@ -6,39 +6,13 @@
 #include "common.h"
 #include "lib_utility/interface/config_handler.h"
 #include "lib_utility/interface/crc.h"
+#include "lib_utility/interface/system_info.h"
 #include "lib_utility/interface/time_handler.h"
 
-static constexpr int kTimeBufferLength = 64;
-
-const std::vector< const char* > AgentData::kConfigKeys = {
-	"SERVER_IP",
-	"PORT"
-};
-
-AgentData::AgentData(
-	const std::string&			config_file_path__
-	)
-{
-	bool config_create = false;
-
-	config_create = createConfigList( &config_list_ );
-	if( config_create)
-		config_init_ = initConfigList( config_list_, config_file_path__.c_str( ) );
-}
-
-AgentData::~AgentData()
-{
-	if( config_list_ )
-	{
-		if( config_init_ )
-			cleanupConfigList( config_list_ );
-		
-		destroyConfigList( config_list_ );
-	}
-}
+namespace {
 
 template< typename ... Args >
-static size_t string_format(
+size_t string_format(
 	std::string&				destination__,
 	const char*					format__,
 	Args ...					args__
@@ -69,7 +43,7 @@ static size_t string_format(
 }
 
 template< typename ... Args >
-static size_t string_append_format(
+size_t string_append_format(
 	std::string&				destination__,
 	const char*					format__,
 	Args ...					args__
@@ -86,7 +60,7 @@ static size_t string_append_format(
 	return format_size;
 }
 
-static void AppendDataPairWithCRC(
+void AppendDataPairWithCRC(
 	std::string&				destination__,
 	const char* 				key__,
 	const char*					value__
@@ -108,7 +82,7 @@ static void AppendDataPairWithCRC(
 						  value__, value_crc);
 }
 
-static void AppendDataPair(
+void AppendDataPair(
 	std::string&				destination__,
 	const char*					key__,
 	const char*					value__
@@ -117,7 +91,38 @@ static void AppendDataPair(
 	string_append_format( destination__, "%s = %s\n", key__, value__ );
 }
 
-const std::string AgentData::GetConfigData( )
+} // namespace {
+
+namespace data {
+
+const std::vector< const char* > ConfigData::kConfigKeys = {
+	"SERVER_IP",
+	"PORT"
+};
+
+ConfigData::ConfigData(
+	const std::string&			config_file_path__
+	)
+{
+	bool config_create = false;
+
+	config_create = createConfigList( &config_list_ );
+	if( config_create)
+		config_init_ = initConfigList( config_list_, config_file_path__.c_str( ) );
+}
+
+ConfigData::~ConfigData( )
+{
+	if( config_list_ )
+	{
+		if( config_init_ )
+			cleanupConfigList( config_list_ );
+		
+		destroyConfigList( config_list_ );
+	}
+}
+
+const std::string ConfigData::GetConfigData( ) const
 {
 	char value[ kConfigValueSize ] = { 0, };
 	bool has_value = false;
@@ -154,52 +159,54 @@ const std::string AgentData::GetConfigData( )
 	return output;
 }
 
-const std::string AgentData::GetSystemInfo( )
+const std::string GetSystemInfo( )
 {
 	std::string output;
+	MADRM_LOCAL_SYSTEM system_info;
 
 	/// 시스템 정보를 저장할 멤버변수 초기화
-	memset( &system_info_, 0x00, sizeof( system_info_ ) );
+	memset( &system_info, 0x00, sizeof( system_info ) );
 
 	/// 시스템 정보 가져오기
-	if( !getLocalSystemInfo( &system_info_ ) )
+	if( !getLocalSystemInfo( &system_info ) )
 		return output;
 	
-	AppendDataPair( output, "distrib_id", system_info_.distrib_id );
+	AppendDataPair( output, "distrib_id", system_info.distrib_id );
 
 	AppendDataPair(
-		output, "distrib_id_like", system_info_.distrib_id_like );
+		output, "distrib_id_like", system_info.distrib_id_like );
 	
 	AppendDataPair(
-		output, "distrib_name", system_info_.distrib_name );
+		output, "distrib_name", system_info.distrib_name );
 	
 	AppendDataPair(
-		output, "distrib_version", system_info_.distrib_version );
+		output, "distrib_version", system_info.distrib_version );
 	
 	AppendDataPair(
-		output, "distrib_version_id", system_info_.distrib_version_id );
+		output, "distrib_version_id", system_info.distrib_version_id );
 	
 	AppendDataPair(
-		output, "distrib_pretty", system_info_.distrib_pretty );
+		output, "distrib_pretty", system_info.distrib_pretty );
 	
 	AppendDataPair(
-		output, "local_ip", system_info_.local_ip );
+		output, "local_ip", system_info.local_ip );
 	
 	AppendDataPair(
-		output, "local_hostname", system_info_.local_hostname );
+		output, "local_hostname", system_info.local_hostname );
 	
 	AppendDataPair(
-		output, "local_nic", system_info_.local_nic );	
+		output, "local_nic", system_info.local_nic );	
 	
 	AppendDataPair(
-		output, "kernel_version", system_info_.kernel_version );										  												  						  						  						  
+		output, "kernel_version", system_info.kernel_version );										  												  						  						  						  
 
 	return output;
 }
 
-const std::string AgentData::GetTimeInfo( )
+const std::string GetTimeInfo( )
 {
 	mild_u64 current_time = 0;
+	constexpr const size_t kTimeBufferLength = 64;
 	char time_result[ kTimeBufferLength ] = { 0, };
 	std::string output;
 
@@ -236,3 +243,5 @@ const std::string AgentData::GetTimeInfo( )
 
 	return output;
 }
+
+} // namespace data {

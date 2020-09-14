@@ -8,9 +8,7 @@
 #include "agent_main.h"
 #include "button_box.h"
 
-AgentWindow::AgentWindow(
-	AgentMain*					agent_main__
-	) : button_box_( agent_main__ )
+AgentWindow::AgentWindow( ) : button_box_( text_window_ )
 {
 	constexpr int kMargin = 20;
 	std::cout << "[+] AgentWindow::AgentWindow()\n";
