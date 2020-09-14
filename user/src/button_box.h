@@ -12,14 +12,16 @@
 #ifndef __BUTTON_BOX_H__
 #define __BUTTON_BOX_H__
 
-#include "agent_data.h"
 #include <memory>
 #include <utility>
 
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
 
-class TextWindow;
+#include "agent_data.h"
+
+class AgentWindow;
+class ProcSearchDialog;
 
 enum AgentButtonType
 {
@@ -68,7 +70,7 @@ public:
 	 * @param	text_window__	정보를 표시할 텍스트 윈도우
 	 **/
 	ButtonBox(
-		TextWindow&				text_window__
+		AgentWindow&			agent_window__
 		);
 
 	ButtonBox(
@@ -120,6 +122,8 @@ private:
 	/// 설정 파일 경로
 	static const std::string kConfigFilePath;
 
+	void ShowProcSearchDialog( );
+
 	/**
 	 * @brief	버튼 박스에 등록된 버튼들 중 클릭된 것이 있을 경우 호출되는 핸들러
 	 * 
@@ -128,6 +132,8 @@ private:
 	void on_button_clicked(
 		AgentButtonType				button_type__
 		);
+	
+	
 
 	/// 동적으로 생성된 버튼들을 담는 벡터
 	std::vector< std::unique_ptr< AgentButton > > buttons_;
@@ -136,7 +142,7 @@ private:
 	data::ConfigData config_data_{ kConfigFilePath };
 
 	/// 정보를 표시할 텍스트 윈도우 객체 포인터
-	TextWindow& text_window_;
+	AgentWindow& agent_window_;
 };
 
 #endif

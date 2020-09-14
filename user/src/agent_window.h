@@ -25,10 +25,16 @@ class AgentMain;
 class AgentWindow : public Gtk::Window
 {
 public:
+	using ProcDialogQuitButtonHandler = void( AgentWindow::* )( );
+
 	/**
 	 * @brief	메인 윈도우 객체 생성
+	 *
+	 * @param	single_instance_path__	싱글 인스턴스로 사용되는 파일 경로
 	 **/
-	AgentWindow( );
+	AgentWindow(
+		const std::string&		single_instance_path__
+		);
 	
 	/**
 	 * @brief	메인 윈도우 객체 소멸
@@ -43,6 +49,18 @@ public:
 	void ShowText(
 		const std::string&		text__
 		);
+	
+	void ShowProcSearchDialog( );
+	
+	TextWindow& GetTextWindow( )
+	{
+		return text_window_;
+	}
+
+	const std::string& GetSingleInstanceFilePath( )
+	{
+		return single_instance_path_;
+	}
 
 protected:
 	/// 종료 버튼 텍스트 상수
@@ -74,6 +92,8 @@ protected:
 	 **/
 	void on_quit_button_clicked( );
 
+	void on_proc_search_dialog_quit( );
+
 	/// 가장 최상단의 세로 박스
 	Gtk::Box main_box_{ Gtk::ORIENTATION_VERTICAL };
 	/// 컨텐츠가 들어갈  박스
@@ -88,9 +108,14 @@ protected:
 	TextWindow text_window_;
 	/// 버튼들이 들어간 박스
 	ButtonBox button_box_;
+	/// Proc 정보 검색 다이얼로그
+    std::unique_ptr< ProcSearchDialog > proc_search_dialog_;
 
 	/// 종료 버튼
 	Gtk::Button quit_button_{ kQuitButtonText };
+
+	/// 싱글 인스턴스로 사용되는 파일 경로
+	const std::string& single_instance_path_;
 };
 
 #endif

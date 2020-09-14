@@ -7,10 +7,14 @@
 
 #include "agent_main.h"
 #include "button_box.h"
+#include "proc_search_dialog.h"
 
-AgentWindow::AgentWindow( ) : button_box_( text_window_ )
+AgentWindow::AgentWindow(
+	const std::string&			single_instance_path__
+	) : button_box_( *this ),
+		single_instance_path_( single_instance_path__ )
 {
-	constexpr int kMargin = 20;
+	constexpr int kMargin = 10;
 	std::cout << "[+] AgentWindow::AgentWindow()\n";
 
 	/// 메인 박스에 파생 위젯들을 attach
@@ -64,7 +68,9 @@ void AgentWindow::AttachChildWidgets( )
 void AgentWindow::AttachContentsToContentsBox( )
 {
 	/// 정보 표시를 요청할 수 있는 버튼들 추가
-	contents_box_.pack_start( button_box_, Gtk::PACK_SHRINK, 50 );
+	button_box_.set_margin_right( 10 );
+
+	contents_box_.pack_start( button_box_, Gtk::PACK_SHRINK );
 	/// 정보들을 표시할 텍스트 뷰 윈도우 추가
 	contents_box_.pack_start( text_window_, Gtk::PACK_EXPAND_WIDGET );
 }
@@ -84,6 +90,26 @@ void AgentWindow::AttachQuitButton( )
 	std::cout << "[-] AgentWindow::AttachQuitButton()\n";
 }
 
+void AgentWindow::ShowProcSearchDialog( )
+{
+	std::cout << "[+] AgentWindow::ShowProcSearchDialog()\n";
+	if( proc_search_dialog_ )
+	{
+		proc_search_dialog_->present( );
+		return;
+	}
+	
+	proc_search_dialog_ = ProcSearchDialog::Create( );
+	if( proc_search_dialog_ )
+	{
+		proc_search_dialog_->AddQuitButtonHandler(
+			*this, &AgentWindow::on_proc_search_dialog_quit );
+		proc_search_dialog_->set_transient_for( *this );
+		proc_search_dialog_->show( );
+	}
+	std::cout << "[-] AgentWindow::ShowProcSearchDialog()\n";
+}
+
 void AgentWindow::on_quit_button_clicked( )
 {
 	std::cout << "[+] AgentWindow::on_quit_button_clicked()\n";
@@ -92,3 +118,8 @@ void AgentWindow::on_quit_button_clicked( )
 	std::cout << "[-] AgentWindow::on_quit_button_clicked()\n";
 }
 
+void AgentWindow::on_proc_search_dialog_quit( )
+{
+	proc_search_dialog_->hide( );
+	proc_search_dialog_.reset( );
+}

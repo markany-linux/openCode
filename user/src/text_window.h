@@ -67,7 +67,7 @@ private:
 	/// 텍스트 뷰 객체
 	Gtk::TextView text_view_;
 	/// 텍스트 뷰에서 표시할 텍스트의 버퍼
-	Glib::RefPtr<Gtk::TextBuffer> text_buffer_;
+	Glib::RefPtr< Gtk::TextBuffer > text_buffer_;
 };
 
 #endif

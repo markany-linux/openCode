@@ -1,16 +1,28 @@
 #include "agent_data.h"
 
+#include <unistd.h>
+
 #include <string>
 #include <cstring>
 
 #include "common.h"
 #include "lib_utility/interface/config_handler.h"
 #include "lib_utility/interface/crc.h"
+#include "lib_utility/interface/proc_handler.h"
 #include "lib_utility/interface/system_info.h"
 #include "lib_utility/interface/time_handler.h"
 
 namespace {
 
+/**
+ * @brief	string 객체에 문자열 format을 지정하여 저장
+ * 
+ * @param	destination__	format 처리 결과를 받을 string 객체
+ * @param	format__		format 형식
+ * @param	args__			format 형식에 들어갈 값들
+ *
+ * @return	size_t			formatting 된 문자열 길이 (destination__ 길이는 제외)
+ */
 template< typename ... Args >
 size_t string_format(
 	std::string&				destination__,
@@ -42,6 +54,15 @@ size_t string_format(
 	return buffer_size;
 }
 
+/**
+ * @brief	string 객체에 문자열 format을 이어 붙임
+ * 
+ * @param	destination__	format 처리 결과를 붙일 string 객체
+ * @param	format__		format 형식
+ * @param	args__			format 형식에 들어갈 값들
+ *
+ * @return	size_t			formatting 된 문자열 길이 (destination__ 길이는 제외)
+ */
 template< typename ... Args >
 size_t string_append_format(
 	std::string&				destination__,
@@ -60,6 +81,13 @@ size_t string_append_format(
 	return format_size;
 }
 
+/**
+ * @brief	string 객체에 'Key [CRC: ...] = Value [CRC: ...]' 형식의 쌍을 이어 붙임
+ * 
+ * @param	destination__	format 처리 결과를 붙일 string 객체
+ * @param	key__			키 문자열
+ * @param	value__			값 문자열
+ */
 void AppendDataPairWithCRC(
 	std::string&				destination__,
 	const char* 				key__,
@@ -82,6 +110,13 @@ void AppendDataPairWithCRC(
 						  value__, value_crc);
 }
 
+/**
+ * @brief	string 객체에 'Key = Value' 형식의 쌍을 이어 붙임
+ * 
+ * @param	destination__	format 처리 결과를 붙일 string 객체
+ * @param	key__			키 문자열
+ * @param	value__			값 문자열
+ */
 void AppendDataPair(
 	std::string&				destination__,
 	const char*					key__,
@@ -126,10 +161,11 @@ const std::string ConfigData::GetConfigData( ) const
 {
 	char value[ kConfigValueSize ] = { 0, };
 	bool has_value = false;
-	std::string output;
 
 	if( !config_init_ )
-		return output;
+		return "";
+	
+	std::string output;
 
 	for( auto* key : kConfigKeys )
 	{
@@ -161,7 +197,6 @@ const std::string ConfigData::GetConfigData( ) const
 
 const std::string GetSystemInfo( )
 {
-	std::string output;
 	MADRM_LOCAL_SYSTEM system_info;
 
 	/// 시스템 정보를 저장할 멤버변수 초기화
@@ -169,7 +204,9 @@ const std::string GetSystemInfo( )
 
 	/// 시스템 정보 가져오기
 	if( !getLocalSystemInfo( &system_info ) )
-		return output;
+		return "";
+	
+	std::string output;
 	
 	AppendDataPair( output, "distrib_id", system_info.distrib_id );
 
@@ -239,6 +276,59 @@ const std::string GetTimeInfo( )
 
 		getDateTimeReadable( current_time, time_result, mild_true, mild_true );
 		AppendDataPair( output, "Date Time Readable", time_result );
+	}
+
+	return output;
+}
+
+const std::string GetProcessData(
+	const std::string&			single_instance_path__
+	)
+{
+	constexpr const char* kProcExecPathFormat = "/proc/%d/exe";
+	constexpr int kPathLength = 64;
+	char path[ kPathLength ] = { 0, };
+	pid_t pid = getpid( );
+	std::string output;
+
+	snprintf( path, sizeof( path ), kProcExecPathFormat, pid );
+	readlink( path, path, sizeof( path ) );
+
+	AppendDataPair( output, "Current Executable path", path );
+	AppendDataPair( output,
+					"Single Instance file path",
+					single_instance_path__.c_str( ) );
+	return output;
+}
+
+const std::string GetProcData(
+	const std::string&			kernel_module__,
+	const std::string&			kernel_symbol__
+	)
+{
+	std::string output;
+	bool exist = false;
+
+	if( kernel_module__.size( ) )
+	{
+		std::string key = "Kernel module \"" + kernel_module__ + "\"";
+
+		exist = checkKernelModuleExist( kernel_module__.c_str( ) );
+		if( exist )
+			AppendDataPair( output, key.c_str( ), "Exist");
+		else
+			AppendDataPair( output, key.c_str( ), "Not exist");
+	}
+
+	if( kernel_symbol__.size( ) )
+	{
+		std::string key = "Kernel symbol \"" + kernel_symbol__ + "\"";
+
+		exist = checkKernelSymbolExist( kernel_symbol__.c_str( ), nullptr );
+		if( exist )
+			AppendDataPair( output, key.c_str( ), "Exist");
+		else
+			AppendDataPair( output, key.c_str( ), "Not exist");
 	}
 
 	return output;

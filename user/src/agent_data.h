@@ -53,7 +53,6 @@ public:
 	
 	/**
 	 * @brief	설정 파일에서 데이터를 가저오는 객체 소멸
-	 * 
 	 */
 	~ConfigData( );
 	
@@ -90,6 +89,30 @@ const std::string GetSystemInfo( );
 * @return	시간 정보들을 읽을 수 있도록 변환된 문자열
 **/
 const std::string GetTimeInfo( );
+
+/**
+ * @brief	프로세스 정보를 가져와서 문자열로 변환
+ * 
+ * @param	single_instance_path__	싱글 인스턴스로 사용되는 파일 경로
+ *
+ * @return	const std::string		프로세스 정보들을 읽을 수 있도록 변환된 문자열
+ */
+const std::string GetProcessData(
+	const std::string&			single_instance_path__
+	);
+
+/**
+ * @brief	Proc 정보를 가져와서 문자열로 변환
+ * 
+ * @param	kernel_module__		검색할 커널 모듈명
+ * @param	kernel_symbol__		검색할 커널 심볼명
+ *
+ * @return	const std::string	Proc 정보들을 읽을 수 있도록 변환된 문자열
+ */
+const std::string GetProcData(
+	const std::string&			kernel_module__,
+	const std::string&			kernel_symbol__
+	);
 
 } // namespace data {
 

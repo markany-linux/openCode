@@ -6,6 +6,7 @@
 #include <gtkmm/enums.h>
 
 #include "agent_data.h"
+#include "agent_window.h"
 #include "text_window.h"
 
 const std::string ButtonBox::kConfigFilePath = "config.cfg";
@@ -18,8 +19,9 @@ AgentButton::AgentButton(
 }
 
 ButtonBox::ButtonBox(
-	TextWindow&					text_window__
-	) : Gtk::Box( Gtk::ORIENTATION_VERTICAL, 0 ), text_window_( text_window__ )
+	AgentWindow&				agent_window__
+	) : Gtk::Box( Gtk::ORIENTATION_VERTICAL, 0 ),
+		agent_window_( agent_window__ )
 {
 	std::cout << "[+] ButtonBox::ButtonBox()\n";
 	AddButton( AgentButtonType::kConfig, kConfigButtonLabel );
@@ -66,25 +68,39 @@ void ButtonBox::on_button_clicked(
 	)
 {
 	std::cout << "[+] AgentMain::on_button_clicked()\n";
+	TextWindow& text_window = agent_window_.GetTextWindow( );
+
 	switch( button_type__ )
 	{
 		case AgentButtonType::kConfig:
 		{
-			text_window_.ShowText( config_data_.GetConfigData( ) );
+			text_window.ShowText( config_data_.GetConfigData( ) );
 			break;
 		}
+
 		case AgentButtonType::kSystem:
 		{
-			text_window_.ShowText( data::GetSystemInfo( ) );
+			text_window.ShowText( data::GetSystemInfo( ) );
 			break;
 		}
+
 		case AgentButtonType::kProcess:
+		{
+			text_window.ShowText(
+				data::GetProcessData(
+					agent_window_.GetSingleInstanceFilePath( ) ) );
 			break;
+		}
+
 		case AgentButtonType::kProc:
+		{
+			agent_window_.ShowProcSearchDialog( );
 			break;
+		}
+		
 		case AgentButtonType::kTime:
 		{
-			text_window_.ShowText( data::GetTimeInfo( ) );
+			text_window.ShowText( data::GetTimeInfo( ) );
 			break;
 		}
 	}

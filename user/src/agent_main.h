@@ -101,7 +101,7 @@ private:
 		Gtk::Application::create( kAppIdentifier );
 	
 	/// 에이전트 윈도우
-	AgentWindow agent_window_;
+	AgentWindow agent_window_{ instance_path_ };
 
 	/// 싱글 인스턴스로 이용될 파일의 경로
 	std::string instance_path_;
