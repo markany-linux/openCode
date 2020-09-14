@@ -5,7 +5,11 @@
 
 #include <gtkmm/enums.h>
 
-#include "agent_main.h"
+#include "agent_data.h"
+#include "agent_window.h"
+#include "text_window.h"
+
+const std::string ButtonBox::kConfigFilePath = "config.cfg";
 
 AgentButton::AgentButton(
 	AgentButtonType				type__,
@@ -15,16 +19,16 @@ AgentButton::AgentButton(
 }
 
 ButtonBox::ButtonBox(
-	AgentMain*					agent_main__
-	)
-		: Gtk::Box( Gtk::ORIENTATION_VERTICAL, 0 )
+	AgentWindow&				agent_window__
+	) : Gtk::Box( Gtk::ORIENTATION_VERTICAL, 0 ),
+		agent_window_( agent_window__ )
 {
 	std::cout << "[+] ButtonBox::ButtonBox()\n";
-	AddButton( agent_main__, AgentButtonType::kConfig, kConfigButtonLabel );
-	AddButton( agent_main__, AgentButtonType::kSystem, kSystemButtonLabel );
-	AddButton( agent_main__, AgentButtonType::kProcess, kProcessButtonLabel );
-	AddButton( agent_main__, AgentButtonType::kProc, kProcButtonLabel );
-	AddButton( agent_main__, AgentButtonType::kTime, kTimeButtonLabel );
+	AddButton( AgentButtonType::kConfig, kConfigButtonLabel );
+	AddButton( AgentButtonType::kSystem, kSystemButtonLabel );
+	AddButton( AgentButtonType::kProcess, kProcessButtonLabel );
+	AddButton( AgentButtonType::kProc, kProcButtonLabel );
+	AddButton( AgentButtonType::kTime, kTimeButtonLabel );
 	std::cout << "[-] ButtonBox::ButtonBox()\n";
 }
 
@@ -34,7 +38,6 @@ ButtonBox::~ButtonBox( )
 }
 
 bool ButtonBox::AddButton(
-	AgentMain*					agent_main__,
 	AgentButtonType				type__,
 	const std::string			label__
 	)
@@ -50,8 +53,8 @@ bool ButtonBox::AddButton(
 	button->signal_clicked( ).connect(
 		sigc::bind(
 			sigc::mem_fun(
-				agent_main__,
-				&AgentMain::on_button_clicked ), button->GetType( ) ) );
+				*this,
+				&ButtonBox::on_button_clicked ), button->GetType( ) ) );
 
 	pack_start( *button );
 
@@ -60,3 +63,46 @@ bool ButtonBox::AddButton(
 	return true;
 }
 
+void ButtonBox::on_button_clicked(
+	AgentButtonType				button_type__
+	)
+{
+	std::cout << "[+] AgentMain::on_button_clicked()\n";
+	TextWindow& text_window = agent_window_.GetTextWindow( );
+
+	switch( button_type__ )
+	{
+		case AgentButtonType::kConfig:
+		{
+			text_window.ShowText( config_data_.GetConfigData( ) );
+			break;
+		}
+
+		case AgentButtonType::kSystem:
+		{
+			text_window.ShowText( data::GetSystemInfo( ) );
+			break;
+		}
+
+		case AgentButtonType::kProcess:
+		{
+			text_window.ShowText(
+				data::GetProcessData(
+					agent_window_.GetSingleInstanceFilePath( ) ) );
+			break;
+		}
+
+		case AgentButtonType::kProc:
+		{
+			agent_window_.ShowProcSearchDialog( );
+			break;
+		}
+		
+		case AgentButtonType::kTime:
+		{
+			text_window.ShowText( data::GetTimeInfo( ) );
+			break;
+		}
+	}
+	std::cout << "[-] AgentMain::on_button_clicked()\n";
+}

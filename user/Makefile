@@ -1,24 +1,32 @@
-CXX =			clang++
+CXX =		clang++
 
+<<<<<<< HEAD
+CXXFLAGS =	-g -W -Wall -Wextra -std=c++14 $(INCLUDE_DIRS)
+LDLIBS =	-lmautil $(shell pkg-config --libs gtkmm-3.0)
+LDFLAGS =	-L./bin -Wl,--rpath=./
+=======
 CXXFLAGS =		-g -W -Wall -Wextra -std=c++14 $(INCLUDE_DIRS)
 LDLIBS =		-lmautil $(shell pkg-config --libs gtkmm-3.0)
 LDFLAGS =		-L./bin -Wl,--rpath=./
+>>>>>>> master
 
 INCLUDE_DIR =	./src ./ ../
-INCLUDE_DIRS =	$(INCLUDE_DIR:%=-I%) $(shell pkg-config --cflags-only-I gtkmm-3.0)
+INCLUDE_DIRS =	$(INCLUDE_DIR:%=-I%) \
+		$(shell pkg-config --cflags-only-I gtkmm-3.0)
 
 SOURCE_DIR =	./src
-SOURCES =		agent_data.cc		\
-				agent_main.cc		\
-				agent_window.cc		\
-				button_box.cc		\
-				main.cc				\
-				text_window.cc
+SOURCES =	agent_data.cc		\
+		agent_main.cc		\
+		agent_window.cc		\
+		button_box.cc		\
+		main.cc			\
+		proc_search_dialog.cc	\
+		text_window.cc
 
-OBJECTS =		$(SOURCES:%.cc=$(SOURCE_DIR)/%.o)
+OBJECTS =	$(SOURCES:%.cc=$(SOURCE_DIR)/%.o)
 
 INSTALL_DIR =	./bin
-TARGET =		maOpen
+TARGET =	maOpen
 
 .SUFFIXES:	.cc .o
 

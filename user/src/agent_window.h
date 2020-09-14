@@ -1,3 +1,14 @@
+/**
+ * \file		agent_window.h
+ * 
+ * \brief		에이전트 Top-Level 윈도우
+ * 
+ * \date		2020.09.11.
+ * 
+ * \author		swma (swma@markany.com)
+ * 
+ * \copyleft	MarkAny Inc. 2020.
+ */
 #ifndef __AGENT_WINDOW_H__
 #define __AGENT_WINDOW_H__
 
@@ -14,11 +25,15 @@ class AgentMain;
 class AgentWindow : public Gtk::Window
 {
 public:
+	using ProcDialogQuitButtonHandler = void( AgentWindow::* )( );
+
 	/**
 	 * @brief	메인 윈도우 객체 생성
+	 *
+	 * @param	single_instance_path__	싱글 인스턴스로 사용되는 파일 경로
 	 **/
 	AgentWindow(
-		AgentMain*				agent_main__
+		const std::string&		single_instance_path__
 		);
 	
 	/**
@@ -34,12 +49,27 @@ public:
 	void ShowText(
 		const std::string&		text__
 		);
+	
+	void ShowProcSearchDialog( );
+	
+	TextWindow& GetTextWindow( )
+	{
+		return text_window_;
+	}
+
+	const std::string& GetSingleInstanceFilePath( )
+	{
+		return single_instance_path_;
+	}
 
 protected:
 	/// 종료 버튼 텍스트 상수
 	static constexpr const char* kQuitButtonText = "종료";
+	/// 창 가로 픽셀
 	static constexpr int kWindowWidth = 600;
+	/// 창 세로 픽셀
 	static constexpr int kWindowHeight = 500;
+	/// 윈도우 내부 상단의 라벨 텍스트
 	static constexpr const char* kTitle = "openCode Agent";
 
 	/**
@@ -62,6 +92,8 @@ protected:
 	 **/
 	void on_quit_button_clicked( );
 
+	void on_proc_search_dialog_quit( );
+
 	/// 가장 최상단의 세로 박스
 	Gtk::Box main_box_{ Gtk::ORIENTATION_VERTICAL };
 	/// 컨텐츠가 들어갈  박스
@@ -72,13 +104,18 @@ protected:
 	/// 상단 타이틀 라벨
 	Gtk::Label subtitle_{ kTitle };
 
-	/// 버튼들이 들어간 박스
-	ButtonBox button_box_;
 	/// 텍스트 뷰가 들어간 박스
 	TextWindow text_window_;
+	/// 버튼들이 들어간 박스
+	ButtonBox button_box_;
+	/// Proc 정보 검색 다이얼로그
+    std::unique_ptr< ProcSearchDialog > proc_search_dialog_;
 
 	/// 종료 버튼
 	Gtk::Button quit_button_{ kQuitButtonText };
+
+	/// 싱글 인스턴스로 사용되는 파일 경로
+	const std::string& single_instance_path_;
 };
 
 #endif
