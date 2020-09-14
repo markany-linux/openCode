@@ -1,8 +1,14 @@
 CXX =		clang++
 
+<<<<<<< HEAD
 CXXFLAGS =	-g -W -Wall -Wextra -std=c++14 $(INCLUDE_DIRS)
 LDLIBS =	-lmautil $(shell pkg-config --libs gtkmm-3.0)
 LDFLAGS =	-L./bin -Wl,--rpath=./
+=======
+CXXFLAGS =		-g -W -Wall -Wextra -std=c++14 $(INCLUDE_DIRS)
+LDLIBS =		-lmautil $(shell pkg-config --libs gtkmm-3.0)
+LDFLAGS =		-L./bin -Wl,--rpath=./
+>>>>>>> master
 
 INCLUDE_DIR =	./src ./ ../
 INCLUDE_DIRS =	$(INCLUDE_DIR:%=-I%) \
