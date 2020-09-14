@@ -1,3 +1,14 @@
+/**
+ * \file		proc_search_dialog.h
+ * 
+ * \brief		Proc 검색 다이얼로그
+ * 
+ * \date		2020.09.14.
+ * 
+ * \author		swma (swma@markany.com)
+ * 
+ * \copyleft	MarkAny Inc. 2020.
+ */
 #ifndef __SEARCH_DIALOG_H__
 #define __SEARCH_DIALOG_H__
 
