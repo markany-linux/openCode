@@ -94,6 +94,10 @@ typedef const void*                 mild_cptr;
 #define SYSFS_HOME                  "/sys/kernel"
 #define SYSFS_EXPORT_DIR            "openCode"
 #define SYSFS_TARGET_PATH           SYSFS_HOME "/" SYSFS_EXPORT_DIR
+#define SYSFS_VERSION_FILE          "version"
+#define SYSFS_INFO_FILE             "info"
+#define SYSFS_INFO_PATHNAME         SYSFS_TARGET_PATH "/" SYSFS_INFO_FILE
+#define SYSFS_VERSION_PATHNAME      SYSFS_TARGET_PATH "/" SYSFS_VERSION_FILE
 
 
 /**
@@ -120,7 +124,7 @@ typedef struct sysfs_config_file_information
  * @brief	Netlink port number
  */
 #define NETLINK_PORT_NUMBER         21
-
+#define NETLINK_NO_LOG_MESSAGE      "No log exists"
 
 typedef struct netlink_exchange_data
 {
