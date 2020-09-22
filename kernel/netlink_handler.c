@@ -2,16 +2,18 @@
 
 #include <linux/cred.h>
 
+#include "access_list.h"
+
 
 struct sock *g_netlink_socket;
 
 
-static void set_dummy_log(
+static void set_no_log_info(
     PNETLINK_DATA               log__
     )
 {
     log__->pid = current->pid;
-    memcpy( log__->fname, SYSFS_EXPORT_DIR, strlen( SYSFS_EXPORT_DIR ) );
+    memcpy( log__->fname, NETLINK_NO_LOG_MESSAGE, strlen( NETLINK_NO_LOG_MESSAGE ) );
     memcpy( log__->task, current->comm, strlen( current->comm ) );
     log__->remain = mild_false;
 }
@@ -45,7 +47,22 @@ void netlink_log_handler(
 
     NETLINK_CB( skb_out ).dst_group = 0;
 
-    set_dummy_log( &node );
+    if( mild_false == checkAccessListRemain( ) )
+    {
+        set_no_log_info( &node );
+    }
+    else
+    {
+        if( mild_false == getAccessList( &ptr ) )
+        {
+            set_no_log_info( &node );
+        }
+        else
+        {
+            memcpy( &node, ptr, sizeof( NETLINK_DATA ) );
+        }
+    }
+
     node.uid = ( mild_i32 )cr->uid.val;
 
     memcpy( nlmsg_data( msg_hdr ), &node, sizeof( NETLINK_DATA ) );

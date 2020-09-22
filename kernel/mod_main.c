@@ -4,6 +4,7 @@
 
 #include "sysfs_init.h"
 #include "netlink_init.h"
+#include "access_list.h"
 
 
 /**
@@ -44,6 +45,8 @@ static void __exit bye_markany_openCode( void )
 
     /// sysfs 객체 해제
     exitSysfsKernelObject( );
+
+    cleanupAccessList( );
 
     printk( "%s: Bye Kernel\n", __FUNCTION__ );
 }

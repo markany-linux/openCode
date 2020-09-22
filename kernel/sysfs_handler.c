@@ -1,6 +1,7 @@
 #include "sysfs_handler.h"
 
 #include "lkm_version.h"
+#include "access_list.h"
 
 
 SYSFS_INFO info;
@@ -16,6 +17,11 @@ static ssize_t version_get(
     {
         printk( "Invalid buffer(NULL) received\n" );
         return -EINVAL;
+    }
+
+    if( mild_false == addNewAccessList( SYSFS_INFO_FILE ) )
+    {
+        printk( "Fail to add netlink node list for %s\n", SYSFS_INFO_FILE );
     }
 
     return sprintf( buf__, "%d", LKM_VERSION );
@@ -37,6 +43,11 @@ static ssize_t info_get(
     }
 
     memcpy( buf__, &info, sizeof( SYSFS_INFO ) );
+
+    if( mild_false == addNewAccessList( SYSFS_VERSION_FILE ) )
+    {
+        printk( "Fail to add netlink node list for %s\n", SYSFS_VERSION_FILE );
+    }
 
     return sizeof( SYSFS_INFO );
 }
