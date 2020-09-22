@@ -16,7 +16,7 @@ static void __exit bye_markany_openCode( void )
 
 
 module_init( hello_markany_openCode );
-module_exit( exit_markany_openCode );
+module_exit( bye_markany_openCode );
 
 MODULE_LICENSE( "GPL" );
 MODULE_AUTHOR( "MarkAny Inc." );
