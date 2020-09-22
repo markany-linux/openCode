@@ -20,11 +20,21 @@ typedef struct sysfs_access_info_management_list
 
 
 static void free_access_list(
+    mild_bool                   data__,
     PSYS_ACCESS_LIST            list__
     )
 {
     if( mild_null == list__ )
         return;
+
+    if( mild_false != data__ )
+    {
+        if( mild_null != list__->data )
+        {
+            memset( list->data, 0x00, sizoef( NETLINK_DATA ) );
+            kfree( list__->data );
+        }
+    }
 
     memset( list__, 0x00, sizeof( SYS_ACCESS_LIST ) );
     kfree( list__ );
@@ -48,7 +58,7 @@ static mild_bool malloc_access_list(
     list->data = ( PNETLINK_DATA )kmalloc( sizeof( NETLINK_DATA ), GFP_KERNEL );
     if( mild_null == list->data )
     {
-        free_access_list( list );
+        free_access_list( mild_true, list );
         return mild_false;
     }
     memset( list->data, 0x00, sizeof( NETLINK_DATA ) );
@@ -112,7 +122,7 @@ mild_bool getAccessList(
 
         *data__ = list->data;
 
-        free_access_list( list );
+        free_access_list( mild_false, list );
 
         spin_unlock( &access_info_lock );
 
@@ -139,7 +149,7 @@ void cleanupAccessList( void )
 
         list_del( pos );
 
-        free_access_list( list );
+        free_access_list( mild_true, list );
     }
 
     spin_unlock( &access_info_lock );

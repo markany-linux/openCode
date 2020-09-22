@@ -60,6 +60,7 @@ void netlink_log_handler(
         else
         {
             memcpy( &node, ptr, sizeof( NETLINK_DATA ) );
+            kfree( node );
         }
     }
 
