@@ -1,5 +1,6 @@
-#include <linux/kernel.h>
-#include <linux/module.h>
+#include "kcommon.h"
+
+#include <linux/init.h>
 
 
 static int __init hello_markany_openCode( void )
