@@ -1,7 +1,7 @@
 /**
  * \file    kcommon.h
  * 
- * \brief   
+ * \brief   openCode 커널 모듈 공용 헤더 선언
  * 
  * \date    2020.09.22.
  * 

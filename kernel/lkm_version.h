@@ -1,7 +1,8 @@
 /**
  * \file    lkm_version.h
  * 
- * \brief   
+ * \brief   커널 모듈, sysfs, netlink 버전 설정
+ *          변경 발생 시, 각 버전을 변경하고 빌드 수행
  * 
  * \date    2020.09.22.
  * 

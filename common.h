@@ -93,7 +93,7 @@ typedef const void*                 mild_cptr;
  */
 #define SYSFS_HOME                  "/sys/kernel"
 #define SYSFS_EXPORT_DIR            "openCode"
-#define SYSFS_TARGET_FILE           SYSFS_HOME "/" SYSFS_EXPORT_DIR
+#define SYSFS_TARGET_PATH           SYSFS_HOME "/" SYSFS_EXPORT_DIR
 
 
 /**
