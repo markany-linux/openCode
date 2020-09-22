@@ -17,5 +17,17 @@
 #include "lkm_version.h"
 
 
+extern mild_bool initSysfsKernelObject(
+    mild_bool                   netlink_load__
+    );
+
+
+extern void updateNetlinkLoadState(
+    mild_bool                   netlink_load__
+    );
+
+
+extern void exitSysfsKernelObject( void );
+
 
 #endif  // #ifndef __SYSFS_INIT_H__
