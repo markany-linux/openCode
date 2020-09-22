@@ -102,16 +102,16 @@ typedef const void*                 mild_cptr;
 typedef struct sysfs_config_file_information
 {
     /// sysfs 버전
-    mild_u32                        sysfs_version;
+    mild_u32                    sysfs_version;
 
     /// netlink 버전
-    mild_u32                        netlink_version;
+    mild_u32                    netlink_version;
 
     /// netlink 적재 상태
-    mild_bool                       netlink_load;
+    mild_bool                   netlink_load;
 
     /// netlink 포트 번호
-    mild_u32                        netlink_port;
+    mild_u32                    netlink_port;
 
 } SYSFS_INFO, *PSYSFS_INFO;
 
@@ -120,6 +120,26 @@ typedef struct sysfs_config_file_information
  * @brief	Netlink port number
  */
 #define NETLINK_PORT_NUMBER         21
+
+
+typedef struct netlink_exchange_data
+{
+    /// user ID
+    mild_i32                    uid;
+
+    /// Process ID
+    mild_i32                    pid;
+
+    /// file name: version, info file in sysfs
+    mild_i8                     fname[ STRLEN_32 ];
+
+    /// task name: current->comm
+    mild_i8                     task[ STRLEN_64 ];
+
+    /// remain node exist
+    mild_bool                   remain;
+
+} NETLINK_DATA, *PNETLINK_DATA;
 
 
 /**
