@@ -3,6 +3,7 @@
 #include <linux/init.h>
 
 #include "sysfs_init.h"
+#include "netlink_init.h"
 
 
 /**
@@ -14,6 +15,13 @@
 static int __init hello_markany_openCode( void )
 {
     printk( "%s: Hello Kernel!\n", __FUNCTION__ );
+
+    if( mild_false == initNetLinkSocket( ) )
+    {
+        printk( "Fail to initialize netlink\n" );
+        return -1;
+    }
+
     /// sysfs 객체 초기화
     if( mild_false == initSysfsKernelObject( mild_true ) )
     {
@@ -32,6 +40,8 @@ static int __init hello_markany_openCode( void )
  */
 static void __exit bye_markany_openCode( void )
 {
+    exitNetLinkSocket( );
+
     /// sysfs 객체 해제
     exitSysfsKernelObject( );
 
