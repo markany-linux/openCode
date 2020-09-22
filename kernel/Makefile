@@ -1,5 +1,7 @@
 obj-m		:=	maOpen.o
 maOpen-objs	:=	mod_main.o						\
+				netlink_handler.o				\
+				netlink_init.o					\
 				sysfs_handler.o					\
 				sysfs_init.o
 
