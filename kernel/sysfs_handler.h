@@ -1,7 +1,7 @@
 /**
  * \file    sysfs_handler.h
  * 
- * \brief   
+ * \brief   sysfs 커널 객체 및 핸들러 생성
  * 
  * \date    2020.09.22.
  * 
@@ -16,8 +16,10 @@
 #include "kcommon.h"
 
 
+/// sysfs에서 info 파일로 반환할 정보
 extern SYSFS_INFO info;
 
+/// sysfs 그룹 생성에 사용하기 위해 설정된 그룹
 extern struct attribute_group openCode_attr_group;
 
 

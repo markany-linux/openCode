@@ -1,7 +1,7 @@
 /**
  * \file    sysfs_init.h
  * 
- * \brief   
+ * \brief   sysfs 초기화 및 해제 인터페이스
  * 
  * \date    2020.09.22.
  * 
@@ -17,16 +17,32 @@
 #include "lkm_version.h"
 
 
+/**
+ * @brief   sysfs 커널 객체 초기화 및 등록
+ * 
+ * @param   netlink_load__  info 파일에 반환할 netlink 적재 상태
+ * 
+ * @return  초기화 및 등록 성공 true, 실패 false
+ */
 extern mild_bool initSysfsKernelObject(
     mild_bool                   netlink_load__
     );
 
 
+/**
+ * @brief   netlink 상태 변경
+ *          * 현재 사용하지 않음
+ * 
+ * @param   netlink_load__  변경할 netlink 적재 상태
+ */
 extern void updateNetlinkLoadState(
     mild_bool                   netlink_load__
     );
 
 
+/**
+ * @brief   sysfs 커널 객체 해제
+ */
 extern void exitSysfsKernelObject( void );
 
 
