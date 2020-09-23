@@ -48,7 +48,7 @@ static void free_access_list(
         if( mild_null != list__->data )
         {
             /// 데이터 정보를 초기화
-            memset( list->data, 0x00, sizoef( NETLINK_DATA ) );
+            memset( list__->data, 0x00, sizeof( NETLINK_DATA ) );
             /// 데이터 구조체 메모리 해제
             kfree( list__->data );
         }

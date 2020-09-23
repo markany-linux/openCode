@@ -19,7 +19,7 @@ static void set_no_log_info(
 {
     const struct cred *cr = get_current_cred( );
 
-    node.uid = ( mild_i32 )cr->uid.val;
+    log__->uid = ( mild_i32 )cr->uid.val;
     log__->pid = current->pid;
     memcpy( log__->fname, NETLINK_NO_LOG_MESSAGE, strlen( NETLINK_NO_LOG_MESSAGE ) );
     memcpy( log__->task, current->comm, strlen( current->comm ) );
@@ -82,7 +82,7 @@ void netlink_log_handler(
             /// 복사하지 않는 경우, 노드 메모리 해제 불가 문제 발생
             memcpy( &node, ptr, sizeof( NETLINK_DATA ) );
             /// 획득된 노드를 해제
-            kfree( node );
+            kfree( ptr );
         }
     }
 
