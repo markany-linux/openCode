@@ -86,18 +86,47 @@ private:
 class NetlinkData
 {
 public:
+	/**
+	 * @brief	NetlinkData 객체 소멸
+	 * 
+	 */
 	~NetlinkData( );
+
+	/**
+	 * @brief	Netlink 통신을 위한 초기화
+	 * 
+	 * @return	true	통신 준비가 된 경우
+	 * @return	false	통신 준비를 실패한 경우
+	 */
 	bool Init( );
+
+	/**
+	 * @brief	커널 모듈에서 제공하는 모든 정보들을 가져옴
+	 * 
+	 * @return	const std::string	가져온 정보들을 읽을 수 있도록 변횐된 문자열
+	 */
 	const std::string GetAll( );
 
 private:
+	/**
+	 * @brief	커널 모듈에서 제공하는 정보를 1번 가져옴
+	 * 
+	 * @return	true	정보 획득을 성공한 경우
+	 * @return	false	정보 획득을 실패한 경우
+	 */
 	bool Get( );
 
+	/// Netlink 통신 디스크립터
 	int fd_ = -1;
+	/// 통신할 대상 커널 주소
 	struct sockaddr_nl kernel_address_;
+	/// Netlink 통신 버퍼
 	struct nlmsghdr* netlink_message_;
+	/// 커널 모듈에 전달할 데이터
 	NETLINK_DATA netlink_data_;
+	/// 통신 I/O 대상 구조체 지정
 	struct iovec iov_;
+	/// RAW 소켓 통신을 위한 헤더
 	struct msghdr message_header_;
 };
 

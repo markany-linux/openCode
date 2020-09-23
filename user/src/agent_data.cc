@@ -40,20 +40,24 @@ size_t string_format(
 	if( !format__ )
 		return 0;
 	
+	/// C String 형식의 버퍼 길이를 지정하기 위해 포매팅 후의 길이를 구함
 	/// + 1은 '\0'을 추가한 길이를 적용하기 위함
 	buffer_size = snprintf( nullptr, 0, format__, args__ ... ) + 1;
 	if( 0 >= buffer_size )
 		return buffer_size;
 	
+	/// 구해진 길이만큼 C String 버퍼 생성
 	cstring_buffer.reset( new char[ buffer_size ] );
 	if( !cstring_buffer )
 		return 0;
 	
+	/// C String 버퍼에 내용 포매팅
 	buffer_size = snprintf( cstring_buffer.get( ), buffer_size,
 							format__, args__ ... ) + 1;
 	if( 0 >= buffer_size )
 		return buffer_size;
 	
+	/// 결과를 받을 string 객체에 포매팅 된 값이 들어있는 C String 형식의 결과값 복사
 	destination__ = cstring_buffer.get( );
 	return buffer_size;
 }
@@ -77,11 +81,13 @@ size_t string_append_format(
 	std::string format_string;
 	size_t format_size = 0;
 
+	/// 먼저 임시 문자열 객체에 내용 포매팅
 	format_size = string_format( format_string, format__, args__ ... );
 	if( 0 == format_size )
 		return 0;
 	
-	destination__.append( format_string );
+	/// 결과를 붙일 string 객체에 포매팅 문자열을 붙임
+	destination__ += format_string;
 	return format_size;
 }
 
@@ -98,6 +104,7 @@ void AppendDataPairWithCRC(
 	const char*					value__
 	)
 {
+	/// 포맷 형식 문자열 상수
 	const char* format = "%s [CRC: %x] = %s [CRC: %x]\n";
 	mild_custr key =
 		reinterpret_cast< mild_custr >( key__ );
@@ -106,9 +113,12 @@ void AppendDataPairWithCRC(
 	mild_u32 key_crc = 0;
 	mild_u32 value_crc = 0;
 
+	/// 키에 해당하는 문자열의 CRC값을 구함
 	key_crc = getCRCValue( key, strlen( key__ ) );
+	/// 값에 해당하는 문자열의 CRC값을 구함
 	value_crc = getCRCValue( value, strlen( value__ ) );
 
+	/// 미리 지정한 포맷 형식에 따라 CRC값을 포함한 키, 값을 포매팅 후 붙임
 	string_append_format( destination__, format,
 						  key__, key_crc,
 						  value__, value_crc);
@@ -130,6 +140,14 @@ void AppendDataPair(
 	string_append_format( destination__, "%s = %s\n", key__, value__ );
 }
 
+/**
+ * @brief	openCode 커널 모듈에서 생성된 파일의 존재여부를 검사하고 파일 스트림으로 열음
+ * 
+ * @param	stream__	파일을 열게 될 대상 파일 스트림
+ * @param	file__		커널 모듈에서 생성된 파일명(오직 경로를 제외한 파일명만)
+ * @return	true		해당 파일이 존재하고 성공적으로 파일을 열었을 경우
+ * @return	false		해당 파일이 존재하지 않거나 파일을 열지 못했을 경우
+ */
 bool OpenKernelModuleFile(
 	std::fstream&				stream__,
 	const char*					file__
@@ -155,6 +173,13 @@ bool OpenKernelModuleFile(
 	return true;
 }
 
+/**
+ * @brief	매크로로 만들어진 버전값을 각 필드로 나눠줌
+ * 
+ * @param	destination__	각 필드값을 담을 배열
+ * @param	size__			`destination__`의 배열 크기
+ * @param	version__		
+ */
 void DeserializeMaVersion(
 	mild_u32*					destination__,
 	size_t						size__,
@@ -163,6 +188,11 @@ void DeserializeMaVersion(
 {
 	assert( 0 < size__ );
 
+	/// mild_u32 형식의 배열 사이즈이므로 실제 배열 갯수를 구함
+	size__ /= sizeof( mild_u32 );
+
+	/// 각 필드별로 값을 구함
+	/// 배열 크기에 맞춰서 들어감
 	destination__[ 0 ] = MA_GET_MAJOR_VERSION( version__ );
 	if( 1 < size__ )
 		destination__[ 1 ] = MA_GET_MINOR_VERSION( version__ );
@@ -187,6 +217,7 @@ ConfigData::ConfigData(
 {
 	bool config_create = false;
 
+	/// 설정 리스트 공간 할당 후 설정들을 가져옴
 	config_create = createConfigList( &config_list_ );
 	if( config_create)
 		config_init_ = initConfigList( config_list_, config_file_path__.c_str( ) );
@@ -194,6 +225,7 @@ ConfigData::ConfigData(
 
 ConfigData::~ConfigData( )
 {
+	/// 만약 설정 리스트가 유효하고 설정을 가져온 적 있다면 모든 데이터를 지우고 리스트 제거
 	if( config_list_ )
 	{
 		if( config_init_ )
@@ -243,12 +275,14 @@ const std::string ConfigData::GetConfigData( ) const
 
 NetlinkData::~NetlinkData( )
 {
+	/// Netlink 소켓 닫음
 	if( -1 != fd_ )
 	{
 		close( fd_ );
 		fd_ = -1;
 	}
 
+	/// Netlink 통신 버퍼 할당 해제
 	if( netlink_message_ )
 	{
 		free( netlink_message_ );
@@ -259,10 +293,14 @@ NetlinkData::~NetlinkData( )
 bool NetlinkData::Init( )
 {
 	std::cout << "[+] NetlinkData::Init()\n";
+	/// Netlink 헤더 + 데이터의 총 길이
 	const size_t message_size = NLMSG_SPACE( sizeof( netlink_data_ ) );
+	/// 현재 프로세스 ID
 	const pid_t pid = getpid( );
+	/// Netlink 통신 버퍼 할당
 	auto* message_raw = ( struct nlmsghdr* )malloc( message_size );
 
+	/// 각종 통신을 위한 구조체들을 초기화
 	memset( &iov_, 0x00, sizeof( iov_ ) );
 	memset( &netlink_data_, 0x00, sizeof( netlink_data_ ) );
 
@@ -272,8 +310,10 @@ bool NetlinkData::Init( )
 		return false;
 	}
 	
+	/// 통신 버퍼 초기화
 	memset( message_raw, 0x00, message_size );
 
+	/// Netlink 소켓을 열음
 	int fd = socket( PF_NETLINK, SOCK_RAW, NETLINK_PORT_NUMBER );
 	if( -1 == fd )
 	{
@@ -282,11 +322,13 @@ bool NetlinkData::Init( )
 		return false;
 	}
 	
+	/// 바인딩 정보 기록
 	struct sockaddr_nl bind_address;
 	memset( &bind_address, 0x00, sizeof( bind_address ) );
 	bind_address.nl_family = AF_NETLINK;
 	bind_address.nl_pid = pid;
 
+	/// Netlink 소켓에 현재 접속에 대한 바인딩
 	auto* address_ptr = reinterpret_cast< struct sockaddr* >( &bind_address );
 	if( 0 > bind( fd, address_ptr, sizeof( bind_address ) ) )
 	{
@@ -296,9 +338,11 @@ bool NetlinkData::Init( )
 		return false;
 	}
 
+	/// 실패할 수 있는 초기화를 모두 마쳤으므로 객체 멤버에 값 저장
 	fd_ = fd;
 	netlink_message_ = message_raw;
 
+	/// 통신할 대상 커널 주소 설정
 	memset( &kernel_address_, 0x00, sizeof( kernel_address_ ) );
 	kernel_address_.nl_family = AF_NETLINK;
 
@@ -314,8 +358,10 @@ const std::string NetlinkData::GetAll( )
 	PNETLINK_DATA data = nullptr;
 	std::string output;
 
+	/// Netlink 통신을 통해 정보를 받을 수 있을 때까지 계속 받음
 	while( Get( ) )
 	{
+		/// 헤더를 제외한 실제 데이터를 가리킴
 		data = reinterpret_cast< PNETLINK_DATA >(
 				NLMSG_DATA( netlink_message_ ) );
 		if( !data )
@@ -324,15 +370,18 @@ const std::string NetlinkData::GetAll( )
 			break;
 		}
 
+		/// 커널 모듈에서 전달받은 데이터 출력
 		string_append_format( output, "pid = %d\n", data->pid );
 		string_append_format( output, "uid = %d\n", data->uid );
 		string_append_format( output, "pid = %d\n", data->pid );
 		string_append_format( output, "fname = %s\n", data->fname );
 		string_append_format( output, "task = %s\n", data->task );
 
+		/// 만약 더 이상 받을 수 있는 데이터가 없으면 반복문 종료
 		if( mild_false == data->remain )
 			break;
 		
+		/// 아직 받을 데이터가 남아있기 때문에 읽기 쉽도록 다음 데이터를 위해 한 줄을 띄움
 		output += '\n';
 	}
 
@@ -344,26 +393,34 @@ bool NetlinkData::Get( )
 {
 	std::cout << "[+] NetlinkData::Get()\n";
 	ssize_t ret = 0;
+	/// 현재 프로세스 ID
 	const pid_t pid = getpid( );
+	/// Netlink 헤더 + 데이터의 총 길이
 	const size_t message_size = NLMSG_SPACE( sizeof( netlink_data_ ) );
 	
+	/// 통신 목적지 정보 초기화
 	memset( &message_header_, 0x00, sizeof( message_header_ ) );
 
+	/// 이전에 받은 데이터 초기화 및 값 지정
 	memset( netlink_message_, 0x00, message_size );
 	netlink_message_->nlmsg_len = message_size;
 	netlink_message_->nlmsg_pid = pid;
 
+	/// 보낼 메세지 헤더에 목적지 및 I/O 대상을 알림
 	message_header_.msg_name = &kernel_address_;
 	message_header_.msg_namelen = sizeof( kernel_address_ );
 	message_header_.msg_iov = &iov_;
 	message_header_.msg_iovlen = 1;
 
+	/// I/O 대상 구조체 지정
 	iov_.iov_base = netlink_message_;
 	iov_.iov_len = netlink_message_->nlmsg_len;
 
+	/// 메세지에 데이터를 복사
 	auto* data_ptr = NLMSG_DATA( netlink_message_ );
 	memcpy( data_ptr, &netlink_data_, sizeof( netlink_data_ ) );
 
+	/// 만들어진 메세지를 커널 모듈에 전달
 	ret = sendmsg( fd_, &message_header_, 0 );
 	if( 0 > ret )
 	{
@@ -371,6 +428,7 @@ bool NetlinkData::Get( )
 		return false;
 	}
 	
+	/// 커널 모듈에게서 데이터를 받음
 	ret = recvmsg( fd_, &message_header_, 0 );
 	if( 0 > ret )
 	{
@@ -478,7 +536,9 @@ const std::string GetProcessData(
 	pid_t pid = getpid( );
 	std::string output;
 
+	/// 프로세스 경로를 담은 파일 경로를 문자열로 만듦
 	snprintf( path, sizeof( path ), kProcExecPathFormat, pid );
+	/// 문자열로 만들어진 경로에 대한 링크 정보를 읽어 실제 경로를 획득
 	readlink( path, path, sizeof( path ) );
 
 	AppendDataPair( output, "Current Executable path", path );
@@ -500,22 +560,24 @@ const std::string GetProcData(
 	{
 		std::string key = "Kernel module \"" + kernel_module__ + "\"";
 
+		/// 커널 모듈 존재 여부 확인
 		exist = checkKernelModuleExist( kernel_module__.c_str( ) );
 		if( exist )
-			AppendDataPair( output, key.c_str( ), "Exist");
+			AppendDataPair( output, key.c_str( ), "Exist" );
 		else
-			AppendDataPair( output, key.c_str( ), "Not exist");
+			AppendDataPair( output, key.c_str( ), "Not exist" );
 	}
 
 	if( kernel_symbol__.size( ) )
 	{
 		std::string key = "Kernel symbol \"" + kernel_symbol__ + "\"";
 
+		/// 커널 심볼 존재 여부 확인
 		exist = checkKernelSymbolExist( kernel_symbol__.c_str( ), nullptr );
 		if( exist )
-			AppendDataPair( output, key.c_str( ), "Exist");
+			AppendDataPair( output, key.c_str( ), "Exist" );
 		else
-			AppendDataPair( output, key.c_str( ), "Not exist");
+			AppendDataPair( output, key.c_str( ), "Not exist" );
 	}
 
 	return output;
@@ -524,11 +586,13 @@ const std::string GetProcData(
 const std::string GetSysfsInfo( )
 {
 	std::fstream info;
+	/// 커널 모듈에서 만든 info 파일 열기
 	if( !OpenKernelModuleFile( info, SYSFS_INFO_FILE ) )
 		return "";
 	
 	SYSFS_INFO info_data;
 	memset( &info_data, 0x00, sizeof( info_data ) );
+	/// info 파일을 sysfs 구조체 형식으로 읽음
 	info.read( reinterpret_cast< char* >( &info_data ), sizeof( info_data ) );
 	if( info.fail( ) && !info.eof( ) )
 	{
@@ -562,10 +626,12 @@ const std::string GetSysfsInfo( )
 						  "netlink_port = %u", info_data.netlink_port );
 	
 	std::fstream version;
+	/// 커널 모듈에서 만든 version 파일 열기
 	if( !OpenKernelModuleFile( version, SYSFS_VERSION_FILE ) )
 		return output;
 	
 	char version_data[ 32 ] = { 0, };
+	/// version 파일 내용 읽음
 	version.read( version_data, sizeof( version_data ) );
 	if( version.fail( ) && !version.eof( ) )
 	{
@@ -573,6 +639,7 @@ const std::string GetSysfsInfo( )
 		return output;
 	}
 	
+	/// version 파일에는 숫자가 저장돼 있으므로 부호없는 10진수 형태로 변환
 	auto numeric_version =
 			static_cast< mild_u32 >( strtoul( version_data, nullptr, 10 ) );
 	
