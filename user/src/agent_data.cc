@@ -262,10 +262,9 @@ bool NetlinkData::Init( )
 	const size_t message_size = NLMSG_SPACE( sizeof( netlink_data_ ) );
 	const pid_t pid = getpid( );
 	auto* message_raw = ( struct nlmsghdr* )malloc( message_size );
-	
+
 	memset( &iov_, 0x00, sizeof( iov_ ) );
-	memset( &message_header_, 0x00, sizeof( message_header_ ) );
-	memset( &kernel_address_, 0x00, sizeof( kernel_address_ ) );
+	memset( &netlink_data_, 0x00, sizeof( netlink_data_ ) );
 
 	if( !message_raw )
 	{
@@ -284,22 +283,27 @@ bool NetlinkData::Init( )
 	}
 	
 	struct sockaddr_nl bind_address;
-	auto* address_ptr = reinterpret_cast< struct sockaddr* >( &bind_address );
 	memset( &bind_address, 0x00, sizeof( bind_address ) );
 	bind_address.nl_family = AF_NETLINK;
 	bind_address.nl_pid = pid;
 
+	auto* address_ptr = reinterpret_cast< struct sockaddr* >( &bind_address );
 	if( 0 > bind( fd, address_ptr, sizeof( bind_address ) ) )
 	{
 		std::cout << "Failed to bind address.\n";
 		free( message_raw );
+		close( fd );
 		return false;
 	}
-	
-	kernel_address_.nl_family = AF_NETLINK;
 
 	fd_ = fd;
 	netlink_message_ = message_raw;
+
+	memset( &kernel_address_, 0x00, sizeof( kernel_address_ ) );
+	kernel_address_.nl_family = AF_NETLINK;
+
+	netlink_data_.pid = pid;
+
 	std::cout << "[-] NetlinkData::Init()\n";
 	return true;
 }
@@ -342,22 +346,22 @@ bool NetlinkData::Get( )
 	ssize_t ret = 0;
 	const pid_t pid = getpid( );
 	const size_t message_size = NLMSG_SPACE( sizeof( netlink_data_ ) );
+	
+	memset( &message_header_, 0x00, sizeof( message_header_ ) );
 
 	memset( netlink_message_, 0x00, message_size );
 	netlink_message_->nlmsg_len = message_size;
 	netlink_message_->nlmsg_pid = pid;
-
-	iov_.iov_base = &netlink_message_;
-	iov_.iov_len = netlink_message_->nlmsg_len;
 
 	message_header_.msg_name = &kernel_address_;
 	message_header_.msg_namelen = sizeof( kernel_address_ );
 	message_header_.msg_iov = &iov_;
 	message_header_.msg_iovlen = 1;
 
-	auto* data_ptr = NLMSG_DATA( &netlink_message_ );
-	memset( &netlink_data_, 0x00, sizeof( netlink_data_ ) );
-	netlink_data_.pid = pid;
+	iov_.iov_base = netlink_message_;
+	iov_.iov_len = netlink_message_->nlmsg_len;
+
+	auto* data_ptr = NLMSG_DATA( netlink_message_ );
 	memcpy( data_ptr, &netlink_data_, sizeof( netlink_data_ ) );
 
 	ret = sendmsg( fd_, &message_header_, 0 );
