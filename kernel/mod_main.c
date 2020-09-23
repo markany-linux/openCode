@@ -20,7 +20,7 @@ static int __init hello_markany_openCode( void )
     printk( "%s: Hello Kernel! This is openCode Kernel Module\n", __FUNCTION__ );
 
     /// netlink 커널 객체 생성 및 결과 획득
-    netlink_laod = initNetLinkSocket( );
+    netlink_load = initNetLinkSocket( );
     /// netlink 생성 실패 확인
     if( mild_false == netlink_load )
     {
