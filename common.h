@@ -12,16 +12,14 @@
 #define __COMMON_H__
 
 
-#ifndef __cplusplus
+#if defined(__KERNEL__)
+#elif __cplusplus
 #include <stddef.h>
 #else
 #include <cstddef>
 
 extern "C" {
 #endif
-
-
-
 
 
 /// defin nULL type
@@ -95,12 +93,57 @@ typedef const void*                 mild_cptr;
  */
 #define SYSFS_HOME                  "/sys/kernel"
 #define SYSFS_EXPORT_DIR            "openCode"
-#define SYSFS_TARGET_FILE           SYSFS_HOME "/" SYSFS_EXPORT_DIR
+#define SYSFS_TARGET_PATH           SYSFS_HOME "/" SYSFS_EXPORT_DIR
+#define SYSFS_VERSION_FILE          "version"
+#define SYSFS_INFO_FILE             "info"
+#define SYSFS_INFO_PATHNAME         SYSFS_TARGET_PATH "/" SYSFS_INFO_FILE
+#define SYSFS_VERSION_PATHNAME      SYSFS_TARGET_PATH "/" SYSFS_VERSION_FILE
+
+
+/**
+ * @brief   sysfs에서 제공하는 정보 구조체
+ */
+typedef struct sysfs_config_file_information
+{
+    /// sysfs 버전
+    mild_u32                    sysfs_version;
+
+    /// netlink 버전
+    mild_u32                    netlink_version;
+
+    /// netlink 적재 상태
+    mild_bool                   netlink_load;
+
+    /// netlink 포트 번호
+    mild_u32                    netlink_port;
+
+} SYSFS_INFO, *PSYSFS_INFO;
+
 
 /**
  * @brief	Netlink port number
  */
 #define NETLINK_PORT_NUMBER         21
+#define NETLINK_NO_LOG_MESSAGE      "No log exists"
+
+typedef struct netlink_exchange_data
+{
+    /// user ID
+    mild_i32                    uid;
+
+    /// Process ID
+    mild_i32                    pid;
+
+    /// file name: version, info file in sysfs
+    mild_i8                     fname[ STRLEN_32 ];
+
+    /// task name: current->comm
+    mild_i8                     task[ STRLEN_64 ];
+
+    /// remain node exist
+    mild_bool                   remain;
+
+} NETLINK_DATA, *PNETLINK_DATA;
 
 
 /**
@@ -152,7 +195,8 @@ typedef const void*                 mild_cptr;
 #define MA_GET_CUSTOM_VERSION(v)            ((mild_u32)v&0x3FF)
 
 
-#ifdef __cplusplus // extern "C" {
+#if defined(__KERNEL__)
+#elif __cplusplus // extern "C" {
 }
 #endif
 
