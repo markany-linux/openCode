@@ -12,13 +12,14 @@
 #define __COMMON_H__
 
 
-#if defined(__KERNEL__)
-#elif __cplusplus
+#if !defined(__KERNEL__)
+#if !defined(__cplusplus)
 #include <stddef.h>
 #else
 #include <cstddef>
 
 extern "C" {
+#endif
 #endif
 
 
@@ -195,9 +196,8 @@ typedef struct netlink_exchange_data
 #define MA_GET_CUSTOM_VERSION(v)            ((mild_u32)v&0x3FF)
 
 
-#if defined(__KERNEL__)
-#elif __cplusplus // extern "C" {
-}
+#if !defined(__KERNEL__) && defined(__cplusplus)
+} // extern "C" {
 #endif
 
 
