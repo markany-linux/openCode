@@ -146,7 +146,13 @@ bool OpenKernelModuleFile(
 		return false;
 	
 	stream__.open( file_path, std::ios_base::in );
-	return stream__.is_open( );
+	if( !stream__.is_open( ) )
+	{
+		std::cout << "Failed to open kernel module file: " << file__ << '\n';
+		return false;
+	}
+
+	return true;
 }
 
 void DeserializeMaVersion(
@@ -520,8 +526,11 @@ const std::string GetSysfsInfo( )
 	SYSFS_INFO info_data;
 	memset( &info_data, 0x00, sizeof( info_data ) );
 	info.read( reinterpret_cast< char* >( &info_data ), sizeof( info_data ) );
-	if( !info.good( ) )
+	if( info.fail( ) && !info.eof( ) )
+	{
+		std::cout << "Failed to read netlink file: " SYSFS_INFO_FILE << '\n';
 		return "";
+	}
 	
 	std::string output;
 	mild_u32 version_detail[ 4 ] = { 0, };
@@ -552,11 +561,13 @@ const std::string GetSysfsInfo( )
 	if( !OpenKernelModuleFile( version, SYSFS_VERSION_FILE ) )
 		return output;
 	
-	char version_data[ 32 ];
-	memset( version_data, 0x00, sizeof( version_data ) );
+	char version_data[ 32 ] = { 0, };
 	version.read( version_data, sizeof( version_data ) );
-	if( !version.good( ) )
+	if( version.fail( ) && !version.eof( ) )
+	{
+		std::cout << "Failed to read netlink file: " SYSFS_VERSION_FILE << '\n';
 		return output;
+	}
 	
 	auto numeric_version =
 			static_cast< mild_u32 >( strtoul( version_data, nullptr, 10 ) );
