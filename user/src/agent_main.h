@@ -100,11 +100,12 @@ private:
 	Glib::RefPtr<Gtk::Application> app_ =
 		Gtk::Application::create( kAppIdentifier );
 	
+	/// 싱글 인스턴스로 이용될 파일의 경로
+	std::string instance_path_;
+	
 	/// 에이전트 윈도우
 	AgentWindow agent_window_{ instance_path_ };
 
-	/// 싱글 인스턴스로 이용될 파일의 경로
-	std::string instance_path_;
 	/// 싱글 인스턴스 파일의 디스크립터
 	int instance_ = 0;
 };

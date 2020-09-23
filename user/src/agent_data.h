@@ -14,12 +14,19 @@
 #ifndef __AGENT_DATA_H__
 #define __AGENT_DATA_H__
 
+#include <linux/netlink.h>
+#include <sys/socket.h>
+
 #include <memory>
 #include <string>
 #include <vector>
 
+extern "C" {
+
 #include "lib_utility/interface/config_handler.h"
 #include "lib_utility/interface/system_info.h"
+
+}
 
 class AgentMain;
 
@@ -76,6 +83,24 @@ private:
 	bool config_init_ = false;
 };
 
+class NetlinkData
+{
+public:
+	~NetlinkData( );
+	bool Init( );
+	const std::string GetAll( );
+
+private:
+	bool Get( );
+
+	int fd_ = -1;
+	struct sockaddr_nl kernel_address_;
+	struct nlmsghdr* netlink_message_;
+	NETLINK_DATA netlink_data_;
+	struct iovec iov_;
+	struct msghdr message_header_;
+};
+
 /**
 * @brief	각종 시스템 정보를 가져와서 문자열로 변환
 * 
@@ -113,6 +138,13 @@ const std::string GetProcData(
 	const std::string&			kernel_module__,
 	const std::string&			kernel_symbol__
 	);
+
+/**
+ * @brief	sysfs 정보를 가져와서 문자열로 변환
+ * 
+ * @return	const std::string	sysfs 정보들을 읽을 수 있도록 변환된 문자열
+ */
+const std::string GetSysfsInfo( );
 
 } // namespace data {
 

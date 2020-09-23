@@ -34,7 +34,11 @@ enum AgentButtonType
 	/// Proc 버튼 타입
 	kProc,
 	/// Time 버튼 타입
-	kTime
+	kTime,
+	/// Sysfs 버튼 타입
+	kSysfs,
+	/// Netlink 버튼 타입
+	kNetlink
 };
 
 class AgentButton : public Gtk::Button
@@ -118,6 +122,10 @@ private:
 	static constexpr const char* kProcButtonLabel = "Proc Info";
 	/// Time 버튼 라벨
 	static constexpr const char* kTimeButtonLabel = "Time Info";
+	/// Sysfs 버튼 라벨
+	static constexpr const char* kSysfsButtonLabel = "Sysfs Info";
+	/// Netlink 버튼 라벨
+	static constexpr const char* kNetlinkButtonLabel = "Netlink Info";
 
 	/// 설정 파일 경로
 	static const std::string kConfigFilePath;
@@ -140,6 +148,9 @@ private:
 
 	/// 설정 파일 정보를 제공해주는 객체
 	data::ConfigData config_data_{ kConfigFilePath };
+
+	/// Netlink 데이터를 제공해주는 객체
+	data::NetlinkData netlink_data_;
 
 	/// 정보를 표시할 텍스트 윈도우 객체 포인터
 	AgentWindow& agent_window_;

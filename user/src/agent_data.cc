@@ -2,12 +2,16 @@
 
 #include <unistd.h>
 
-#include <string>
+#include <cassert>
 #include <cstring>
+#include <fstream>
+#include <iostream>
+#include <string>
 
 #include "common.h"
 #include "lib_utility/interface/config_handler.h"
 #include "lib_utility/interface/crc.h"
+#include "lib_utility/interface/file_check.h"
 #include "lib_utility/interface/proc_handler.h"
 #include "lib_utility/interface/system_info.h"
 #include "lib_utility/interface/time_handler.h"
@@ -126,6 +130,42 @@ void AppendDataPair(
 	string_append_format( destination__, "%s = %s\n", key__, value__ );
 }
 
+bool OpenKernelModuleFile(
+	std::fstream&				stream__,
+	const char*					file__
+	)
+{
+	const std::string data_dir =
+			std::string( SYSFS_HOME ) + '/' + SYSFS_EXPORT_DIR;
+	
+	if( mild_false == checkDirectoryExist( data_dir.c_str( ) ) )
+		return false;
+	
+	const std::string file_path = data_dir + '/' + file__;
+	if( mild_false == checkCanFileRead( file_path.c_str( ) ) )
+		return false;
+	
+	stream__.open( file_path, std::ios_base::in );
+	return stream__.is_open( );
+}
+
+void DeserializeMaVersion(
+	mild_u32*					destination__,
+	size_t						size__,
+	mild_u32					version__
+	)
+{
+	assert( 0 < size__ );
+
+	destination__[ 0 ] = MA_GET_MAJOR_VERSION( version__ );
+	if( 1 < size__ )
+		destination__[ 1 ] = MA_GET_MINOR_VERSION( version__ );
+	if( 2 < size__ )
+		destination__[ 2 ] = MA_GET_PATCH_VERSION( version__ );
+	if( 3 < size__ )
+		destination__[ 3 ] = MA_GET_CUSTOM_VERSION( version__ );
+}
+
 } // namespace {
 
 namespace data {
@@ -193,6 +233,143 @@ const std::string ConfigData::GetConfigData( ) const
 	}
 
 	return output;
+}
+
+NetlinkData::~NetlinkData( )
+{
+	if( -1 != fd_ )
+	{
+		close( fd_ );
+		fd_ = -1;
+	}
+
+	if( netlink_message_ )
+	{
+		free( netlink_message_ );
+		netlink_message_ = nullptr;
+	}
+}
+
+bool NetlinkData::Init( )
+{
+	std::cout << "[+] NetlinkData::Init()\n";
+	const size_t message_size = NLMSG_SPACE( sizeof( netlink_data_ ) );
+	const pid_t pid = getpid( );
+	auto* message_raw = ( struct nlmsghdr* )malloc( message_size );
+	
+	memset( &iov_, 0x00, sizeof( iov_ ) );
+	memset( &message_header_, 0x00, sizeof( message_header_ ) );
+	memset( &kernel_address_, 0x00, sizeof( kernel_address_ ) );
+
+	if( !message_raw )
+	{
+		printf( "Not enough memories\n" );
+		return false;
+	}
+	
+	memset( message_raw, 0x00, message_size );
+
+	int fd = socket( PF_NETLINK, SOCK_RAW, NETLINK_PORT_NUMBER );
+	if( -1 == fd )
+	{
+		std::cout << "Failed to open netlink socket.\n";
+		free( message_raw );
+		return false;
+	}
+	
+	struct sockaddr_nl bind_address;
+	auto* address_ptr = reinterpret_cast< struct sockaddr* >( &bind_address );
+	memset( &bind_address, 0x00, sizeof( bind_address ) );
+	bind_address.nl_family = AF_NETLINK;
+	bind_address.nl_pid = pid;
+
+	if( 0 > bind( fd, address_ptr, sizeof( bind_address ) ) )
+	{
+		std::cout << "Failed to bind address.\n";
+		free( message_raw );
+		return false;
+	}
+	
+	kernel_address_.nl_family = AF_NETLINK;
+
+	fd_ = fd;
+	netlink_message_ = message_raw;
+	std::cout << "[-] NetlinkData::Init()\n";
+	return true;
+}
+
+const std::string NetlinkData::GetAll( )
+{
+	std::cout << "[+] NetlinkData::GetAll()\n";
+	PNETLINK_DATA data = nullptr;
+	std::string output;
+
+	while( Get( ) )
+	{
+		data = reinterpret_cast< PNETLINK_DATA >(
+				NLMSG_DATA( netlink_message_ ) );
+		if( !data )
+		{
+			std::cout << "Failed to read netlink message.\n";
+			break;
+		}
+
+		string_append_format( output, "pid = %d\n", data->pid );
+		string_append_format( output, "uid = %d\n", data->uid );
+		string_append_format( output, "pid = %d\n", data->pid );
+		string_append_format( output, "fname = %s\n", data->fname );
+		string_append_format( output, "task = %s\n", data->task );
+
+		if( mild_false == data->remain )
+			break;
+		
+		output += '\n';
+	}
+
+	std::cout << "[-] NetlinkData::GetAll()\n";
+	return output;
+}
+
+bool NetlinkData::Get( )
+{
+	std::cout << "[+] NetlinkData::Get()\n";
+	ssize_t ret = 0;
+	const pid_t pid = getpid( );
+	const size_t message_size = NLMSG_SPACE( sizeof( netlink_data_ ) );
+
+	memset( netlink_message_, 0x00, message_size );
+	netlink_message_->nlmsg_len = message_size;
+	netlink_message_->nlmsg_pid = pid;
+
+	iov_.iov_base = &netlink_message_;
+	iov_.iov_len = netlink_message_->nlmsg_len;
+
+	message_header_.msg_name = &kernel_address_;
+	message_header_.msg_namelen = sizeof( kernel_address_ );
+	message_header_.msg_iov = &iov_;
+	message_header_.msg_iovlen = 1;
+
+	auto* data_ptr = NLMSG_DATA( &netlink_message_ );
+	memset( &netlink_data_, 0x00, sizeof( netlink_data_ ) );
+	netlink_data_.pid = pid;
+	memcpy( data_ptr, &netlink_data_, sizeof( netlink_data_ ) );
+
+	ret = sendmsg( fd_, &message_header_, 0 );
+	if( 0 > ret )
+	{
+		std::cout << "Failed to send netlink message.\n";
+		return false;
+	}
+	
+	ret = recvmsg( fd_, &message_header_, 0 );
+	if( 0 > ret )
+	{
+		std::cout << "Failed to receive netlink message.\n";
+		return false;
+	}
+
+	std::cout << "[-] NetlinkData::Get()\n";
+	return true;
 }
 
 const std::string GetSystemInfo( )
@@ -331,6 +508,67 @@ const std::string GetProcData(
 			AppendDataPair( output, key.c_str( ), "Not exist");
 	}
 
+	return output;
+}
+
+const std::string GetSysfsInfo( )
+{
+	std::fstream info;
+	if( !OpenKernelModuleFile( info, SYSFS_INFO_FILE ) )
+		return "";
+	
+	SYSFS_INFO info_data;
+	memset( &info_data, 0x00, sizeof( info_data ) );
+	info.read( reinterpret_cast< char* >( &info_data ), sizeof( info_data ) );
+	if( !info.good( ) )
+		return "";
+	
+	std::string output;
+	mild_u32 version_detail[ 4 ] = { 0, };
+
+	DeserializeMaVersion( version_detail, sizeof( version_detail ),
+						  info_data.sysfs_version );
+	string_append_format( output,
+						  "sysfs_version = %u.%u.%u.%u\n",
+						  version_detail[ 0 ],
+						  version_detail[ 1 ],
+						  version_detail[ 2 ],
+						  version_detail[ 3 ] );
+	DeserializeMaVersion( version_detail, sizeof( version_detail ),
+						  info_data.netlink_version );
+	string_append_format( output,
+						  "netlink_version = %u.%u.%u.%u\n",
+						  version_detail[ 0 ],
+						  version_detail[ 1 ],
+						  version_detail[ 2 ],
+						  version_detail[ 3 ] );
+	string_append_format( output,
+						  "netlink_load = %d\n",
+						  static_cast< int >( info_data.netlink_load ) );
+	string_append_format( output,
+						  "netlink_port = %u", info_data.netlink_port );
+	
+	std::fstream version;
+	if( !OpenKernelModuleFile( version, SYSFS_VERSION_FILE ) )
+		return output;
+	
+	char version_data[ 32 ];
+	memset( version_data, 0x00, sizeof( version_data ) );
+	version.read( version_data, sizeof( version_data ) );
+	if( !version.good( ) )
+		return output;
+	
+	auto numeric_version =
+			static_cast< mild_u32 >( strtoul( version_data, nullptr, 10 ) );
+	
+	memset( version_detail, 0x00, sizeof( version_detail ) );
+	DeserializeMaVersion( version_detail, sizeof( version_detail ),
+						  numeric_version );
+	string_append_format( output, "\n\nversion = %u.%u.%u.%u",
+						  version_detail[ 0 ],
+						  version_detail[ 1 ],
+						  version_detail[ 2 ],
+						  version_detail[ 3 ] );
 	return output;
 }
 

@@ -29,6 +29,10 @@ ButtonBox::ButtonBox(
 	AddButton( AgentButtonType::kProcess, kProcessButtonLabel );
 	AddButton( AgentButtonType::kProc, kProcButtonLabel );
 	AddButton( AgentButtonType::kTime, kTimeButtonLabel );
+	AddButton( AgentButtonType::kSysfs, kSysfsButtonLabel );
+	AddButton( AgentButtonType::kNetlink, kNetlinkButtonLabel );
+
+	netlink_data_.Init( );
 	std::cout << "[-] ButtonBox::ButtonBox()\n";
 }
 
@@ -67,6 +71,8 @@ void ButtonBox::on_button_clicked(
 	AgentButtonType				button_type__
 	)
 {
+	using namespace data;
+
 	std::cout << "[+] AgentMain::on_button_clicked()\n";
 	TextWindow& text_window = agent_window_.GetTextWindow( );
 
@@ -80,15 +86,14 @@ void ButtonBox::on_button_clicked(
 
 		case AgentButtonType::kSystem:
 		{
-			text_window.ShowText( data::GetSystemInfo( ) );
+			text_window.ShowText( GetSystemInfo( ) );
 			break;
 		}
 
 		case AgentButtonType::kProcess:
 		{
 			text_window.ShowText(
-				data::GetProcessData(
-					agent_window_.GetSingleInstanceFilePath( ) ) );
+				GetProcessData( agent_window_.GetSingleInstanceFilePath( ) ) );
 			break;
 		}
 
@@ -100,7 +105,19 @@ void ButtonBox::on_button_clicked(
 		
 		case AgentButtonType::kTime:
 		{
-			text_window.ShowText( data::GetTimeInfo( ) );
+			text_window.ShowText( GetTimeInfo( ) );
+			break;
+		}
+
+		case AgentButtonType::kSysfs:
+		{
+			text_window.ShowText( GetSysfsInfo( ) );
+			break;
+		}
+
+		case AgentButtonType::kNetlink:
+		{
+			text_window.ShowText( netlink_data_.GetAll( ) );
 			break;
 		}
 	}
