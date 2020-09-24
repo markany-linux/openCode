@@ -21,12 +21,7 @@
 #include <string>
 #include <vector>
 
-extern "C" {
-
-#include "lib_utility/interface/config_handler.h"
-#include "lib_utility/interface/system_info.h"
-
-}
+#include "utility_interface.h"
 
 class AgentMain;
 

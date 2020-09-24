@@ -1,10 +1,10 @@
 CC =		gcc
 
-INSTALL_DIR =	$(shell pwd)/../bin
+COMMON_HOME =	../..
 
-COMMON_HOME =	$(shell pwd)/../..
+INSTALL_DIR =	$(COMMON_HOME)/bin
 
-INCS =		$(COMMON_HOME)
+INCS =		$(COMMON_HOME) ./include
 
 INCLUDES =	$(INCS:%=-I%)
 

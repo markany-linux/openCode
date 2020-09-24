@@ -9,12 +9,7 @@
 #include <string>
 
 #include "common.h"
-#include "lib_utility/interface/config_handler.h"
-#include "lib_utility/interface/crc.h"
-#include "lib_utility/interface/file_check.h"
-#include "lib_utility/interface/proc_handler.h"
-#include "lib_utility/interface/system_info.h"
-#include "lib_utility/interface/time_handler.h"
+#include "utility_interface.h"
 
 namespace {
 
@@ -242,6 +237,8 @@ const std::string ConfigData::GetConfigData( ) const
 
 	if( !config_init_ )
 		return "";
+	
+	printf( "1\n" );
 	
 	std::string output;
 

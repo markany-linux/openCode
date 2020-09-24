@@ -10,7 +10,7 @@
 
 #include "file_check.h"
 #include "time_handler.h"
-#include "interface/lib_utility.h"
+#include "utility_interface.h"
 
 
 
@@ -97,7 +97,7 @@ mild_bool init_malog(
         return mild_true;
 
     /// 오늘 날짜 획득
-	if( mild_false == get_current_date_readable( today ) )
+    if( mild_false == get_current_date_readable( today ) )
         return mild_false;
 
     /// 로그 디렉터리 확인

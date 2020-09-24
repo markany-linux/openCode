@@ -7,7 +7,7 @@
 
 #include "agent_data.h"
 #include "button_box.h"
-#include "lib_utility/interface/single_instance.h"
+#include "utility_interface.h"
 
 AgentMain::~AgentMain( )
 {

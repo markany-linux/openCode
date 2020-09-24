@@ -8,7 +8,7 @@ LDFLAGS =		-L$(INSTALL_DIR) -Wl,--rpath=./
 
 LIB_UTILITY_DIR =	./lib_utility
 
-INCLUDE_DIR =		./src ./ ../
+INCLUDE_DIR =		./src ./ ../ ./lib_utility/include
 INCLUDE_DIRS =		$(INCLUDE_DIR:%=-I%) \
 			$(shell pkg-config --cflags-only-I gtkmm-3.0)
 
@@ -27,16 +27,18 @@ TARGET =		maOpen
 
 .SUFFIXES:		.cc .o
 
-all: $(TARGET)
+all: make_lib $(TARGET)
+
+make_lib:
+	$(MAKE) -C $(LIB_UTILITY_DIR)
 
 $(TARGET): $(OBJECTS)
-	$(MAKE) -C $(LIB_UTILITY_DIR)
 	$(CXX) -o $(INSTALL_DIR)/$(TARGET) $? $(LDFLAGS) $(LDLIBS) $(CXXFLAGS)
 
 .cc .o:
 	$(CXX) $(CXXFLAGS) -c $<
 
 clean:
+	$(MAKE) -C $(LIB_UTILITY_DIR) clean
 	rm -rf $(SOURCE_DIR)/*.o
 	rm -rf $(INSTALL_DIR)/$(TARGET)
-

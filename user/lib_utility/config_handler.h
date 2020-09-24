@@ -21,7 +21,7 @@
 #include "utility_definitions.h"
 #include "gpl_list.h"
 
-#include "interface/lib_utility.h"
+#include "utility_interface.h"
 
 
 /**

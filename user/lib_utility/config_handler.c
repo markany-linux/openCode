@@ -12,8 +12,8 @@
 #include "string_parser.h"
 #include "file_check.h"
 
-#include "interface/lib_utility.h"
-#include "user/lib_utility/gpl_list.h"
+#include "utility_interface.h"
+#include "gpl_list.h"
 
 
 /**
