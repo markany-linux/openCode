@@ -1,8 +1,10 @@
-CXX =		clang++
+CXX =			clang++
+
+INSTALL_DIR =		../bin
 
 CXXFLAGS =		-g -W -Wall -Wextra -std=c++14 $(INCLUDE_DIRS)
 LDLIBS =		-lmautil $(shell pkg-config --libs gtkmm-3.0)
-LDFLAGS =		-L./bin -Wl,--rpath=./
+LDFLAGS =		-L$(INSTALL_DIR) -Wl,--rpath=./
 
 LIB_UTILITY_DIR =	./lib_utility
 
@@ -21,7 +23,6 @@ SOURCES =		agent_data.cc		\
 
 OBJECTS =		$(SOURCES:%.cc=$(SOURCE_DIR)/%.o)
 
-INSTALL_DIR =		./bin
 TARGET =		maOpen
 
 .SUFFIXES:		.cc .o

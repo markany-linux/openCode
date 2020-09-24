@@ -1,6 +1,0 @@
--xc
--std=gnu90
--W
--Wall
--Wextra
--I../..
