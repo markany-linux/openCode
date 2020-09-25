@@ -38,6 +38,9 @@ typedef struct openCode_agent_management_information
     /// 에이전트 실행 경로
     mild_i8                     agent_path[ STRLEN_128 ];
 
+    /// 단일 인스턴스를 위한 파일 디스크립터
+    mild_i32                    fd;
+
     /// 스레드 핸들 및 상태 정보
     OPENCODE_CONTROL            control;
 
