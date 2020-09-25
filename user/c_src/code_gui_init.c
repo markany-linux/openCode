@@ -72,7 +72,8 @@ static void setup_contents_widgets(
 
 #define SETBTN(w,l,f,c)	{		\
 	w=gtk_button_new_with_label(l);	\
-	g_signal_connect(G_OBJECT(w),"clicked",G_CALLBACK(f),c); }
+	g_signal_connect(G_OBJECT(w),"clicked",G_CALLBACK(f),c);    \
+    gtk_widget_set_size_request(w,70,50);   }
 
     /// 1. 상단 버튼 위젯들을 생성
     SETBTN( btn_config, "Config Info\n(With CRC)", config_button_handler, lbl_info );
@@ -83,16 +84,16 @@ static void setup_contents_widgets(
     SETBTN( btn_sysfs, "Sysfs Info", sysfs_button_handler, lbl_info );
     SETBTN( btn_netlink, "Netlink Info", netlink_button_handler, lbl_info );
 
-    gtk_box_pack_start( GTK_BOX( b_box__ ), btn_config, TRUE, TRUE, 0 );
-    gtk_box_pack_start( GTK_BOX( b_box__ ), btn_system, TRUE, TRUE, 0 );
-    gtk_box_pack_start( GTK_BOX( b_box__ ), btn_process, TRUE, TRUE, 0 );
-    gtk_box_pack_start( GTK_BOX( b_box__ ), btn_proc, TRUE, TRUE, 0 );
-    gtk_box_pack_start( GTK_BOX( b_box__ ), btn_time, TRUE, TRUE, 0 );
-    gtk_box_pack_start( GTK_BOX( b_box__ ), btn_sysfs, TRUE, TRUE, 0 );
-    gtk_box_pack_start( GTK_BOX( b_box__ ), btn_netlink, TRUE, TRUE, 0 );
+    gtk_box_pack_start( GTK_BOX( b_box__ ), btn_config, FALSE, TRUE, 0 );
+    gtk_box_pack_start( GTK_BOX( b_box__ ), btn_system, FALSE, TRUE, 0 );
+    gtk_box_pack_start( GTK_BOX( b_box__ ), btn_process, FALSE, TRUE, 0 );
+    gtk_box_pack_start( GTK_BOX( b_box__ ), btn_proc, FALSE, TRUE, 0 );
+    gtk_box_pack_start( GTK_BOX( b_box__ ), btn_time, FALSE, TRUE, 0 );
+    gtk_box_pack_start( GTK_BOX( b_box__ ), btn_sysfs, FALSE, TRUE, 0 );
+    gtk_box_pack_start( GTK_BOX( b_box__ ), btn_netlink, FALSE, TRUE, 0 );
 
-    gtk_box_pack_start( GTK_BOX( c_box__ ), b_box__, TRUE, TRUE, 0 );
-    gtk_box_pack_start( GTK_BOX( c_box__ ), lbl_info, TRUE, TRUE, 0 );
+    gtk_box_pack_start( GTK_BOX( c_box__ ), b_box__, FALSE, TRUE, 0 );
+    gtk_box_pack_start( GTK_BOX( c_box__ ), lbl_info, FALSE, TRUE, 0 );
 
 #undef SETBTN
 }
@@ -107,17 +108,18 @@ void setup_agent_widgets(
     GtkWidget *lbl_name, *btn_exit;
 
     lbl_name = gtk_label_new( "openCode Agent" );
-    gtk_box_pack_start( GTK_BOX( mainBox__ ), lbl_name, TRUE, TRUE, 0 );
+    gtk_box_pack_start( GTK_BOX( mainBox__ ), lbl_name, FALSE, TRUE, 0 );
 
     contents_box = gtk_box_new( GTK_ORIENTATION_HORIZONTAL, 0 );
     btn_box = gtk_box_new( GTK_ORIENTATION_VERTICAL, 0 );
 
     setup_contents_widgets( contents_box, btn_box );
 
-    gtk_box_pack_start( GTK_BOX( mainBox__ ), contents_box, TRUE, TRUE, 0 );
+    gtk_box_pack_start( GTK_BOX( mainBox__ ), contents_box, FALSE, TRUE, 0 );
 
     btn_exit = gtk_button_new_with_label( "Exit" );
+    gtk_widget_set_size_request( btn_exit, 200,50);
 	g_signal_connect( G_OBJECT( btn_exit ), "clicked" , G_CALLBACK( application_quit ), NULL );
 
-    gtk_box_pack_start( GTK_BOX( mainBox__ ), btn_exit, TRUE, TRUE, 0 );
+    gtk_box_pack_start( GTK_BOX( mainBox__ ), btn_exit, FALSE, TRUE, 0 );
 }
