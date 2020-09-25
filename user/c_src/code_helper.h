@@ -52,4 +52,33 @@ extern mild_bool set_user_info(
     );
 
 
+/**
+ * @brief   sysfs 파일 개방 후, 내용을 읽어 반환
+ *          * 항상 /sys/kernel/openCode/ 디렉터리 하위 파일을 개방하여 처리
+ * 
+ * @param   file__  개방할 파일명
+ * @param   buf__   반환 버퍼
+ * @param   len__   읽을 길이
+ * 
+ * @return  개방 성공 true, 실패 false
+ */
+extern mild_bool open_sysfs_get_contents(
+    mild_cstr                   file__,
+    mild_ptr                    buf__,
+    mild_i32                    len__
+    );
+
+
+extern mild_bool connect_netlink(
+    mild_i32                    *fd__
+    );
+
+
+extern mild_bool get_netlink_data(
+    mild_i32                    fd__,
+    PNETLINK_DATA               data__
+    );
+
+
+
 #endif  // #ifndef __CODE_HELPER_H__
