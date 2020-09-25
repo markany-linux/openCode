@@ -21,7 +21,8 @@ SRCS		=	code_main.c				\
 				code_button_handler.c	\
 				code_gui_init.c			\
 				code_helper.c			\
-				code_init.c
+				code_init.c				\
+				code_search_dialog.c
 
 OBJS	= $(SRCS:%.c=%.o)
 TARGET	= maCopen
