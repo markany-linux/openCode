@@ -37,9 +37,6 @@ static mild_bool init_opencode_execute_environment(
     if( mild_false == getLocalSystemInfo( &agent__->system ) )
         return mild_false;
 
-
-printf( "%s 1\n", __FUNCTION__ );
-
     if( mild_false == createConfigList( &agent__->library.config_handle ) )
     {
         printf( "create config list\n" );
@@ -52,7 +49,6 @@ printf( "%s 1\n", __FUNCTION__ );
         return mild_false;
     }
 
-printf( "%s 2\n", __FUNCTION__ );
     /// TODO: 로그 초기화 - 나중에
 
     /// TODO: 환경 설정 정보 초기화
@@ -102,7 +98,7 @@ mild_bool init_opencode_agent(
         return mild_false;
 
     /// TODO: single instance
-    if( mild_false == setupSingleInstance( &agent->fd, SINGLE_INSTANCE_NAME ) )
+    if( mild_false == setupSingleInstance( &agent->single_fd, SINGLE_INSTANCE_NAME ) )
         return mild_false;
 
     /// 기본 정보 설정
@@ -111,7 +107,6 @@ mild_bool init_opencode_agent(
     /// 사용자 정보 설정
     if( mild_false == set_user_info( agent->agent_uid, &( agent->user ) ) )
         return mild_false;
-
 
     return mild_true;
 }
