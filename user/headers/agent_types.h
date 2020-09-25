@@ -39,7 +39,13 @@ typedef struct openCode_agent_management_information
     mild_i8                     agent_path[ STRLEN_128 ];
 
     /// 단일 인스턴스를 위한 파일 디스크립터
-    mild_i32                    fd;
+    mild_i32                    single_fd;
+
+    /// netlink 소켓 디스크립터
+    mild_i32                    netlink_fd;
+
+    /// 로그 파일 디스크립터
+    mild_i32                    log_fd;
 
     /// 스레드 핸들 및 상태 정보
     OPENCODE_CONTROL            control;

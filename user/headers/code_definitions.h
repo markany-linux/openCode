@@ -19,8 +19,8 @@
 #define OPENCODE_TMP_DIR                    "/tmp"
 
 #define MAINWINDOW_TITLE                    "openCode User Agent"
-#define MAINWINDOW_WIDTH                    400
-#define MAINWINDOW_HEIGHT                   600
+#define MAINWINDOW_WIDTH                    550
+#define MAINWINDOW_HEIGHT                   400
 #define MAINWINDOW_BORDER                   10
 
 #define SINGLE_INSTANCE_NAME                OPENCODE_TMP_DIR "/openCode.pid" 
