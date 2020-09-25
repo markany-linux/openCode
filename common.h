@@ -89,6 +89,8 @@ typedef const void*                 mild_cptr;
 #define PAGESIZE                    4096
 #define TWOPAGE                     8192
 
+#define OPENCODE_KERNEL_MODULE      "maOpen"
+
 /**
  * @brief	SYSFS definitions
  */
