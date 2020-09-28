@@ -124,6 +124,8 @@ extern mild_bool initConfigList(
 
 /**
  * @brief   파일을 읽어 획득된 모든 설정 정보의 출력
+ *
+ * @param	list__	출력할 설정 정보를 담은 리스트
  */
 extern void dispConfigListValue(
 	PCONFIG_LIST                list__
@@ -453,7 +455,14 @@ extern mild_bool checkDirectoryPermissions(
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-
+/**
+ * @brief	로그를 기록할 파일 초기화
+ * 
+ * @param	fd__		로그를 기록할 파일 디스크립터를 받을 대상
+ * @param	pathname__	로그를 기록할 파일명
+ * @param	dir_name__	로그 파일 디렉토리 경로
+ * @return	mild_bool	로그 파일 초기화에 성공할 시 true, 실패 시 false
+ */
 extern mild_bool initLogFile(
     mild_i32                    *fd__,
     mild_cstr                   pathname__,
@@ -461,12 +470,24 @@ extern mild_bool initLogFile(
     );
 
 
+/**
+ * @brief	로그 파일에 로그를 기록
+ * 
+ * @param	fd__		로그 파일 디스크립터
+ * @param	log__		기록할 로그
+ * @return	mild_bool	기록에 성공할 시 true, 실패 시 false
+ */
 extern mild_bool writeLogFile(
     mild_i32                    fd__,
     mild_cstr                   log__
     );
 
 
+/**
+ * @brief	로그 파일을 닫고 기록을 종료
+ * 
+ * @param	fd__	대상 로그 파일 디스크립터
+ */
 extern void closeLogFile(
     mild_i32                    *fd__
     );
@@ -523,12 +544,25 @@ extern mild_bool checkKernelSymbolExist(
 ///////////////////////////////////////////////////////////////////////////////
 
 
+/**
+ * @brief	싱글 인스턴스 설정
+ * 
+ * @param	fd__		싱글 인스턴스로 사용될 파일의 디스크립터를 받을 대상
+ * @param	pathname__	싱글 인스턴스로 사용될 파일의 경로
+ * @return	mild_bool	싱글 인스턴스 설정에 성공할 시 true, 실패 시 false
+ */
 extern mild_bool setupSingleInstance(
     mild_i32                    *fd__,
     mild_cstr                   pathname__
     );
 
 
+/**
+ * @brief	싱글 인스턴스 종료
+ * 
+ * @param	fd__		싱글 인스턴스로 사용되고 있는 파일 디스크립터
+ * @param	pathname__	싱글 인스턴스로 사용되고 있는 파일의 경로
+ */
 extern void cleanupSingleInstance(
     mild_i32                    *fd__,
     mild_cstr                   pathname__
@@ -1022,11 +1056,23 @@ extern void dispDateTimeReadable(
 	);
 
 
+/**
+ * @brief	앱 시작 시간 기록
+ * 
+ * @param	app_time__	시작 시간 기록 대상
+ */
 extern void setAppStartTime(
 	PAPP_TIME					app_time__
 	); 
 
 
+/**
+ * @brief	앱 시작 시간으로 부터 경과된 시간을 구함
+ * 
+ * @param	app_time__	기록된 시작 시간
+ * @return	mild_float	시작 시간이 기록된 경우 경과된 시간,
+ *						기록되지 않은 경우 `0.0f` 반환
+ */
 extern mild_float setAppEndTime(
 	PAPP_TIME					app_time__
 	);
