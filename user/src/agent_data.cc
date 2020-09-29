@@ -197,6 +197,39 @@ void DeserializeMaVersion(
 		destination__[ 3 ] = MA_GET_CUSTOM_VERSION( version__ );
 }
 
+/**
+ * @brief	sysfs에서 제공하는 정보가 기록된 파일을 읽어옴
+ * 
+ * @param	sysfs_info__	정보를 받을 대상
+ * @return	mild_bool		정보를 성공적으로 가져올 시 true, 실패 시 false
+ */
+mild_bool GetSysfsInfoData(
+	PSYSFS_INFO					sysfs_info__
+	)
+{
+	assert( sysfs_info__ );
+
+	const size_t size = sizeof( *sysfs_info__ );
+	/// 정보를 가져오기 전 초기화 수행
+	memset( sysfs_info__, 0x00, size );
+
+	std::fstream info;
+	/// 커널 모듈에서 만든 info 파일 열기
+	if( !OpenKernelModuleFile( info, SYSFS_INFO_FILE ) )
+		return mild_false;
+
+	/// info 파일을 sysfs 구조체 형식으로 읽음
+	auto* buffer = reinterpret_cast< char* >( sysfs_info__ );
+	info.read( buffer, size );
+	if( info.fail( ) && !info.eof( ) )
+	{
+		std::cout << "Failed to read netlink file: " SYSFS_INFO_FILE << '\n';
+		return mild_false;
+	}
+
+	return mild_true;
+}
+
 } // namespace {
 
 namespace data {
@@ -582,20 +615,10 @@ const std::string GetProcData(
 
 const std::string GetSysfsInfo( )
 {
-	std::fstream info;
-	/// 커널 모듈에서 만든 info 파일 열기
-	if( !OpenKernelModuleFile( info, SYSFS_INFO_FILE ) )
-		return "";
-	
 	SYSFS_INFO info_data;
-	memset( &info_data, 0x00, sizeof( info_data ) );
-	/// info 파일을 sysfs 구조체 형식으로 읽음
-	info.read( reinterpret_cast< char* >( &info_data ), sizeof( info_data ) );
-	if( info.fail( ) && !info.eof( ) )
-	{
-		std::cout << "Failed to read netlink file: " SYSFS_INFO_FILE << '\n';
+
+	if( mild_false == GetSysfsInfoData( &info_data ) )
 		return "";
-	}
 	
 	std::string output;
 	mild_u32 version_detail[ 4 ] = { 0, };
