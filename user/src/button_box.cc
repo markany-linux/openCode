@@ -31,8 +31,6 @@ ButtonBox::ButtonBox(
 	AddButton( AgentButtonType::kTime, kTimeButtonLabel );
 	AddButton( AgentButtonType::kSysfs, kSysfsButtonLabel );
 	AddButton( AgentButtonType::kNetlink, kNetlinkButtonLabel );
-
-	netlink_data_.Init( );
 	std::cout << "[-] ButtonBox::ButtonBox()\n";
 }
 
