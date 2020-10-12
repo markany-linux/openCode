@@ -2,7 +2,7 @@ CXX =			clang++
 
 INSTALL_DIR =		../bin
 
-CXXFLAGS =		-g -W -Wall -Wextra -std=c++14 $(INCLUDE_DIRS)
+CXXFLAGS =		-O2 -W -Wall -Wextra -std=c++14 $(INCLUDE_DIRS)
 LDLIBS =		-lmautil $(shell pkg-config --libs gtkmm-3.0)
 LDFLAGS =		-L$(INSTALL_DIR) -Wl,--rpath=./
 
@@ -27,12 +27,13 @@ TARGET =		maOpen
 
 .SUFFIXES:		.cc .o
 
-all: make_lib $(TARGET)
-
-make_lib:
+all:
 	$(MAKE) -C $(LIB_UTILITY_DIR)
+	$(MAKE) $(TARGET)
+	@printf "\nBuild Success : \e[32m%s\e[0m\n\n" $(TARGET)
 
 $(TARGET): $(OBJECTS)
+	$(MAKE) -C $(LIB_UTILITY_DIR)
 	$(CXX) -o $(INSTALL_DIR)/$(TARGET) $? $(LDFLAGS) $(LDLIBS) $(CXXFLAGS)
 
 .cc .o:
@@ -42,3 +43,4 @@ clean:
 	$(MAKE) -C $(LIB_UTILITY_DIR) clean
 	rm -rf $(SOURCE_DIR)/*.o
 	rm -rf $(INSTALL_DIR)/$(TARGET)
+	@printf "\nClean Success : \e[32m%s\e[0m\n\n" "$(OBJECTS) $(TARGET)"
