@@ -17,6 +17,7 @@
 
 
 #define OPENCODE_TMP_DIR                    "/tmp"
+#define OPENCODE_CONFIG_FILE                "config.cfg"
 
 #define MAINWINDOW_TITLE                    "openCode User Agent"
 #define MAINWINDOW_WIDTH                    550
