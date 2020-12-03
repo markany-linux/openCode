@@ -7,7 +7,7 @@
 #include "code_init.h"
 #include "code_gui_init.h"
 
-/// agent management info.
+/// 에이전트 정보 전역 변수
 POPENCODE_AGENT g_agent;
 
 
@@ -16,36 +16,34 @@ int main(
     char                        **argv__
     )
 {
-    //mild_i32 init_error = 0;
     GtkWidget *mainBox;
 
-    printf( "Hello openCode\n" );
-
+    /// GTK 프로그램 시작
     gtk_init( &argc__, &argv__ );
 
-    /// openCode 초기화
+    /// openCode 에이전트 초기화
     if( mild_false == init_opencode_agent( &g_agent ) )
     {
-        /// TODO: 메시지 박스로 에러 출력하도록 수정
         printf( "openCode initialize fail\n" );
         return -1;
     }
 
-    /// 메인 윈도우 위젯 생성
+    /// 최상위 윈도우 위젯 생성
     g_agent->ui.mainWindow = gtk_window_new( GTK_WINDOW_TOPLEVEL );
+    /// 최상위 윈도우 설정
     setup_main_window( g_agent->ui.mainWindow );
 
+    /// 메인 박스 생성
     mainBox = gtk_box_new( GTK_ORIENTATION_VERTICAL, 0 );
+    /// 메인 박스에 컨텐츠들을 생성하여 패킹
     setup_agent_widgets( mainBox );
 
-    /// 5. 메인 박스를 메인 윈도우에 포함하고, 화면에 표시
+    /// 메인 박스를 메인 윈도우에 포함하고, 화면에 표시
     gtk_container_add( GTK_CONTAINER( g_agent->ui.mainWindow ), mainBox );
+    /// 최상위 윈도우에 포함된 모든 위젯을 화면에 표시
     gtk_widget_show_all( g_agent->ui.mainWindow );
 
-
-    /// openCode 종료
-    //cleanup_opencode_agent( g_agent );
-
+    /// GTK 프로그램 실행 루프 시작
     gtk_main( );
 
     return 0;

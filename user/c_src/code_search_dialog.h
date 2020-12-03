@@ -1,7 +1,7 @@
 /**
  * \file    code_search_dialog.h
  * 
- * \brief   
+ * \brief   proc에서 정보를 검색하는 다이얼로그
  * 
  * \date    2020.09.25.
  * 
@@ -18,6 +18,9 @@
 #include <gtk/gtk.h>
 
 
+/**
+ * @brief   정보 검색 다이얼로그 실행
+ */
 extern void search_dialog_run( void );
 
 

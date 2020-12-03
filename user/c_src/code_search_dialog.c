@@ -3,17 +3,29 @@
 #include "code_init.h"
 
 
+/**
+ * @brief   다이얼로그에서 발생하는 시그널에 정보를 전달하기 위한 구조체
+ */
 typedef struct widget_set_struct
 {
+    /// 사용자 입력 창 위젯
     GtkWidget                   *entry;
 
+    /// 라벨 위젯
     GtkWidget                   *label;
 
+    /// 다이얼로그 위젯
     GtkWidget                   *dialog;
 
 } TRIPLE_WIDGET, *PTRIPLE_WIDGET;
 
 
+/**
+ * @brief   커널 심볼을 찾는 기능
+ * 
+ * @param   this__      호출한 위젯
+ * @param   user_data__ 추가 전달 정보
+ */
 static void search_ksyms(
     GtkWidget                   *this__,
     gpointer                    user_data__
@@ -23,28 +35,41 @@ static void search_ksyms(
     const gchar *txt_symbol = mild_null;
     PTRIPLE_WIDGET param = mild_null;
 
+    /// 추가 정보를 획득
     param = ( PTRIPLE_WIDGET )user_data__;
 
+    /// 사용자 입력 창의 내용을 획득
     txt_symbol = gtk_entry_get_text( GTK_ENTRY( param->entry ) );
 
+    /// 사용자 입력 여부 확인
     if( 0 == strlen( txt_symbol ) )
     {
+        /// 사용자 입력이 없는 경우의 처리
         gtk_label_set_text( GTK_LABEL( param->label ), "Enter search symbol name" );
         return;
     }
 
+    /// 요청 심볼 존재 여부 확인
     if( mild_false == checkKernelSymbolExist( txt_symbol, mild_null ) )
     {
+        /// 존재하지 않는 경우의 처리. 심볼 미존재를 라벨에 출력
         snprintf( buf, STRLEN_64, "[ %s ] symbol not exists", txt_symbol );
         gtk_label_set_text( GTK_LABEL( param->label ), buf );
         return;
     }
 
+    /// 요청 심볼 존재를 라벨에 출력
     snprintf( buf, STRLEN_64, "[ %s ] symbol exists", txt_symbol );
     gtk_label_set_text( GTK_LABEL( param->label ), buf );
 }
 
 
+/**
+ * @brief   커널 모듈 찾는 기능
+ * 
+ * @param   this__      호출 위젯
+ * @param   user_data__ 추가 전달 정보
+ */
 static void search_module(
     GtkWidget                   *this__,
     gpointer                    user_data__
@@ -54,38 +79,52 @@ static void search_module(
     const gchar *txt_module = mild_null;
     PTRIPLE_WIDGET param = mild_null;
 
+    /// 추가 정보 획득
     param = ( PTRIPLE_WIDGET )user_data__;
 
+    /// 사용자 입력 정보 획득
     txt_module = gtk_entry_get_text( GTK_ENTRY( param->entry ) );
 
+    /// 입력 정보 존재 여부 확인
     if( 0 == strlen( txt_module ) )
     {
+        /// 입력하지 않는 경우의 처리
         gtk_label_set_text( GTK_LABEL( param->label ), "Enter search module name" );
         return;
     }
 
+    /// 커널 모듈 존재 확인
     if( mild_false == checkKernelModuleExist( txt_module ) )
     {
+        /// 존재하지 않는 경우의 처리
         snprintf( buf, STRLEN_64, "[ %s ] module isNot exists", txt_module );
         gtk_label_set_text( GTK_LABEL( param->label ), buf );
         return;
     }
 
+    /// 요청한 커널 모듈이 존재하는 경우의 처리
     snprintf( buf, STRLEN_64, "[ %s ] module EXIST", txt_module );
     gtk_label_set_text( GTK_LABEL( param->label ), buf );
 }
 
 
+/**
+ * @brief   다이얼로그의 버튼 클릭 처리기
+ * 
+ * @param   this__      클릭된 위젯
+ * @param   response__  위젯 정보
+ * @param   user_data__ 추가 전달 정보
+ */
 static void search_dispatcher(
     GtkWidget                   *this__,
     gint                        response__,
     gpointer                    user_data__
     )
 {
-    /// 1. 사용자가 OK 버튼을 입력 했는지 여부를 확인
+    /// CANCEL 버튼 입력 여부 확인
     if( GTK_RESPONSE_REJECT == response__ )
     {
-        /// 2. CANCEL 버튼 입력 시 다이얼로그를 해제하고 종료
+        /// CANCEL 버튼 입력 시 다이얼로그를 해제하고 종료
         gtk_widget_destroy( this__ );
         return;
     }
@@ -123,49 +162,53 @@ void search_dialog_run( void )
     entry_mod = gtk_entry_new( );
     gtk_entry_set_max_length( GTK_ENTRY( entry_mod ), STRLEN_32 );
 
+    /// 커널 심볼 탐색 처리를 위해 필요한 위젯 정보 수집
     ksyms_widget.entry = entry_ksyms;
     ksyms_widget.label = lbl_result;
     ksyms_widget.dialog = dialog;
 
+    /// 커널 모듈 탐색 처리를 위해 필요한 위젯 정보 수집
     mod_widget.entry = entry_mod;
     mod_widget.label = lbl_result;
     mod_widget.dialog = dialog;
 
-    /// 검색 버튼 생성
+    /// 커널 심볼 검색 버튼 생성 및 클릭 핸들러 등록
     btn_ksyms = gtk_button_new_with_label( "Search Symbol" );
     g_signal_connect( G_OBJECT( btn_ksyms ), "clicked", G_CALLBACK( search_ksyms ), &ksyms_widget );
 
+    /// 커널 모듈 검색 버튼 생성 및 클릭 핸들러 등록
     btn_mod = gtk_button_new_with_label( "Search Module" );
     g_signal_connect( G_OBJECT( btn_mod ), "clicked", G_CALLBACK( search_module ), &mod_widget );
 
-    /// 6. 아이디/비밀번호 위젯을 포함할 박스 생성
+    /// 커널 심볼/모듈 탐색을 위한 위젯들을 포함할 박스 생성
     kbox = gtk_box_new( GTK_ORIENTATION_HORIZONTAL, 0 );
     mbox = gtk_box_new( GTK_ORIENTATION_HORIZONTAL, 0 );
 
-    /// 7. 생성된 아이디 비밀번호 위젯들을 박스에 패킹
+    /// 생성된 커널 심볼 탐색 위젯들을 박스에 패킹
     gtk_box_pack_start( GTK_BOX( kbox ), lbl_ksyms, FALSE, FALSE, 0 );
     gtk_box_pack_start( GTK_BOX( kbox ), entry_ksyms, FALSE, FALSE, 0 );
     gtk_box_pack_start( GTK_BOX( kbox ), btn_ksyms, FALSE, FALSE, 0 );
 
+    /// 생성된 커널 모듈 탐색 위젯들을 박스에 패킹
     gtk_box_pack_start( GTK_BOX( mbox ), lbl_mod, FALSE, FALSE, 0 );
     gtk_box_pack_start( GTK_BOX( mbox ), entry_mod, FALSE, FALSE, 0 );
     gtk_box_pack_start( GTK_BOX( mbox ), btn_mod, FALSE, FALSE, 0 );
 
-    /// 8. 다이얼로그의 컨텐츠 위젯을 획득하여 아이디/비밀번호 위젯을 패킹
+    /// 다이얼로그의 컨텐츠 영역을 획득하여 생성된 각 위젯들을 패킹
     contents = gtk_dialog_get_content_area( GTK_DIALOG( dialog ) );
     gtk_container_add( GTK_CONTAINER( contents ), kbox );
     gtk_container_add( GTK_CONTAINER( contents ), mbox );
     gtk_container_add( GTK_CONTAINER( contents ), lbl_result );
 
-    /// 9. 비밀번호 입력 Entry에 Enter 키가 눌린 경우를 처리하기 위한 핸들러 등록
+    /// 커널 심볼 탐색 입력 entry에 Enter 키가 눌린 경우를 처리하기 위한 핸들러 등록
     g_signal_connect( GTK_ENTRY( entry_ksyms ), "activate", G_CALLBACK( search_ksyms ), &ksyms_widget );
-
+    /// 커널 모듈 탐색 입력 entry에 Enter 키가 눌린 경우를 처리하기 위한 핸들러 등록
     g_signal_connect( GTK_ENTRY( entry_mod ), "activate", G_CALLBACK( search_module ), &mod_widget );
 
-    /// 10. 다이얼로그의 OK, CANCEL 버튼 입력 시 처리할 핸들러 등록
+    /// 다이얼로그의 CANCEL 버튼 입력 시 처리할 핸들러 등록
     g_signal_connect( GTK_DIALOG( dialog ), "response", G_CALLBACK( search_dispatcher ), NULL );
 
-    /// 11. 다이얼로그를 표시하고 실행
+    /// 다이얼로그를 표시하고 실행
     gtk_widget_show_all( dialog );
     gtk_dialog_run( GTK_DIALOG( dialog ) );
 }

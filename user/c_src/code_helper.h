@@ -69,16 +69,30 @@ extern mild_bool open_sysfs_get_contents(
     );
 
 
+/**
+ * @brief   netlink 연결
+ * 
+ * @param   fd__    획득하여 반환할 디스크립터
+ * 
+ * @return  연결 성공 true, 실패 false
+ */
 extern mild_bool connect_netlink(
     mild_i32                    *fd__
     );
 
 
+/**
+ * @brief   netlink를 통해 정보를 획득하여 반환
+ * 
+ * @param   fd__    netilnk에 연결된 디스크립터
+ * @param   data__  획득하여 반환할 버퍼
+ * 
+ * @return  획득 성공 true, 실패 false
+ */
 extern mild_bool get_netlink_data(
     mild_i32                    fd__,
     PNETLINK_DATA               data__
     );
-
 
 
 #endif  // #ifndef __CODE_HELPER_H__
