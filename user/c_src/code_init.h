@@ -17,6 +17,7 @@
 #include "../lib_utility/include/utility_interface.h"
 
 
+/// 이전트 설정
 extern POPENCODE_AGENT g_agent;
 
 

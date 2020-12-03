@@ -1,7 +1,7 @@
 /**
  * \file    code_gui_init.h
  * 
- * \brief   
+ * \brief   GUI 구성을 위한 위젯 생성과 초기화
  * 
  * \date    2020.09.24.
  * 
@@ -18,11 +18,21 @@
 #include <gtk/gtk.h>
 
 
+/**
+ * @brief   최상위 윈도우 설정 및 초기화
+ * 
+ * @param   main_window__   초기화할 최상위 윈도우 위젯
+ */
 extern void setup_main_window(
     GtkWidget                   *main_window__
     );
 
 
+/**
+ * @brief   에이전트 위젯들을 생성하고 초기화
+ * 
+ * @param   mainBox__   
+ */
 extern void setup_agent_widgets(
     GtkWidget                   *mainBox__
     );
