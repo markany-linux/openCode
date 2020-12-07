@@ -3,7 +3,7 @@ CC	= gcc
 INSTALL_DIR	=	$(shell pwd)/../../bin
 
 COMMON_HOME	=	$(shell pwd)/../..
-UTIL_HOME	=	$(shell pwd)/../lib_utility
+UTIL_HOME	=	$(shell pwd)/../lib_utility/include
 HEADER_HOME	=	$(shell pwd)/../headers
 
 INCS		=	$(COMMON_HOME) $(UTIL_HOME) $(HEADER_HOME)
@@ -33,8 +33,8 @@ TARGET	= maCopen
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) -o $@ $(OBJS) $(CFLAGS)
-	cp $(TARGET) $(INSTALL_DIR)
+	$(CC) -o $@ $(OBJS) $(CFLAGS) $(LIB_UTIL)
+	mv $(TARGET) $(INSTALL_DIR)
 	@printf "\nBuild Success : [32m%s[0m\n\n" $@
 
 clean:
