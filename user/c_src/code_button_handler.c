@@ -217,8 +217,11 @@ void sysfs_button_handler(
     GtkWidget *info_label;
     mild_u32 version = 0;
     SYSFS_INFO info = { 0, };
-    mild_i8 buf[ STRLEN_16 ] = { 0, };
+    mild_i8 buf[ STRLEN_64 ] = { 0, };
     mild_i8 label[ STRLEN_1024 ] = { 0, };
+
+    /// 출력 라벨 위젯 획득
+    info_label = ( GtkWidget* )user_data__;
 
     /// sysfs의 버전 파일의 내용을 읽어 들임
     if( mild_false != open_sysfs_get_contents( SYSFS_VERSION_FILE, buf, STRLEN_16 ) )
@@ -230,6 +233,12 @@ void sysfs_button_handler(
             MA_GET_MAJOR_VERSION( version ), MA_GET_MINOR_VERSION( version ),
             MA_GET_PATCH_VERSION( version ), MA_GET_CUSTOM_VERSION( version )
             );
+    }
+    else
+    {
+        snprintf( buf, STRLEN_64, "Fail to load \"%s\" file\nCheck Console print message", SYSFS_VERSION_FILE );
+        gtk_label_set_text( GTK_LABEL( info_label ), buf );
+        return;
     }
 
     /// sysfs의 정보 제공 구조체를 읽어 들임
@@ -255,13 +264,17 @@ void sysfs_button_handler(
         /// 출력 버퍼에 netlink 포트 번호를 기록
         snprintf( label + strlen( label ), STRLEN_1024 - strlen( label ), "Netlink port: %d\n", info.netlink_port );
     }
+    else
+    {
+        snprintf( buf, STRLEN_64, "Fail to load \"%s\" file\nCheck Console print message", SYSFS_INFO_FILE );
+        gtk_label_set_text( GTK_LABEL( info_label ), buf );
+        return;
+    }
+    
 
     /// 출력 버퍼에 획득된 기록이 존재하는지 확인
     if( mild_null == label )
         return;
-
-    /// 출력 라벨 위젯 획득
-    info_label = ( GtkWidget* )user_data__;
 
     /// 출력 라벨에 획득된 정보를 출력
     gtk_label_set_text( GTK_LABEL( info_label ), label );
@@ -273,16 +286,23 @@ void netlink_button_handler(
     gpointer                    user_data__
     )
 {
-    GtkWidget *info;
+    GtkWidget *info_label;
     NETLINK_DATA nd = { 0, };
     mild_i8 label[ TWOPAGE ] = { 0, };
+
+    /// 출력 라벨 위젯 획득
+    info_label = ( GtkWidget* )user_data__;
 
     /// netlink 디스크립터 개방 여부 확인
     if( 3 > g_agent->netlink_fd )
     {
         /// 개방되지 않은 경우, netlink를 개방
         if( mild_false == connect_netlink( &g_agent->netlink_fd ) )
+        {
+            snprintf( label, TWOPAGE, "Fail to connect netlink kernel module\nCheck Console print message" );
+            gtk_label_set_text( GTK_LABEL( info_label ), label );
             return;
+        }
     }
 
     do
@@ -309,9 +329,6 @@ void netlink_button_handler(
     /// netlink 데이터가 더 이상 존재하지 않을 때까지 반복
     } while ( mild_false != nd.remain );
 
-    /// 출력 라벨 위젯 획득
-    info = ( GtkWidget* )user_data__;
-
     /// 출력 라벨에 획득 버퍼 출력
-    gtk_label_set_text( GTK_LABEL( info ), label );
+    gtk_label_set_text( GTK_LABEL( info_label ), label );
 }

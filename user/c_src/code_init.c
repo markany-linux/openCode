@@ -8,6 +8,7 @@
 #include "code_helper.h"
 #include "code_version.h"
 #include "code_gui_init.h"
+#include "utility_interface.h"
 
 
 /**
@@ -19,7 +20,7 @@ static mild_bool init_opencode_execute_environment(
     POPENCODE_AGENT             agent__
     )
 {
-    mild_i8 buf[ STRLEN_256 ] = { 0, };
+    mild_i8 buf[ STRLEN_512 ] = { 0, };
 
     /// openCode agent version
     agent__->agent_version = OPENCODE_VERSION;
@@ -46,7 +47,7 @@ static mild_bool init_opencode_execute_environment(
     }
 
     /// 설정 정보를 획득할 경로 생성. 설정 정보는 현재 작업 디렉터리에 존재한다고 가정
-    snprintf( buf, STRLEN_256, "%s/%s", agent__->agent_path, OPENCODE_CONFIG_FILE );
+    snprintf( buf, STRLEN_512, "%s/%s", agent__->agent_path, OPENCODE_CONFIG_FILE );
 
     /// 생성 경로에서 설정 파일을 읽어 들여 초기화
     if( mild_false == initConfigList( agent__->library.config_handle, buf ) )

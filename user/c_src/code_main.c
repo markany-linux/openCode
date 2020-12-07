@@ -43,6 +43,7 @@ int main(
     /// 최상위 윈도우에 포함된 모든 위젯을 화면에 표시
     gtk_widget_show_all( g_agent->ui.mainWindow );
 
+    printf( "Hello openCode\n" );
     /// GTK 프로그램 실행 루프 시작
     gtk_main( );
 
