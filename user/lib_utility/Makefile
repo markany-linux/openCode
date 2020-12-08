@@ -3,12 +3,14 @@ CC =		gcc
 COMMON_HOME =	../..
 
 INSTALL_DIR =	$(COMMON_HOME)/bin
+OBJECT_DIR =	./build
 
 INCS =		$(COMMON_HOME) ./include
 
 INCLUDES =	$(INCS:%=-I%)
 
-CFLAGS =	-g -std=gnu90 -Wall -Wextra -Werror $(INCLUDES) -ldl -fPIC
+CFLAGS =	-std=gnu90 -Wall -Wextra -Werror $(INCLUDES) -fPIC
+LDLIBS =	-ldl
 LIBFLAGS =	-shared
 
 SRCS =		file_check.c		\
@@ -22,18 +24,24 @@ SRCS =		file_check.c		\
                 time_handler.c		\
                 config_handler.c
 
-OBJS =		$(SRCS:%.c=%.o)
+OBJS =		$(SRCS:%.c=$(OBJECT_DIR)/%.o)
+DEPS =		$(OBJS:%.o=%.d)
 TARGET =	libmautil.so
 
-.SUFFIXES: .c .o
+all: dir $(TARGET)
 
-all: $(TARGET)
+dir:
+	@mkdir -p $(OBJECT_DIR)
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $(LIBFLAGS) -o $@ $?
-	mv $(TARGET) $(INSTALL_DIR)
+	$(CC) -o $(INSTALL_DIR)/$@ $? $(LIBFLAGS) $(LDLIBS)
 	@printf "\nBuild Success : [32m%s[0m\n\n" $@
 
 clean:
-	rm -rf $(OBJS) $(INSTALL_DIR)/$(TARGET)
-	@printf "\nClean Success : [32m%s[0m\n\n" "$(OBJS) $(TARGET)"
+	rm -rf $(OBJS) $(DEPS) $(INSTALL_DIR)/$(TARGET)
+	@printf "\nClean Success : [32m%s[0m\n\n" "$(OBJS) $(DEPS) $(TARGET)"
+
+$(OBJECT_DIR)/%.o: %.c Makefile
+	$(CC) -MMD -MP -c $< -o $@ $(CFLAGS)
+
+-include $(DEPS)

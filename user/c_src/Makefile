@@ -1,43 +1,47 @@
-CC	= gcc
+CC		= 	gcc
 
-INSTALL_DIR	=	$(shell pwd)/../../bin
+INSTALL_DIR	= 	$(COMMON_HOME)/bin
+OBJECT_DIR	=	./build
 
-COMMON_HOME	=	$(shell pwd)/../..
-UTIL_HOME	=	$(shell pwd)/../lib_utility/include
-HEADER_HOME	=	$(shell pwd)/../headers
+COMMON_HOME	= 	../..
+UTIL_HOME	= 	../lib_utility/include
+HEADER_HOME	= 	../headers
 
-INCS		=	$(COMMON_HOME) $(UTIL_HOME) $(HEADER_HOME)
+INCS		= 	$(COMMON_HOME) $(UTIL_HOME) $(HEADER_HOME)
 
-INCLUDES	=	$(INCS:%=-I%)
+INCLUDES	= 	$(INCS:%=-I%)
 
-GTK_FKLAGS	=	$(shell pkg-config --cflags --libs gtk+-3.0)
-CFLAGS		=	-Wall $(INCLUDES) $(GTK_FKLAGS) -lmautil -ldl
+GTK_INCLUDE	= 	$(shell pkg-config --cflags-only-I gtk+-3.0)
+GTK_LIBS	= 	$(shell pkg-config --libs gtk+-3.0)
+CFLAGS		= 	-Wall $(INCLUDES) $(GTK_INCLUDE)
+LDFLAGS		=	-L$(INSTALL_DIR) -Wl,--rpath=.
+LDLIBS		= 	$(GTK_LIBS) -lmautil -ldl
 
-LIB_UTIL	= -L$(INSTALL_DIR) -lmautil -Wl,-rpath $(INSTALL_DIR)
+SRCS		= 	code_main.c		\
+			code_button_handler.c	\
+			code_gui_init.c		\
+			code_helper.c		\
+			code_init.c		\
+			code_search_dialog.c
 
-LIBS = $(LIB_UTIL)
-
-SRCS		=	code_main.c				\
-				code_button_handler.c	\
-				code_gui_init.c			\
-				code_helper.c			\
-				code_init.c				\
-				code_search_dialog.c
-
-OBJS	= $(SRCS:%.c=%.o)
+OBJS	= $(SRCS:%.c=$(OBJECT_DIR)/%.o)
+DEPS	= $(OBJS:%.o=%.d)
 TARGET	= maCopen
 
-.SUFFIXES: .c .o
+all: dir $(TARGET)
 
-
-all: $(TARGET)
+dir:
+	@mkdir -p $(OBJECT_DIR)
 
 $(TARGET): $(OBJS)
-	$(CC) -o $@ $(OBJS) $(CFLAGS) $(LIB_UTIL)
-	mv $(TARGET) $(INSTALL_DIR)
+	$(CC) -o $(INSTALL_DIR)/$@ $(OBJS) $(LDFLAGS) $(LDLIBS)
 	@printf "\nBuild Success : [32m%s[0m\n\n" $@
 
 clean:
-	rm -rf $(OBJS) $(INSTALL_DIR)/$(TARGET)
-	@printf "\nClean Success : [32m%s[0m\n\n" "$(OBJS) $(TARGET)"
+	rm -rf $(OBJS) $(DEPS) $(INSTALL_DIR)/$(TARGET)
+	@printf "\nClean Success : [32m%s[0m\n\n" "$(OBJS) $(DEPS) $(TARGET)"
 
+$(OBJECT_DIR)/%.o: %.c Makefile
+	$(CC) -MMD -MP -c $< -o $@ $(CFLAGS)
+
+-include $(DEPS)
