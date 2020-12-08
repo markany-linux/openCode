@@ -111,8 +111,16 @@ private:
 	 */
 	bool Get( );
 
+	/**
+	 * @brief	Netlink 통신 종료
+	 * 
+	 * @return	true	통신을 성공적으로 종료한 경우
+	 * @return	false	통신 종료를 실패한 경우
+	 */
+	bool Release( );
+
 	/// Netlink 통신 디스크립터
-	int fd_ = -1;
+	mild_i32 fd_ = -1;
 	/// 통신할 대상 커널 주소
 	struct sockaddr_nl kernel_address_;
 	/// Netlink 통신 버퍼

@@ -11,6 +11,9 @@
 #include "common.h"
 #include "utility_interface.h"
 
+static constexpr const char kSysfsFailMessage[ ] = "Kernel module not ready.";
+static constexpr const char kKernelModule[ ] = "maOpen";
+
 namespace {
 
 /**
@@ -197,6 +200,39 @@ void DeserializeMaVersion(
 		destination__[ 3 ] = MA_GET_CUSTOM_VERSION( version__ );
 }
 
+/**
+ * @brief	sysfs에서 제공하는 정보가 기록된 파일을 읽어옴
+ * 
+ * @param	sysfs_info__	정보를 받을 대상
+ * @return	mild_bool		정보를 성공적으로 가져올 시 true, 실패 시 false
+ */
+mild_bool GetSysfsInfoData(
+	PSYSFS_INFO					sysfs_info__
+	)
+{
+	assert( sysfs_info__ );
+
+	const size_t size = sizeof( *sysfs_info__ );
+	/// 정보를 가져오기 전 초기화 수행
+	memset( sysfs_info__, 0x00, size );
+
+	std::fstream info;
+	/// 커널 모듈에서 만든 info 파일 열기
+	if( !OpenKernelModuleFile( info, SYSFS_INFO_FILE ) )
+		return mild_false;
+
+	/// info 파일을 sysfs 구조체 형식으로 읽음
+	auto* buffer = reinterpret_cast< char* >( sysfs_info__ );
+	info.read( buffer, size );
+	if( info.fail( ) && !info.eof( ) )
+	{
+		std::cout << "Failed to read netlink file: " SYSFS_INFO_FILE << '\n';
+		return mild_false;
+	}
+
+	return mild_true;
+}
+
 } // namespace {
 
 namespace data {
@@ -272,24 +308,25 @@ const std::string ConfigData::GetConfigData( ) const
 
 NetlinkData::~NetlinkData( )
 {
-	/// Netlink 소켓 닫음
-	if( -1 != fd_ )
-	{
-		close( fd_ );
-		fd_ = -1;
-	}
-
-	/// Netlink 통신 버퍼 할당 해제
-	if( netlink_message_ )
-	{
-		free( netlink_message_ );
-		netlink_message_ = nullptr;
-	}
+	Release( );
 }
 
 bool NetlinkData::Init( )
 {
 	std::cout << "[+] NetlinkData::Init()\n";
+	/// 커널 모듈을 찾을 수 없는 경우 초기화 불가
+	if( mild_false == checkKernelModuleExist( kKernelModule ) )
+		return false;
+
+	/// sysfs 정보를 가져올 수 없거나
+	/// 커널 모듈에서 Netlink가 준비되지 않은 경우 초기화 불가
+	SYSFS_INFO sysfs_info;
+	if( !GetSysfsInfoData( &sysfs_info ) ||
+		( mild_false == sysfs_info.netlink_load ) )
+	{
+		return false;
+	}
+	
 	/// Netlink 헤더 + 데이터의 총 길이
 	const size_t message_size = NLMSG_SPACE( sizeof( netlink_data_ ) );
 	/// 현재 프로세스 ID
@@ -311,8 +348,8 @@ bool NetlinkData::Init( )
 	memset( message_raw, 0x00, message_size );
 
 	/// Netlink 소켓을 열음
-	int fd = socket( PF_NETLINK, SOCK_RAW, NETLINK_PORT_NUMBER );
-	if( -1 == fd )
+	mild_i32 fd = socket( PF_NETLINK, SOCK_RAW, sysfs_info.netlink_port );
+	if( -1 >= fd )
 	{
 		std::cout << "Failed to open netlink socket.\n";
 		free( message_raw );
@@ -326,7 +363,8 @@ bool NetlinkData::Init( )
 	bind_address.nl_pid = pid;
 
 	/// Netlink 소켓에 현재 접속에 대한 바인딩
-	auto* address_ptr = reinterpret_cast< struct sockaddr* >( &bind_address );
+	const auto* address_ptr =
+		reinterpret_cast< struct sockaddr* >( &bind_address );
 	if( 0 > bind( fd, address_ptr, sizeof( bind_address ) ) )
 	{
 		std::cout << "Failed to bind address.\n";
@@ -352,6 +390,12 @@ bool NetlinkData::Init( )
 const std::string NetlinkData::GetAll( )
 {
 	std::cout << "[+] NetlinkData::GetAll()\n";
+	if( -1 >= fd_ )
+	{
+		if( !Init( ) )
+			return kSysfsFailMessage;
+	}
+
 	PNETLINK_DATA data = nullptr;
 	std::string output;
 
@@ -370,7 +414,6 @@ const std::string NetlinkData::GetAll( )
 		/// 커널 모듈에서 전달받은 데이터 출력
 		string_append_format( output, "pid = %d\n", data->pid );
 		string_append_format( output, "uid = %d\n", data->uid );
-		string_append_format( output, "pid = %d\n", data->pid );
 		string_append_format( output, "fname = %s\n", data->fname );
 		string_append_format( output, "task = %s\n", data->task );
 
@@ -419,6 +462,11 @@ bool NetlinkData::Get( )
 
 	/// 만들어진 메세지를 커널 모듈에 전달
 	ret = sendmsg( fd_, &message_header_, 0 );
+	if( 0 == ret )
+	{
+		Release( );
+		return false;
+	}
 	if( 0 > ret )
 	{
 		std::cout << "Failed to send netlink message.\n";
@@ -427,6 +475,11 @@ bool NetlinkData::Get( )
 	
 	/// 커널 모듈에게서 데이터를 받음
 	ret = recvmsg( fd_, &message_header_, 0 );
+	if( 0 == ret )
+	{
+		Release( );
+		return false;
+	}
 	if( 0 > ret )
 	{
 		std::cout << "Failed to receive netlink message.\n";
@@ -435,6 +488,29 @@ bool NetlinkData::Get( )
 
 	std::cout << "[-] NetlinkData::Get()\n";
 	return true;
+}
+
+bool NetlinkData::Release( )
+{
+	bool ret = false;
+
+	/// Netlink 소켓 닫음
+	if( -1 < fd_ )
+	{
+		close( fd_ );
+		fd_ = -1;
+		ret = true;
+	}
+
+	/// Netlink 통신 버퍼 할당 해제
+	if( netlink_message_ )
+	{
+		free( netlink_message_ );
+		netlink_message_ = nullptr;
+		ret = true;
+	}
+
+	return ret;
 }
 
 const std::string GetSystemInfo( )
@@ -582,20 +658,10 @@ const std::string GetProcData(
 
 const std::string GetSysfsInfo( )
 {
-	std::fstream info;
-	/// 커널 모듈에서 만든 info 파일 열기
-	if( !OpenKernelModuleFile( info, SYSFS_INFO_FILE ) )
-		return "";
-	
 	SYSFS_INFO info_data;
-	memset( &info_data, 0x00, sizeof( info_data ) );
-	/// info 파일을 sysfs 구조체 형식으로 읽음
-	info.read( reinterpret_cast< char* >( &info_data ), sizeof( info_data ) );
-	if( info.fail( ) && !info.eof( ) )
-	{
-		std::cout << "Failed to read netlink file: " SYSFS_INFO_FILE << '\n';
-		return "";
-	}
+
+	if( mild_false == GetSysfsInfoData( &info_data ) )
+		return kSysfsFailMessage;
 	
 	std::string output;
 	mild_u32 version_detail[ 4 ] = { 0, };
