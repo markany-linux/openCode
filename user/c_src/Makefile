@@ -15,7 +15,7 @@ GTK_INCLUDE	= 	$(shell pkg-config --cflags-only-I gtk+-3.0)
 GTK_LIBS	= 	$(shell pkg-config --libs gtk+-3.0)
 CFLAGS		= 	-Wall $(INCLUDES) $(GTK_INCLUDE)
 LDFLAGS		=	-L$(INSTALL_DIR) -Wl,--rpath=.
-LDLIBS		= 	$(GTK_LIBS) -lmautil -ldl
+LDLIBS		= 	$(GTK_LIBS) -lopencode -ldl
 
 SRCS		= 	code_main.c		\
 			code_button_handler.c	\
@@ -41,6 +41,7 @@ $(TARGET): $(OBJS)
 	@printf "\nBuild Success : [32m%s[0m\n\n" $@
 
 clean:
+	$(MAKE) -C $(UTIL_HOME) clean
 	rm -rf $(OBJS) $(DEPS) $(INSTALL_DIR)/$(TARGET)
 	@printf "\nClean Success : [32m%s[0m\n\n" "$(OBJS) $(DEPS) $(TARGET)"
 

@@ -5,7 +5,7 @@ PROJECT_DIR =		../..
 INSTALL_DIR =		$(PROJECT_DIR)/bin
 
 CXXFLAGS =		-O2 -W -Wall -Wextra -std=c++14 $(INCLUDE_DIR)
-LDLIBS =		-lmautil $(shell pkg-config --libs gtkmm-3.0)
+LDLIBS =		-lopencode $(shell pkg-config --libs gtkmm-3.0)
 LDFLAGS =		-L$(INSTALL_DIR) -Wl,--rpath=.
 
 LIB_UTILITY_DIR =	../lib_utility

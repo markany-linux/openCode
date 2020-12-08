@@ -26,7 +26,7 @@ SRCS =		file_check.c		\
 
 OBJS =		$(SRCS:%.c=$(OBJECT_DIR)/%.o)
 DEPS =		$(OBJS:%.o=%.d)
-TARGET =	libmautil.so
+TARGET =	libopencode.so
 
 all: dir $(TARGET)
 
