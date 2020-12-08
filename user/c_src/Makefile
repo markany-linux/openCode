@@ -4,10 +4,10 @@ INSTALL_DIR	= 	$(COMMON_HOME)/bin
 OBJECT_DIR	=	./build
 
 COMMON_HOME	= 	../..
-UTIL_HOME	= 	../lib_utility/include
+UTIL_HOME	= 	../lib_utility
 HEADER_HOME	= 	../headers
 
-INCS		= 	$(COMMON_HOME) $(UTIL_HOME) $(HEADER_HOME)
+INCS		= 	$(COMMON_HOME) $(UTIL_HOME)/include $(HEADER_HOME)
 
 INCLUDES	= 	$(INCS:%=-I%)
 
@@ -28,13 +28,16 @@ OBJS	= $(SRCS:%.c=$(OBJECT_DIR)/%.o)
 DEPS	= $(OBJS:%.o=%.d)
 TARGET	= maCopen
 
-all: dir $(TARGET)
+all: lib dir $(TARGET)
+
+lib:
+	$(MAKE) -C $(UTIL_HOME)
 
 dir:
 	@mkdir -p $(OBJECT_DIR)
 
 $(TARGET): $(OBJS)
-	$(CC) -o $(INSTALL_DIR)/$@ $(OBJS) $(LDFLAGS) $(LDLIBS)
+	$(CC) -o $(INSTALL_DIR)/$@ $? $(LDFLAGS) $(LDLIBS)
 	@printf "\nBuild Success : [32m%s[0m\n\n" $@
 
 clean:
