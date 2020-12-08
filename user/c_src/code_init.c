@@ -68,7 +68,7 @@ static mild_bool init_opencode_execute_environment(
 static mild_bool load_library( void )
 {
     /// 유틸리티 라이브러리 개방 및 확인
-    g_agent->library.lib_utility = dlopen( "libmautil.so", RTLD_NOW );
+    g_agent->library.lib_utility = dlopen( "libopencode.so", RTLD_NOW );
     if( mild_null == g_agent->library.lib_utility )
     {
         printf( "Fail to load library\n" );

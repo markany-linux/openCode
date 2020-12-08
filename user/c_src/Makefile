@@ -16,6 +16,7 @@ GTK_LIBS	= 	$(shell pkg-config --libs gtk+-3.0)
 CFLAGS		= 	-Wall $(INCLUDES) $(GTK_INCLUDE)
 LDFLAGS		=	-L$(INSTALL_DIR) -Wl,--rpath=.
 LDLIBS		= 	$(GTK_LIBS) -lopencode -ldl
+LIBFLAGS	=	-no-pie
 
 SRCS		= 	code_main.c		\
 			code_button_handler.c	\
@@ -37,7 +38,7 @@ dir:
 	@mkdir -p $(OBJECT_DIR)
 
 $(TARGET): $(OBJS)
-	$(CC) -o $(INSTALL_DIR)/$@ $? $(LDFLAGS) $(LDLIBS)
+	$(CC) -o $(INSTALL_DIR)/$@ $? $(LIBFLAGS) $(LDFLAGS) $(LDLIBS)
 	@printf "\nBuild Success : [32m%s[0m\n\n" $@
 
 clean:
